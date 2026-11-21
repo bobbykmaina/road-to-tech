@@ -1,0 +1,8 @@
+{
+  "name": "Road to TECH",
+  "description": "Local-first Cisco CCNA 200-301 learning workbench with an interactive Cisco IOS CLI simulator, live subnetting studio, protocol visualizers, mock exams, and Zero Socratic AI coach.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
