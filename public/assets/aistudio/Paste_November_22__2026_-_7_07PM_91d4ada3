@@ -1,0 +1,694 @@
+CCNA 200-301 Study Map: Topics, Subtopics and What to Know
+Road to TECH · Covers exam v1.1 (through February 2, 2027) and v2.0 (from February 3, 2027) · Prepared November 22, 2026
+This is a topic-by-topic outline of what the CCNA 200-301 expects, broken down to subtopic level. Part A teaches v1.1 in a sensible learning order. Part B covers v2.0: topics shared with v1.1 point back to Part A as revision (marked ↻) and list only what is new or different, while topics new to v2.0 are written out in full. Topic numbers such as 3.4 are Cisco’s official exam topic IDs for that version. Cisco can reword objectives, so confirm against its published exam topics before you book.
+Layout of each topic: subtopics with the key facts, then Commands (what to type and what to check), then Traps (where marks are lost).
+Unit 0: Foundations
+Not on the blueprint, but everything else depends on it. Finish this before Part A.
+0.1 Network basics
+• Terms: host, client, server, LAN, WAN, internet, intranet. Bandwidth is capacity, throughput is what you actually get, latency is delay, jitter is variation in delay, and packet loss is traffic that never arrives.
+• Traffic types: unicast (one to one), broadcast (one to everyone on the segment), multicast (one to a group).
+• Data units: segment (TCP) or datagram (UDP), packet (IP), frame (Ethernet), bits.
+0.2 Number systems
+• Binary and decimal: an octet has eight bits worth 128, 64, 32, 16, 8, 4, 2, 1. Build a number by subtracting the largest value that fits. Example: 192 = 128 + 64 = 11000000; 168 = 128 + 32 + 8 = 10101000.
+• Hexadecimal: digits 0–9 and A–F; one hex digit is four bits (a nibble), so 0xC0 = 1100 0000 = 192. MAC addresses and IPv6 use hex.
+• Mask values to memorize: 128, 192, 224, 240, 248, 252, 254, 255. Each adds one more network bit.
+• Practice target: convert any octet to binary and back in under 10 seconds.
+0.3 OSI and TCP/IP models
+• OSI layers, top down: 7 Application, 6 Presentation, 5 Session, 4 Transport, 3 Network, 2 Data Link, 1 Physical.
+• Where things live: Layer 1 cables, hubs, bits; Layer 2 switches, MAC addresses, frames; Layer 3 routers, IP addresses, packets; Layer 4 TCP and UDP, ports, segments; Layer 7 HTTP, DNS, SSH.
+• TCP/IP model: four layers (Application, Transport, Internet, Network Access) that map onto the OSI layers.
+• Encapsulation: going down the stack, data becomes a segment, then a packet, then a frame, then bits. Each layer adds its own header (Ethernet also adds a trailer). The receiver reverses the process.
+• Layered troubleshooting: bottom-up (cable first), top-down, or divide and conquer from the middle.
+0.4 Ethernet and MAC addresses
+• Frame fields: preamble, destination MAC, source MAC, type (0x0800 IPv4, 0x86DD IPv6, 0x0806 ARP), payload (46–1500 bytes), FCS. Minimum frame 64 bytes; standard maximum 1518 (1522 with a VLAN tag).
+• MAC address: 48 bits, 12 hex digits. The first 24 bits are the OUI (vendor), the last 24 identify the device. Broadcast is FFFF.FFFF.FFFF.
+• Half and full duplex: half duplex uses CSMA/CD and can collide; full duplex (switch to host) cannot.
+0.5 IP, ARP, ports and the life of a packet
+• IP basics: every packet carries a source and destination IP and a TTL that each router decrements. Hosts deliver local traffic directly and send everything else to the default gateway.
+• ARP: finds the MAC for a known IP with a broadcast request and a unicast reply; results are cached (arp -a, show ip arp).
+• Laptop to website: DNS lookup (UDP 53), the laptop sees the server is on another network, ARPs for the gateway, sends the frame to the router’s MAC with the server’s IP, each router hop rewrites the Layer 2 header, TCP three-way handshake, then the HTTPS exchange. IP addresses stay the same end to end while MAC addresses change at every hop.
+0.6 Cisco IOS CLI basics
+• Modes and prompts: user EXEC Router>; privileged EXEC Router# (enable); global config Router(config)# (configure terminal); sub-modes such as (config-if)#, (config-line)#, (config-router)#, (config-vlan)#. exit goes back one level; end or Ctrl+Z goes straight to privileged EXEC.
+• Help: ? lists options, sh? lists commands starting with “sh”, Tab completes, and unambiguous abbreviations work (conf t, sh ip int br). The up arrow recalls history.
+• Errors: % Incomplete command, % Invalid input detected at ‘^’ marker (typo or wrong mode), % Ambiguous command.
+• Config files: running-config lives in RAM, startup-config in NVRAM. Save with copy running-config startup-config or write memory. no negates a command, show running-config | section ospf filters output, reload reboots.
+• First-day commands: hostname, banner motd #text#, show version, show ip interface brief, show interfaces, show flash:.
+0.7 Lab habits
+• Tools: Cisco Packet Tracer (free, beginner-friendly), Cisco Modeling Labs, GNS3 or EVE-NG (these need device images).
+• Habits: draw the topology and address plan first, change one thing at a time, run a verification command after every change, save configs, read error messages before retrying, and know the state you started from.
+Part A: CCNA v1.1
+Study order inside each domain follows prerequisites, not the blueprint numbering. Domains in order: 1 Network Fundamentals (20%), 2 Network Access (20%), 3 IP Connectivity (25%), 4 IP Services (10%), 5 Security Fundamentals (15%), 6 Automation and Programmability (10%).
+Domain 1: Network Fundamentals (20%)
+1.1 Roles and functions of network components
+• Routers (1.1.a): connect different IP networks and forward packets using the routing table. Each interface sits in its own subnet, and a router does not forward broadcasts, so it separates broadcast domains. Hosts use a router interface as their default gateway.
+• Layer 2 and Layer 3 switches (1.1.b): a Layer 2 switch forwards frames by MAC address; each port is its own collision domain and each VLAN its own broadcast domain. A Layer 3 switch also routes between VLANs using SVIs (interface vlan 10) and routed ports (no switchport) once ip routing is on.
+• Next-generation firewalls and IPS (1.1.c): a firewall filters traffic with stateful inspection. A next-generation firewall adds application awareness, URL filtering, user identity and malware protection. An IPS sits inline, detects attacks and blocks them; an IDS only alerts.
+• Access points (1.1.d): bridge Wi-Fi clients (802.11) onto the wired LAN (802.3). Autonomous APs run alone; lightweight APs are managed by a controller.
+• Controllers (1.1.e): a wireless LAN controller (WLC) configures and manages lightweight APs over CAPWAP tunnels. Cisco DNA Center (now branded Catalyst Center) is a network-wide controller for automation, policy and assurance.
+• Endpoints (1.1.f): PCs, laptops, phones, IP phones, printers, cameras and IoT devices.
+• Servers (1.1.g): provide services such as DHCP, DNS, web, file, mail and authentication.
+• PoE (1.1.h): Power over Ethernet sends power over the data cable to APs, IP phones and cameras. 802.3af delivers up to 15.4 W per port, 802.3at (PoE+) 30 W, and 802.3bt 60 W and up to roughly 90–100 W. Switch and device negotiate a power class.
+• Commands: show power inline, power inline never, show interfaces status.
+• Traps: an IPS acts on traffic inline while an IDS only alerts; a Layer 2 switch alone cannot move traffic between VLANs; a switch’s total PoE budget can run out before its ports do.
+1.2 Network topology architectures
+• Two-tier, collapsed core (1.2.a): access and distribution layers, with distribution and core combined. Suits small and mid-size campuses; fewer devices to manage but less scalable.
+• Three-tier (1.2.b): access (connects endpoints, PoE, port security, VLANs), distribution (aggregates access switches, inter-VLAN routing, policy, redundancy) and core (high-speed backbone, kept simple). Scales to large campuses.
+• Spine-leaf (1.2.c): a data-center design. Every leaf connects to every spine; leaves never connect to each other and spines never connect to each other. East-west traffic is always leaf, spine, leaf, giving predictable latency, easy growth by adding leaves or spines, and a natural fit for VXLAN fabrics.
+• WAN (1.2.d): links sites across distance: leased lines, MPLS, Metro Ethernet, internet broadband with VPN, and SD-WAN.
+• SOHO (1.2.e): one device usually combines router, switch, firewall and Wi-Fi, connected to the ISP by cable, DSL, fiber or cellular.
+• On-premises and cloud (1.2.f): on-premises means you own and run the hardware; cloud means renting IaaS, PaaS or SaaS from a provider. Public, private and hybrid models exist. Cloud shifts cost from capital to operating expense, and traffic reaches it over the internet, a VPN or a dedicated link.
+• Traps: spine-leaf has no leaf-to-leaf links; the core layer should not carry heavy policy.
+1.3 Physical interface and cabling types
+• Single-mode fiber (1.3.a): very thin core (about 9 µm), laser light, one light path; reaches many kilometers; more expensive optics.
+• Multimode fiber (1.3.a): thicker core (50 or 62.5 µm), LED or VCSEL light, many paths; shorter reach, typically up to a few hundred meters depending on speed and grade (about 550 m for 1000BASE-SX).
+• Copper (1.3.a): twisted pair with RJ-45 connectors. Cat5e supports 1 Gbps; Cat6 supports 10 Gbps to about 55 m; Cat6a supports 10 Gbps to 100 m. The maximum run is 100 m.
+• Wiring: straight-through (same pin standard at both ends, such as T568B) joins unlike devices (PC to switch, switch to router); crossover (T568A at one end, T568B at the other) joins like devices (switch to switch). Auto-MDIX on modern ports corrects this. Console (rollover) cables are a separate type.
+• Ethernet naming: speed + BASE + medium, for example 100BASE-TX, 1000BASE-T, 1000BASE-LX (single-mode), 1000BASE-SX (multimode), 10GBASE-T.
+• Connections (1.3.b): shared media (hubs, half duplex, CSMA/CD, collisions) versus point-to-point (switch to host or switch to switch, full duplex, no collisions).
+• Transceivers: SFP (1 Gbps) and SFP+ (10 Gbps) modules carry fiber or copper; both ends need matching wavelength and fiber type.
+• Traps: single-mode to multimode mismatches do not work; copper beyond 100 m fails; “point-to-point” means a dedicated link, not necessarily serial.
+1.4 Interface and cable issues
+• Interface status: up/up is working. up/down usually means a Layer 2 problem (encapsulation, keepalives, no neighbor). down/down means a physical problem (cable, far end off). administratively down means someone typed shutdown. err-disabled means the switch shut the port itself (port security, BPDU guard).
+• Collisions: only happen on half duplex. Late collisions (after the first 64 bytes) point to a duplex mismatch or a cable that is too long.
+• Errors: CRC/FCS errors (bad cable, interference, duplex mismatch), runts (frames under 64 bytes, often collision fragments), giants (over the maximum frame size), input and output errors, interface resets.
+• Duplex and speed mismatch: with one side hard-coded and the other on auto, speed is usually detected but the auto side falls back to half duplex. That produces slow links, late collisions on one side and CRC errors on the other. Fix it by setting both sides to auto or both to the same fixed values.
+• Cable faults: wrong cable type, damaged or bent fiber, dirty connectors, runs over 100 m.
+• Commands: show interfaces g0/1, show interfaces status, show ip interface brief, show interfaces counters errors, duplex auto, speed auto, shutdown then no shutdown, clear counters.
+• Traps: a port can be up/up and still perform badly because of a mismatch; clear counters before testing so the numbers are current.
+1.13 Switching concepts
+• MAC learning (1.13.a): when a frame arrives, the switch records the source MAC and ingress port (per VLAN) in its table.
+• Aging (1.13.a): entries expire after 300 seconds of inactivity by default.
+• Frame switching (1.13.b): a frame whose destination MAC is in the table goes out only that port. Catalyst switches use store-and-forward (receive the whole frame and check the FCS); the alternatives are cut-through and fragment-free.
+• Frame flooding (1.13.c): broadcasts, unknown unicasts and (without IGMP snooping) multicasts go out every port in the VLAN except the one they arrived on.
+• MAC address table (1.13.d): columns are VLAN, MAC address, type (dynamic or static) and port. It lives in CAM (fast lookup memory). A MAC seen on two ports in turn is “flapping”, usually a sign of a loop.
+• Domains: each switch port is its own collision domain; each VLAN is one broadcast domain.
+• Commands: show mac address-table, show mac address-table dynamic, show mac address-table aging-time, clear mac address-table dynamic.
+• Traps: switches learn from the source address only, never the destination; a router interface, not a switch, ends a broadcast domain.
+1.5 TCP and UDP
+• TCP: connection-oriented and reliable. Three-way handshake (SYN, SYN-ACK, ACK), sequence and acknowledgment numbers, retransmission, windowing for flow control, orderly close with FIN (or abrupt RST). 20-byte minimum header. Used where accuracy matters: HTTP/HTTPS, SSH, SMTP, FTP.
+• UDP: connectionless and best effort, no ordering or retransmission, 8-byte header, low overhead. Used where speed matters or the application handles loss: DNS queries, DHCP, TFTP, SNMP, syslog, NTP, voice and video.
+• Ports: 0–1023 well-known, 1024–49151 registered, 49152–65535 dynamic (client side). Key ports: FTP 20/21, SSH 22, Telnet 23, SMTP 25, DNS 53, DHCP 67/68, TFTP 69, HTTP 80, NTP 123, SNMP 161/162, HTTPS 443, syslog 514 (UDP).
+• Choosing: reliability and order (TCP) versus low latency and low overhead (UDP).
+• Traps: DNS mainly uses UDP 53 but uses TCP 53 for zone transfers and large replies; exam wording says segments for TCP and datagrams for UDP.
+1.6 IPv4 addressing and subnetting
+• Address structure: 32 bits written as four decimal octets. A mask splits network bits from host bits; /24 means 24 network bits (255.255.255.0).
+• Classes (history, still tested): A 1–126 (/8), B 128–191 (/16), C 192–223 (/24), D 224–239 multicast, E 240–255 reserved. 127.0.0.0/8 is loopback; 169.254.0.0/16 is link-local (APIPA), what a client gives itself when DHCP fails.
+• Subnetting maths: borrowing n host bits gives 2^n subnets; h host bits leave 2^h − 2 usable hosts (minus the network and broadcast addresses). Block size = 256 − the “interesting” mask octet, and subnets start at multiples of the block size.
+• Worked example 1: 192.168.1.0/24 split into 4 subnets uses /26 (mask 255.255.255.192, block 64): 192.168.1.0, .64, .128, .192, each with 62 usable hosts. For 192.168.1.130/26: network .128, first usable .129, last usable .190, broadcast .191.
+• Worked example 2: which subnet holds 172.16.37.200/20? The mask is 255.255.240.0, so the block size in the third octet is 16. 37 falls in 32–47, so the network is 172.16.32.0 and the broadcast is 172.16.47.255.
+• VLSM: allocate the largest requirement first so subnets never overlap. For 192.168.10.0/24 needing 100, 50, 20 and 2 hosts: /25 (126 hosts) at .0, /26 (62) at .128, /27 (30) at .192 and /30 (2) at .224.
+• Summarization: combine contiguous networks into one route by counting the bits they share. 192.168.0.0/24 through 192.168.3.0/24 summarize to 192.168.0.0/22.
+• Special cases: /31 for point-to-point links (RFC 3021), /32 for a single host or loopback, 255.255.255.255 as the limited broadcast.
+• Commands: ip address 192.168.1.1 255.255.255.0, no shutdown, show ip interface brief, show running-config interface g0/0, ping, ip address dhcp (client interface).
+• Traps: forgetting to subtract two from host counts; overlapping VLSM subnets; reading the wrong octet when the mask is not /8, /16 or /24; assigning the network or broadcast address to a host.
+1.7 Private IPv4 addressing
+• RFC 1918 ranges: 10.0.0.0/8, 172.16.0.0/12 (172.16.0.0 to 172.31.255.255) and 192.168.0.0/16. They are not routed on the public internet.
+• Why they exist: IPv4 has about 4.3 billion addresses, far too few for every device. Private addressing plus NAT/PAT lets many internal hosts share a few public addresses.
+• Public versus private: public addresses are globally unique and routable; private ones can be reused by every organization. Overlapping private ranges cause trouble when companies merge or connect over VPNs.
+• Related ranges: 169.254.0.0/16 (self-assigned link-local), 127.0.0.0/8 (loopback), and 100.64.0.0/10 (carrier-grade NAT, beyond the blueprint but common in real networks).
+• Traps: 172.32.0.0 and above is public; only 172.16–172.31 is private.
+1.8 IPv6 addressing and prefixes
+• Format: 128 bits as eight groups of four hex digits. Shorten by dropping leading zeros in each group and by replacing one run of all-zero groups with :: (once only). Example: 2001:0db8:0000:0000:0000:0000:0000:0001 becomes 2001:db8::1.
+• Structure: a /64 is the standard LAN size: 64 bits of network (global routing prefix plus subnet ID) and a 64-bit interface ID. A site typically receives a /48 (65,536 /64 subnets) or a /56. 2001:db8::/32 is reserved for documentation.
+• Configuring: ipv6 unicast-routing (required for a router to route IPv6 and send router advertisements), ipv6 address 2001:db8:1:1::1/64, ipv6 address 2001:db8:1:1::/64 eui-64, ipv6 address fe80::1 link-local.
+• Address assignment: static, SLAAC, stateless DHCPv6 (SLAAC address, DHCPv6 only for extras such as DNS) and stateful DHCPv6.
+• SLAAC and neighbor discovery: the router sends a Router Advertisement (ICMPv6 type 134) carrying the prefix; the host builds its own interface ID (EUI-64 or random) and runs duplicate address detection. Neighbor Solicitation (135) and Neighbor Advertisement (136) replace ARP; Router Solicitation is type 133. IPv6 has no broadcast.
+• Subnetting IPv6: usually just increment the subnet ID field, for example 2001:db8:1:1::/64, 2001:db8:1:2::/64, 2001:db8:1:3::/64.
+• Commands: show ipv6 interface brief, show ipv6 interface g0/0, show ipv6 route, show ipv6 neighbors, ping 2001:db8:1:1::2.
+• Traps: :: may appear only once; forgetting ipv6 unicast-routing means no routing and no RAs; LAN hosts get a /64, not a /128.
+1.9 IPv6 address types
+• Global unicast (1.9.a): 2000::/3 (addresses starting with 2 or 3), publicly routable, the IPv6 equivalent of a public address.
+• Unique local (1.9.a): FC00::/7, in practice FD00::/8; private, not routed on the internet, roughly the IPv6 version of RFC 1918.
+• Link-local (1.9.a): FE80::/10. Every IPv6 interface has one. It is not routable beyond the link and is used by neighbor discovery, routing protocol neighbors and as next hops. The loopback is ::1 and the unspecified address is ::.
+• Anycast (1.9.b): the same address on several devices; traffic goes to the nearest one by routing metric. Used for DNS and content delivery. It is not a separate range: it is a unicast address configured on more than one node (ipv6 address 2001:db8::1/128 anycast).
+• Multicast (1.9.c): FF00::/8, replacing broadcast. FF02::1 all nodes, FF02::2 all routers, FF02::5 OSPFv3 routers, FF02::6 OSPFv3 DR and BDR, FF02::A EIGRP, and solicited-node multicast FF02::1:FFxx:xxxx used by neighbor discovery.
+• Modified EUI-64 (1.9.d): build a 64-bit interface ID from the 48-bit MAC: split the MAC in half, insert FFFE in the middle, and flip the seventh bit of the first byte. Example: MAC 00:1A:2B:3C:4D:5E becomes interface ID 021A:2BFF:FE3C:4D5E (00 becomes 02).
+• Traps: the flipped bit turns 00 into 02 (or 02 into 00); link-local addresses are never routed; FF02 means link-local scope.
+1.10 Verifying IP parameters on client operating systems
+• Windows: ipconfig and ipconfig /all (MAC, DHCP status, lease times, DNS servers, gateway), ipconfig /release, ipconfig /renew, ipconfig /flushdns, ping, tracert, nslookup, arp -a, route print, netstat -an.
+• macOS: ifconfig, networksetup -getinfo Wi-Fi, ipconfig getifaddr en0, ping, traceroute, arp -a, netstat -rn, and the Network pane in System Settings.
+• Linux: ip addr, ip route, ip neigh, resolvectl status or cat /etc/resolv.conf, ping, traceroute, ss -tuln; older systems use ifconfig.
+• Reading results: a 169.254.x.x address means DHCP failed; a wrong gateway or mask breaks off-subnet traffic; missing DNS means pings to IP addresses work but names fail; the same IP on two hosts causes intermittent loss.
+• Quick triage order: own IP and mask, gateway reachable, remote IP reachable, name resolves.
+• Traps: Windows uses tracert while macOS and Linux use traceroute; ipconfig /all is Windows syntax.
+1.11 Wireless principles
+• Non-overlapping channels (1.11.a): in the 2.4 GHz band with 20 MHz channels, only 1, 6 and 11 (in the US) do not overlap. 5 GHz has many more non-overlapping channels, some needing DFS (radar avoidance); 6 GHz (Wi-Fi 6E) adds more. Wider channels (40, 80, 160 MHz) give more speed but fewer usable channels. APs on the same channel (co-channel) and on overlapping channels (adjacent-channel) both cause interference.
+• SSID (1.11.b): the network name. A BSSID is the AP radio’s MAC address. One AP and its clients form a BSS; several APs sharing an SSID form an ESS that supports roaming. Hiding the SSID is not security.
+• RF basics (1.11.c): frequency (Hz), wavelength, amplitude. Signal strength is measured in dBm (RSSI) and SNR compares signal to noise. 2.4 GHz travels farther but is slower and more crowded; 5 GHz is faster with shorter range. Walls and objects cause absorption, reflection, refraction and multipath. Omnidirectional antennas cover all around; directional antennas focus the signal.
+• Encryption (1.11.d): open, WEP (broken), WPA (TKIP), WPA2 (AES-CCMP) and WPA3 (SAE). Detail in 5.9.
+• Standards: 802.11b/g (2.4 GHz), a (5 GHz), n (2.4 and 5), ac (5, “Wi-Fi 5”), ax (“Wi-Fi 6/6E”), be (“Wi-Fi 7”).
+• Access method: Wi-Fi uses CSMA/CA (avoid collisions, because a radio cannot listen while it transmits) and is half duplex. Clients probe, authenticate and associate with an AP.
+• Traps: channels 1/6/11 apply to 2.4 GHz at 20 MHz; more APs on the same channel add interference, not capacity.
+1.12 Virtualization fundamentals
+• Server virtualization: a hypervisor runs several virtual machines on one physical server. Type 1 hypervisors run directly on hardware (VMware ESXi, Hyper-V, KVM); Type 2 run on top of a host OS (VirtualBox, VMware Workstation). VMs connect through virtual switches and virtual NICs.
+• Benefits: better hardware use, quick provisioning, snapshots, VM migration, isolation.
+• Containers: package an app and its dependencies and share the host’s OS kernel, so they are lighter and start faster than VMs but isolate less. Docker builds and runs containers; Kubernetes orchestrates many of them.
+• VRFs: Virtual Routing and Forwarding creates several separate routing tables on one router. Each interface belongs to one VRF, and overlapping IP ranges can coexist, which suits multi-tenant or segmented networks. Configure with vrf definition RED and vrf forwarding RED on the interface; verify with show ip route vrf RED.
+• VRF versus VLAN: a VLAN separates Layer 2 broadcast domains; a VRF separates Layer 3 routing tables.
+• Traps: containers share the host kernel while VMs each have their own OS; Type 2 hypervisors are mainly for desktops and labs.
+Domain 2: Network Access (20%)
+2.1 VLANs across multiple switches
+• Why VLANs: split one switch into separate broadcast domains for security, performance and organization. Normally one VLAN equals one IP subnet.
+• VLAN ranges: normal range 1–1005 (1002–1005 are legacy) and extended range 1006–4094. VLANs are stored in vlan.dat in flash, so erasing the startup config does not remove them.
+• Creating: vlan 10, then name SALES. A port assigned to a VLAN that does not exist is inactive on older switches.
+• Access ports (2.1.a): carry one VLAN: switchport mode access, switchport access vlan 10. For IP phones add a voice VLAN: switchport voice vlan 20; the PC stays untagged in the data VLAN while the phone tags voice frames.
+• Default VLAN (2.1.b): VLAN 1 holds all ports by default and cannot be deleted or renamed. Best practice: move unused ports into an unused VLAN and shut them down, and keep management traffic off VLAN 1.
+• Inter-VLAN connectivity (2.1.c): VLANs need a Layer 3 device. Router-on-a-stick uses a trunk to the router and subinterfaces (interface g0/0.10, encapsulation dot1q 10, ip address 192.168.10.1 255.255.255.0). A Layer 3 switch uses SVIs (interface vlan 10, ip address ..., no shutdown) with ip routing. Each VLAN’s gateway is its subinterface or SVI.
+• Commands: show vlan brief, show interfaces g0/1 switchport, show interfaces trunk, show ip interface brief.
+• Traps: an SVI stays down unless the VLAN exists and at least one port in it is up; two VLANs cannot talk without Layer 3; hosts need the right VLAN and gateway.
+2.2 Interswitch connectivity
+• Trunk ports (2.2.a): carry many VLANs between switches (or to a router, AP or server). Configure switchport mode trunk (some older platforms first need switchport trunk encapsulation dot1q). Limit VLANs with switchport trunk allowed vlan 10,20,30 and add one with switchport trunk allowed vlan add 40.
+• DTP: Dynamic Trunking Protocol can negotiate trunks (dynamic auto, dynamic desirable). Best practice is to set the mode statically and use switchport nonegotiate.
+• 802.1Q (2.2.b): the industry standard. It inserts a 4-byte tag after the source MAC: TPID 0x8100, a 3-bit priority, a 1-bit DEI and a 12-bit VLAN ID. ISL was Cisco’s older, obsolete alternative.
+• Native VLAN (2.2.c): frames in the native VLAN cross the trunk untagged. The default is VLAN 1. It must match on both ends, otherwise CDP reports a native VLAN mismatch and traffic can leak between VLANs. Set it with switchport trunk native vlan 99.
+• Security link: VLAN hopping by double tagging is blocked by using a dedicated unused native VLAN, disabling DTP and shutting unused ports.
+• Verification: show interfaces trunk shows port, mode, encapsulation, status, native VLAN, VLANs allowed, VLANs allowed and active, and VLANs forwarding under spanning tree.
+• Troubleshooting: VLAN missing from the allowed list, native VLAN mismatch, one end access and the other trunk, VLAN not created on both switches.
+• Traps: switchport trunk allowed vlan replaces the whole list unless you use add; the native VLAN is the untagged one.
+2.3 Layer 2 discovery protocols (CDP and LLDP)
+• CDP: Cisco-proprietary, Layer 2, on by default. It sends advertisements every 60 seconds with a 180-second holdtime to multicast 01:00:0C:CC:CC:CC. Neighbors learn device ID, local and remote port, platform, capabilities and management IP.
+• LLDP: IEEE 802.1AB, vendor-neutral, off by default on Cisco IOS. Default timer 30 seconds and holdtime 120 seconds. LLDP-MED adds data for IP phones (voice VLAN, power).
+• Use cases: map the real topology, verify cabling against the diagram, find a neighbor’s model and management IP, troubleshoot mismatches such as native VLAN or duplex.
+• Configuration: globally cdp run or no cdp run, per interface no cdp enable; lldp run, per interface lldp transmit and lldp receive; tune with cdp timer and cdp holdtime.
+• Commands: show cdp neighbors, show cdp neighbors detail, show cdp interface, show lldp neighbors, show lldp neighbors detail.
+• Security: disable both on untrusted ports because they leak device and IP details.
+• Traps: CDP is on by default and LLDP is off; CDP only reaches directly connected Cisco devices, while LLDP works with other vendors.
+2.4 EtherChannel (Layer 2 and Layer 3) with LACP
+• Purpose: bundle several physical links into one logical Port-channel for more bandwidth and redundancy. Spanning tree treats the bundle as one link, so no member is blocked.
+• Load balancing: traffic is spread per flow using a hash of source and destination MAC or IP (port-channel load-balance), so a single flow never exceeds one link’s speed.
+• Protocols: LACP (IEEE 802.3ad, open standard) with modes active and passive; PAgP (Cisco) with modes desirable and auto; static on (no negotiation). Pairs that work: active–active, active–passive, desirable–desirable, desirable–auto, on–on. Passive–passive and auto–auto never form a channel, and LACP cannot be mixed with PAgP.
+• Layer 2 configuration: interface range g0/1-2, channel-group 1 mode active, then configure interface port-channel 1 (for example switchport mode trunk).
+• Layer 3 configuration: no switchport and an IP address on the port-channel interface, with the member ports also set to no switchport.
+• Requirements: members must match in speed, duplex, VLAN or trunk settings and native VLAN. Up to 8 active links per bundle (LACP also allows 8 standby).
+• Verification: show etherchannel summary (flags: SU = Layer 2 in use, P = bundled in port-channel, D = down, I = stand-alone, s = suspended), show etherchannel port-channel, show interfaces port-channel 1, show spanning-tree.
+• Troubleshooting: a member whose settings differ is suspended; mismatched modes mean no bundle; once bundled, configure the port-channel interface rather than the individual members.
+• Traps: passive–passive does not work; settings must match on every member.
+2.5 Rapid PVST+ spanning tree
+• Why STP: redundant Layer 2 paths create loops, causing broadcast storms and MAC table instability. STP blocks selected ports to keep a loop-free tree. Classic 802.1D converges in 30–50 seconds; PVST+ runs one tree per VLAN; Rapid PVST+ (802.1w per VLAN) converges in seconds. Enable it with spanning-tree mode rapid-pvst.
+• Root bridge election (2.5.a): each switch has a bridge ID made of priority (default 32768, in steps of 4096), the VLAN ID (system ID extension) and the MAC address. The lowest wins. Set it with spanning-tree vlan 10 priority 4096 or spanning-tree vlan 10 root primary (and root secondary for the backup).
+• Port roles (2.5.a): root port (best path to the root, one per non-root switch), designated port (best path onto a segment, one per segment), alternate port (backup path to the root, discarding) and backup port (redundant link on the same segment). Every port on the root bridge is designated.
+• Path cost and tie-breakers: short-method costs are 10 Gbps = 2, 1 Gbps = 4, 100 Mbps = 19, 10 Mbps = 100. Tie-breakers in order: lowest root path cost, lowest sender bridge ID, lowest sender port ID.
+• Port states (2.5.b): Rapid PVST+ uses discarding, learning and forwarding. Classic STP uses blocking, listening, learning, forwarding (and disabled), with hello 2 s, forward delay 15 s and max age 20 s.
+• PortFast (2.5.c): moves an edge (host-facing) port straight to forwarding: spanning-tree portfast or spanning-tree portfast default. Never use it on links to other switches.
+• BPDU guard (2.5.d): err-disables a PortFast port that receives a BPDU: spanning-tree bpduguard enable.
+• BPDU filter (2.5.d): stops sending and receiving BPDUs on a port; risky because it can hide loops.
+• Root guard (2.5.d): stops a port from ever becoming a root port, protecting the intended root: spanning-tree guard root. The port goes root-inconsistent if a superior BPDU arrives.
+• Loop guard (2.5.d): stops alternate or root ports from becoming designated if BPDUs stop arriving, for example on a unidirectional link: spanning-tree guard loop.
+• Commands: show spanning-tree, show spanning-tree vlan 10, show spanning-tree summary, show spanning-tree interface g0/1 detail.
+• Traps: priority values must be multiples of 4096; lowest priority wins, then lowest MAC; PortFast does not turn STP off, which is why BPDU guard goes with it.
+2.6 Cisco wireless architectures and AP modes
+• Autonomous AP: standalone, configured individually, no controller. Fine for a very small site; hard to scale.
+• Cloud-based (for example Cisco Meraki): APs managed from a cloud dashboard with no on-premises controller.
+• Split-MAC with a controller: lightweight APs handle real-time radio work and the WLC handles management functions such as security policy, RF management and roaming. They communicate over CAPWAP tunnels (control UDP 5246, data UDP 5247).
+• Deployment models: centralized (dedicated on-premises WLC), converged or embedded (controller function on a switch), and cloud-based.
+• AP modes: local (default; tunnels client traffic to the WLC), FlexConnect (can switch client traffic locally and keeps working if the WLC is lost, used at branches), monitor (scans for threats, serves no clients), rogue detector, sniffer (captures traffic for analysis) and bridge or mesh (wireless backhaul between APs).
+• Roaming: clients move between APs in the same ESS, and the controllers keep the session without full re-authentication.
+• Traps: local mode tunnels all client traffic to the WLC while FlexConnect can switch it at the branch; a monitor-mode AP does not serve clients.
+2.7 Physical infrastructure connections of WLAN components
+• Lightweight AP: connects to a switch access port in the AP management VLAN (local mode) and is usually powered by PoE. FlexConnect APs use trunk ports so they can map several WLANs to VLANs locally.
+• WLC: connects to the switch with trunk ports carrying the management VLAN and the client VLANs. WLC port types are the service port (out-of-band management), distribution system ports (data), console and a redundancy port.
+• Link aggregation: WLC ports can be bundled into a LAG; on AireOS controllers the LAG pairs with a switch EtherChannel in mode on, not LACP or PAgP.
+• WLAN to VLAN mapping: each WLAN maps to a WLC interface tied to a VLAN, so different SSIDs land in different VLANs.
+• How an AP finds a WLC: DHCP option 43, a DNS lookup of CISCO-CAPWAP-CONTROLLER, or a broadcast on the AP’s VLAN; it then joins and downloads its image and configuration.
+• Traps: a lightweight AP in local mode needs only an access port; the WLC side is the trunk.
+2.8 AP and WLC management access
+• Methods: console (physical, out of band), Telnet (TCP 23, clear text), SSH (TCP 22, encrypted), HTTP (clear-text GUI), HTTPS (encrypted GUI), and central login through TACACS+ or RADIUS.
+• Best practice: disable Telnet and HTTP, use SSH and HTTPS, authenticate admins centrally, and restrict management to a management network or ACL.
+• TACACS+ versus RADIUS: TACACS+ is Cisco’s, uses TCP 49, encrypts the whole payload and separates authentication, authorization and accounting (so it can authorize per command). RADIUS is an open standard on UDP 1812/1813, encrypts only the password, and combines authentication and authorization.
+• Out of band versus in band: the WLC service port is out of band; management traffic crossing the normal network is in band.
+• Traps: TACACS+ is TCP and RADIUS is UDP; HTTP and Telnet send credentials in clear text.
+2.9 Interpreting the wireless LAN GUI configuration
+• Creating a WLAN: on a Cisco WLC, go to WLANs, Create New, choose type WLAN, then enter profile name, SSID and ID. Set status to Enabled and pick the interface (which maps to a VLAN).
+• Security tabs: Layer 2 (WPA2 or WPA3, AES, PSK or 802.1X), Layer 3, and AAA servers for enterprise authentication.
+• QoS profiles: Platinum (voice), Gold (video), Silver (best effort, the default), Bronze (background). WMM marks wireless traffic.
+• Advanced settings: AAA override, DHCP required, client load balancing, band select (steers dual-band clients to 5 GHz), session timeout, client exclusion, peer-to-peer blocking and FlexConnect local switching.
+• Troubleshooting clients: check that the WLAN is enabled, the security type and passphrase match, the WLAN maps to a valid interface or VLAN, and the AP belongs to the right AP group.
+• Traps: the WLAN profile name and the SSID can differ; the interface mapping decides which VLAN and subnet the client lands in.
+Domain 3: IP Connectivity (25%)
+3.1 Components of the routing table
+• Reading a route (3.1.a–f): O 10.2.2.0/24 [110/20] via 10.1.1.2, 00:05:12, GigabitEthernet0/1 decodes as routing protocol code O (OSPF), prefix 10.2.2.0, mask /24, administrative distance 110, metric 20, next hop 10.1.1.2, age 5 minutes 12 seconds, exit interface Gi0/1.
+• Codes: C connected, L local (a /32 for the router’s own address), S static, S* candidate default, O OSPF, D EIGRP, R RIP, B BGP, i IS-IS. OSPF sub-codes: O IA inter-area, O E1 and E2 external.
+• Administrative distance (lower is more trusted): connected 0, static 1, eBGP 20, EIGRP internal 90, OSPF 110, IS-IS 115, RIP 120, EIGRP external 170, iBGP 200, unusable 255.
+• Metric: OSPF uses cost (reference bandwidth 100 Mbps by default, so cost = 100 divided by bandwidth in Mbps), RIP uses hop count (maximum 15), EIGRP uses a composite of bandwidth and delay.
+• Gateway of last resort (3.1.g): the default route, shown as Gateway of last resort is 192.0.2.1 to network 0.0.0.0.
+• Commands: show ip route, show ip route 10.2.2.5, show ip route ospf, show ip route static, show ipv6 route.
+• Traps: AD compares routing sources while metric compares paths within one protocol; connected and local routes both appear for each interface.
+3.2 How a router makes a forwarding decision
+• Longest prefix match (3.2.a): the router picks the route with the most specific match (longest mask) for the destination, regardless of AD or metric. For 10.1.1.9, a /24 beats a /16, which beats the /0 default.
+• Administrative distance (3.2.b): if two routing sources offer the same prefix and mask, the lower AD wins (OSPF 110 beats RIP 120).
+• Metric (3.2.c): if one protocol offers several paths to the same prefix, the lowest metric wins. Equal metrics share the load (equal-cost multipath; OSPF defaults to 4 paths).
+• Order to remember: longest prefix, then AD, then metric.
+• What happens to the packet: look up the destination, find the next hop, resolve its MAC with ARP, rewrite the Layer 2 header, decrement TTL and forward. Modern routers use CEF (a prebuilt forwarding table) instead of searching the routing table for every packet.
+• No match: with no default route the packet is dropped and the router returns an ICMP destination unreachable.
+• Traps: AD never overrides a longer prefix; a more specific route from a less trusted protocol still wins.
+3.3 IPv4 and IPv6 static routing
+• IPv4 syntax: ip route 10.2.2.0 255.255.255.0 10.1.1.2 (next hop), ip route 10.2.2.0 255.255.255.0 g0/1 (exit interface), or both (fully specified). A next-hop-only route needs a recursive lookup to reach the next hop.
+• IPv6 syntax: ipv6 route 2001:db8:2::/64 2001:db8:12::2 (needs ipv6 unicast-routing). A link-local next hop also needs the exit interface.
+• Default route (3.3.a): ip route 0.0.0.0 0.0.0.0 203.0.113.1 and ipv6 route ::/0 2001:db8:ffff::1.
+• Network route (3.3.b): a route to a whole subnet.
+• Host route (3.3.c): a /32 (255.255.255.255) or IPv6 /128 to one device.
+• Floating static (3.3.d): a static route with an AD higher than the primary route’s, used only as a backup. ip route 10.2.2.0 255.255.255.0 10.9.9.2 130 appears only when the OSPF route (110) disappears.
+• Verification: show ip route static, show ip route, ping, traceroute, show running-config | include ip route.
+• Troubleshooting: a missing return route on the far router, wrong next hop, next hop unreachable, route removed because the exit interface is down, wrong mask.
+• Traps: a floating static needs an AD above the dynamic protocol’s; ping needs routes in both directions.
+3.4 Single-area OSPFv2
+• Concepts: OSPF is a link-state protocol. Routers flood link-state advertisements, build the same link-state database and run the SPF (Dijkstra) algorithm to choose paths by cost. It runs on IP protocol 89 using multicast 224.0.0.5 (all OSPF routers) and 224.0.0.6 (DR and BDR). Hello 10 s and dead 40 s on broadcast and point-to-point links (30 s and 120 s on non-broadcast).
+• Neighbor adjacencies (3.4.a): states are Down, Init, 2-Way, ExStart, Exchange, Loading and Full. To become neighbors, routers need the same area, subnet and mask, hello and dead timers, authentication and stub settings, plus unique router IDs; for full adjacency the MTU should match. On broadcast networks, DROther routers stay at 2-Way with each other, which is normal.
+• Point-to-point (3.4.b): no DR or BDR is elected and the adjacency forms faster. Set it with ip ospf network point-to-point.
+• Broadcast and DR/BDR (3.4.c): on a multi-access segment, routers elect a DR and BDR to reduce adjacencies. The highest interface priority wins (default 1, 0 means never eligible), then the highest router ID. The election is not preemptive. Change priority with ip ospf priority.
+• Router ID (3.4.d): a manual router-id 1.1.1.1 wins, then the highest loopback IP, then the highest active physical interface IP. A change needs clear ip ospf process to take effect.
+• Configuration: router ospf 1, network 10.1.1.0 0.0.0.255 area 0 (wildcard mask) or per interface ip ospf 1 area 0; passive-interface g0/2; default-information originate; auto-cost reference-bandwidth 10000; ip ospf cost 10.
+• Verification: show ip ospf neighbor, show ip ospf interface brief, show ip protocols, show ip route ospf, show ip ospf database.
+• Troubleshooting stuck states: stuck in Init (one-way hellos, an ACL), stuck in 2-Way on a point-to-point link (network type mismatch), stuck in ExStart or Exchange (MTU mismatch), no neighbor at all (timers, area, mask, passive interface, authentication).
+• Traps: the process ID is locally significant and need not match; the network command uses wildcard masks; passive interfaces still advertise their network but form no adjacency.
+3.5 First hop redundancy protocols
+• The problem: hosts have one default gateway; if that router fails, they lose off-subnet access even when a second router exists.
+• The idea: two or more routers share a virtual IP address (and virtual MAC) that hosts use as their gateway; one router forwards and the others stand by.
+• HSRP (Cisco): Active and Standby routers, virtual MAC 0000.0C07.ACxx (version 1), default priority 100, hello 3 s, hold 10 s, preempt off by default. standby 1 ip 10.1.1.254, standby 1 priority 110, standby 1 preempt; verify with show standby brief.
+• VRRP (open standard): Master and Backup routers, virtual MAC 0000.5E00.01xx, default priority 100, preempt on by default, multicast 224.0.0.18.
+• GLBP (Cisco): load balances across several gateways using an active virtual gateway and active virtual forwarders.
+• Failover behavior: if the active or master router stops sending hellos, the standby takes over the virtual IP and MAC within seconds, and hosts notice nothing because their gateway address does not change.
+• Traps: hosts point to the virtual IP, not a real router IP; HSRP does not preempt unless configured; load sharing needs multiple groups or GLBP.
+Domain 4: IP Services (10%)
+4.3 The role of DHCP and DNS
+• DHCP (Dynamic Host Configuration Protocol): hands out an IP address, mask, default gateway, DNS servers and other options. Servers use UDP 67 and clients UDP 68.
+• DORA process: Discover (client broadcast), Offer, Request, Acknowledgment. The client then uses the address for the lease period.
+• Lease behavior: the client tries to renew at 50% of the lease (T1) and rebinds at 87.5% (T2). Scopes, exclusions and reservations control what the server gives out.
+• Why relay exists: DHCP discovery is a broadcast and routers do not forward broadcasts, so a relay agent passes it to a server on another subnet (see 4.6).
+• DNS (Domain Name System): translates names to IP addresses over UDP 53 (TCP 53 for large replies and zone transfers). A client asks a recursive resolver, which queries root, top-level and authoritative servers and caches the answer for its TTL.
+• Record types: A (name to IPv4), AAAA (name to IPv6), CNAME (alias), MX (mail server), NS (name server), PTR (IP to name, reverse lookup), TXT, SOA.
+• Router DNS settings: ip name-server 8.8.8.8, ip domain-lookup, ip domain-name example.com, ip host R2 10.1.1.2. A mistyped command on a router with lookup on stalls while the router tries to resolve it as a hostname; no ip domain-lookup stops that.
+• Traps: DHCP servers use port 67 and clients 68; a host that gets an address but cannot browse by name usually has a DNS problem, not a DHCP problem.
+4.6 DHCP client and relay
+• DHCP client on a router or switch interface: interface g0/1, ip address dhcp, no shutdown; show ip interface brief shows the address method as DHCP.
+• DHCP relay: put ip helper-address 10.10.10.5 on the interface that faces the clients, the one that receives the broadcast. The router converts the broadcast into a unicast to the server and fills in the giaddr field so the server knows which scope to use. The helper also forwards some other UDP services, such as TFTP and DNS, by default.
+• Router as a DHCP server (good to know): ip dhcp excluded-address 192.168.10.1 192.168.10.20, ip dhcp pool LAN10, network 192.168.10.0 255.255.255.0, default-router 192.168.10.1, dns-server 8.8.8.8, lease 7.
+• Verification: show ip dhcp binding, show ip dhcp pool, show ip dhcp server statistics, show running-config interface g0/0.
+• Troubleshooting: helper address on the wrong interface, server unreachable, pool exhausted, wrong default-router, DHCP snooping blocking offers, clients in a VLAN with no gateway.
+• Traps: ip helper-address goes on the client-facing interface, not the server-facing one; set exclusions before the pool hands those addresses out.
+4.1 Inside source NAT
+• Terms: inside local (the private address of an inside host), inside global (the public address it appears as), outside local and outside global (the remote host’s addresses). Types: static NAT (one to one), dynamic NAT (from a pool) and PAT (many to one using port numbers, also called NAT overload).
+• Mark the interfaces: ip nat inside on the LAN-facing interface and ip nat outside on the internet-facing one.
+• Static NAT: ip nat inside source static 192.168.1.10 203.0.113.10 publishes an inside server.
+• Dynamic NAT: access-list 1 permit 192.168.1.0 0.0.0.255, ip nat pool PUBLIC 203.0.113.10 203.0.113.20 netmask 255.255.255.0, ip nat inside source list 1 pool PUBLIC. When the pool runs out, new hosts are refused.
+• PAT: ip nat inside source list 1 interface g0/1 overload (or a pool with overload). Port numbers keep the many private hosts apart.
+• Verification: show ip nat translations, show ip nat statistics, clear ip nat translation *, debug ip nat (use with care).
+• Troubleshooting: inside and outside swapped, ACL not matching the right hosts, missing default route, pool overlap, forgetting overload.
+• Pros and cons: conserves public IPv4 addresses and hides internal addressing, but breaks end-to-end addressing, complicates some protocols and adds processing.
+• Traps: the NAT ACL picks which addresses to translate and is not a firewall rule; “inside local” is the private address.
+4.2 NTP
+• Why accurate time matters: log correlation, certificates, authentication and troubleshooting all depend on matching clocks.
+• How it works: NTP uses UDP 123. Stratum shows distance from a reference clock: stratum 0 is the clock itself, stratum 1 a server attached to it, and each hop adds one (up to 15; 16 means unsynchronized).
+• Client: ntp server 192.0.2.10. Server or master: ntp master 3 makes a device an authoritative source (use carefully).
+• Time settings: clock set 14:30:00 22 November 2026 (manual), clock timezone EAT 3, show clock detail.
+• Verification: show ntp status (look for “synchronized” and the stratum) and show ntp associations (an asterisk marks the chosen source).
+• Security: NTP authentication with ntp authenticate, ntp authentication-key and ntp trusted-key.
+• Traps: a lower stratum number is better; a device can take several minutes to synchronize.
+4.4 SNMP
+• Components: the manager (network management system), agents on the devices, and the MIB, a tree of OIDs describing device data such as interface counters and CPU.
+• Messages: Get, GetNext, GetBulk, Set, Response, and unsolicited Trap or Inform notifications. Managers poll on UDP 161; agents send traps to UDP 162.
+• Versions: v1 and v2c use community strings sent in clear text (read-only and read-write); v3 adds authentication and encryption with users and groups (noAuthNoPriv, authNoPriv, authPriv).
+• Basic configuration: snmp-server community READONLY ro, snmp-server host 10.1.1.50 version 2c READONLY, snmp-server enable traps. For SNMPv3: snmp-server group and snmp-server user.
+• Use cases: monitoring utilization, alerting on interface or device failure, trending.
+• Traps: polling uses 161 and traps use 162; v1 and v2c are not secure; a read-write community is a risk.
+4.5 Syslog
+• Purpose: records device events locally and sends them to a central server (UDP 514).
+• Severity levels: 0 Emergency, 1 Alert, 2 Critical, 3 Error, 4 Warning, 5 Notice, 6 Informational, 7 Debug. Setting a level includes everything more severe: logging trap warnings sends levels 0–4.
+• Message format: %LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to down is facility LINK, severity 3, mnemonic UPDOWN, then the description. service timestamps log datetime msec adds a timestamp.
+• Destinations: console (logging console warnings), buffer in RAM (logging buffered 16384 informational), terminal sessions (terminal monitor) and a server (logging host 10.1.1.50).
+• Facilities: the category of source. On the server side, the local0 to local7 facility values let admins sort logs.
+• Commands: show logging, logging source-interface loopback0.
+• Traps: a lower number is more severe; level 7 logs everything and can flood the console.
+4.8 SSH remote access
+• Why SSH: Telnet (TCP 23) sends everything in clear text; SSH (TCP 22) encrypts the session.
+• Prerequisites: a hostname, a domain name and RSA keys: hostname R1, ip domain-name example.com, crypto key generate rsa modulus 2048.
+• Configuration: username admin secret Str0ngPass!, ip ssh version 2, line vty 0 15, login local, transport input ssh, exec-timeout 5 0; optionally access-class 10 in to limit source addresses.
+• Verification: show ip ssh, show ssh, show users. Connect with ssh -l admin 10.1.1.1.
+• Traps: without a domain name and a hostname the key generation command fails; transport input ssh blocks Telnet; login local is required to use local usernames.
+4.9 TFTP and FTP
+• TFTP: UDP 69, simple and unauthenticated, small blocks, no security. Common in labs for IOS images and configs: copy running-config tftp:, copy tftp: flash:.
+• FTP: TCP with control on port 21 and data on port 20 (active mode); supports usernames but sends credentials in clear text. ip ftp username admin, ip ftp password ..., copy ftp: flash:.
+• IOS file system: show flash:, dir flash:, verify /md5 flash:image.bin, boot system.
+• Comparison: TFTP is the simplest and least secure; FTP adds authentication and the reliability of TCP but is still unencrypted. Secure alternatives are SFTP and SCP (covered in v2.0).
+• Traps: TFTP uses UDP while FTP uses TCP; verify file integrity (MD5 or SHA) after a transfer.
+4.7 Quality of service (QoS)
+• Why QoS: voice and video are sensitive to delay, jitter and loss. Common voice targets are one-way delay under 150 ms, jitter under 30 ms and loss under 1%.
+• Classification and marking: classify traffic (by ACL, protocol or port) and mark it. At Layer 3: DSCP (6 bits) or IP precedence (3 bits). At Layer 2: CoS (3 bits in the 802.1Q tag). Key DSCP values: EF 46 (voice), AF41 34 (interactive video), default 0. Trust markings only from trusted devices; that edge is the trust boundary, often the IP phone or access switch.
+• Queuing: FIFO, weighted fair queuing, CBWFQ (class-based bandwidth guarantees) and LLQ (a strict priority queue for voice).
+• Congestion management and avoidance: tail drop discards everything once a queue is full; WRED drops selected packets early to avoid global synchronization.
+• Policing versus shaping: policing drops or re-marks traffic above a rate, does not buffer, and works inbound or outbound. Shaping buffers excess traffic and sends it later, smoothing the flow; it works outbound only and adds delay.
+• Per-hop behavior (PHB): each router treats packets according to their marking, with no end-to-end reservation (DiffServ).
+• Traps: shaping buffers while policing drops; EF is for voice; markings mean little if the trust boundary is wrong.
+Domain 5: Security Fundamentals (15%)
+5.1 Key security concepts
+• Vocabulary: an asset is what you protect; a threat is something that could cause harm; a vulnerability is a weakness; an exploit is a way to take advantage of it; risk is likelihood combined with impact; mitigation reduces risk.
+• CIA triad: confidentiality (only authorized access), integrity (data not altered), availability (systems usable when needed).
+• Common attacks: reconnaissance, denial of service and DDoS, spoofing, man-in-the-middle, reflection and amplification, password attacks (brute force, dictionary), malware (virus, worm, trojan, ransomware), social engineering (phishing, spear phishing, vishing, tailgating), zero-day exploits and insider threats.
+• Mitigation techniques: patching, firewalls and IPS, endpoint protection, segmentation, least privilege, strong authentication, encryption, backups and monitoring.
+• Defense in depth: layers of controls so one failure does not expose everything.
+• Traps: a vulnerability is not an attack; an exploit takes advantage of a vulnerability; DoS targets availability.
+5.2 Security program elements
+• User awareness: continuing, general communication such as posters, emails and phishing simulations.
+• Training: formal, role-based instruction, for example on handling data or on incident procedures.
+• Physical access control: badges, locks, biometrics, mantraps, cameras, locked racks and wiring closets, visitor logs.
+• Supporting policies: acceptable use, password, incident response and data classification policies.
+• Traps: awareness is broad and ongoing while training is structured and specific; physical security counts as security.
+5.3 Device access control with local passwords
+• Where passwords go: console (line console 0), remote access (line vty 0 15) and privileged mode (enable secret).
+• Commands: enable secret Str0ngPass!, line console 0, password cisco, login; for usernames: username admin secret Str0ngPass! then login local. exec-timeout 5 0 logs out idle sessions, login block-for 120 attempts 3 within 60 slows brute force, and banner motd #Authorized use only# shows a warning.
+• Password storage types: type 0 is clear text; type 7 is weak, reversible obfuscation (what service password-encryption creates); type 5 is an MD5 hash; types 8 (PBKDF2-SHA-256) and 9 (scrypt) are stronger. enable secret and username ... secret store hashes.
+• Verification: show running-config | section line, show running-config | include enable.
+• Traps: enable secret overrides enable password; type 7 can be reversed in seconds; login checks the line password while login local checks the local username database.
+5.4 Password policy elements
+• Management: use unique passwords, a password manager, lockout after repeated failures, and change passwords after a suspected compromise. Current guidance favors length and screening against known-breached lists over forced frequent rotation.
+• Complexity: minimum length, a mix of character types, no dictionary words or personal information. Passphrases are long and memorable.
+• Alternatives to passwords: multifactor authentication (something you know, have and are), digital certificates (PKI, X.509) and biometrics (fingerprint, face).
+• Related: single sign-on, account lockout, password expiry and secure recovery processes.
+• Traps: MFA needs two different factors, not two passwords; biometrics are a factor, not a policy.
+5.8 Authentication, authorization and accounting (AAA)
+• The three As: authentication proves who you are, authorization decides what you may do, and accounting records what you did (logins, commands, session times).
+• Local versus server-based: local AAA uses the device’s own username database (fine for small networks, hard to scale). Server-based AAA centralizes users on a RADIUS or TACACS+ server such as Cisco ISE.
+• RADIUS: open standard, UDP 1812 (authentication and authorization) and 1813 (accounting), encrypts only the password and combines authentication with authorization. Common for network access such as Wi-Fi, VPN and 802.1X.
+• TACACS+: Cisco-developed, TCP 49, encrypts the entire payload, separates the three functions and supports per-command authorization. Common for device administration.
+• 802.1X: port-based network access control with a supplicant (the client), an authenticator (the switch or AP) and an authentication server (RADIUS).
+• Configuration idea: aaa new-model, then aaa authentication login default group tacacs+ local (try the server, fall back to local accounts), plus authorization and accounting methods. Always keep a local fallback account.
+• Traps: TACACS+ is TCP and RADIUS is UDP; authentication is not authorization; test before you log out, or you can lock yourself out.
+5.5 IPsec remote-access and site-to-site VPNs
+• Site-to-site VPN: two gateways build a tunnel between networks and the hosts behind them send traffic normally. It is always on and transparent to users.
+• Remote-access VPN: one client builds a tunnel to a gateway using client software (an IPsec/IKEv2 or SSL/TLS VPN client such as Cisco Secure Client).
+• What IPsec provides: confidentiality (encryption such as AES), integrity (hashing such as SHA), authentication (pre-shared key or certificates) and anti-replay protection.
+• Protocols: ESP (IP protocol 50) encrypts and authenticates; AH (protocol 51) authenticates only and does not encrypt. IKE negotiates and manages keys, and Diffie-Hellman creates the shared secret. IKE phase 1 builds a secure management channel and phase 2 builds the IPsec tunnel for data (IKEv2 streamlines this).
+• Modes: tunnel mode encrypts the whole original packet and adds a new IP header (used by site-to-site VPNs); transport mode protects only the payload and keeps the original header.
+• Related ideas: GRE tunnels carry routing protocols but do not encrypt, so GRE over IPsec combines both; DMVPN builds dynamic spoke-to-spoke tunnels.
+• Traps: AH does not encrypt; tunnel mode adds a new header; the CCNA tests concepts, not full VPN configuration.
+5.6 Access control lists
+• What they do: ACLs permit or deny packets based on header fields. They also select traffic for NAT, QoS and route filtering. They are applied inbound or outbound on an interface (ip access-group).
+• Processing rules: top down, first match wins, and an implicit deny any sits at the end. Every ACL needs at least one permit or it blocks everything.
+• Wildcard masks: the inverse of a subnet mask; 0 bits must match and 1 bits are ignored. 0.0.0.255 matches a /24, 0.0.0.0 matches one host (host 10.1.1.1), and any equals 0.0.0.0 255.255.255.255.
+• Standard ACLs: numbered 1–99 and 1300–1999, matching source address only. Place them close to the destination. access-list 10 permit 192.168.1.0 0.0.0.255; apply with ip access-group 10 in. For vty lines use access-class 10 in.
+• Extended ACLs: numbered 100–199 and 2000–2699, matching protocol, source, destination and ports. Place them close to the source. access-list 110 permit tcp 192.168.1.0 0.0.0.255 host 10.2.2.10 eq 80.
+• Named ACLs: ip access-list extended WEB-ONLY, then lines such as 10 permit tcp any host 10.2.2.10 eq 443. Sequence numbers let you insert or remove lines (no 20) without rebuilding the list, and remark documents the intent.
+• IPv6 ACLs: always named (ipv6 access-list) and applied with ipv6 traffic-filter. Implicit permits for neighbor discovery sit before the implicit deny.
+• Verification: show access-lists, show ip access-lists, show ip interface g0/1 (shows which ACL is applied and in which direction), and the hit counters.
+• Troubleshooting: wrong direction or interface, lines in the wrong order, a missing permit ip any any at the end, a wildcard mask typo.
+• Traps: standard ACLs filter on source only; an ACL that is created but never applied does nothing; new lines in a numbered ACL go at the end.
+5.7 Layer 2 security features
+• Port security: limits which MAC addresses can use a switch port, which must be an access port first. switchport port-security, switchport port-security maximum 2, switchport port-security mac-address sticky, and switchport port-security violation shutdown|restrict|protect. The default maximum is 1 and the default violation action is shutdown (the port goes err-disabled; recover with shutdown then no shutdown). Restrict drops and logs; protect drops silently.
+• DHCP snooping: classes ports as trusted (uplinks, the DHCP server) or untrusted (hosts). It blocks DHCP server messages from untrusted ports (stopping rogue DHCP servers), builds a binding table of MAC, IP, VLAN and port, and can rate-limit requests. ip dhcp snooping, ip dhcp snooping vlan 10, ip dhcp snooping trust on trusted ports, ip dhcp snooping limit rate 15 on untrusted ones.
+• Dynamic ARP inspection (DAI): checks ARP packets against the DHCP snooping binding table and drops forged ones, defeating ARP spoofing and poisoning. ip arp inspection vlan 10, ip arp inspection trust on trusted ports.
+• Other protections: disable unused ports, move them to an unused VLAN, set a non-default native VLAN, and use BPDU guard and storm control.
+• Verification: show port-security, show port-security interface g0/1, show ip dhcp snooping binding, show ip arp inspection.
+• Traps: DAI depends on the snooping binding table, so configure snooping first; uplinks must be trusted or the network breaks; sticky addresses survive a reload only if you save the config.
+5.9 Wireless security protocols
+• WPA: an interim fix for WEP using TKIP; deprecated.
+• WPA2: uses AES-CCMP for encryption. Personal mode uses a pre-shared key (PSK); Enterprise mode uses 802.1X with a RADIUS server and EAP so each user authenticates individually.
+• WPA3: replaces the PSK handshake with SAE (Simultaneous Authentication of Equals), which resists offline dictionary attacks and provides forward secrecy. It requires protected management frames and offers a 192-bit Enterprise mode and OWE for encrypted open networks.
+• Not security: WEP is broken and should never be used; hiding the SSID or filtering MAC addresses is not real protection.
+• Traps: WPA2 Personal is PSK and WPA2 Enterprise is 802.1X; WPA3-Personal uses SAE.
+5.10 Configure a WLAN in the GUI with WPA2 PSK
+• Steps on a Cisco WLC GUI: WLANs, Create New, Go; enter the profile name, SSID and ID. On the General tab set status to Enabled and choose the interface (VLAN). On the Security tab, Layer 2, choose WPA+WPA2, enable the WPA2 policy with AES, set authentication key management to PSK and enter the passphrase (ASCII, 8–63 characters). Apply and save.
+• Verify: connect a client with the passphrase, then check Monitor, Clients for its IP address, VLAN and status.
+• Troubleshooting: wrong passphrase, WLAN left disabled, WLAN not mapped to a valid interface, AP group missing the WLAN, TKIP chosen when the client expects AES.
+• Traps: WPA2 PSK passphrases are 8–63 characters; the WLAN must be applied to the AP group the APs belong to.
+Domain 6: Automation and Programmability (10%)
+6.1 How automation impacts network management
+• Benefits: speed, consistency, fewer manual errors, easier scaling, repeatable changes and faster recovery.
+• What gets automated: configuration deployment and backups, compliance checks, device onboarding (zero-touch provisioning), monitoring and remediation.
+• Concepts: configuration drift (devices slowly diverging from the standard), a single source of truth, intent-based networking (state the outcome and let the system implement it), and version control for configs.
+• Risks: a bad script scales a mistake across the whole network, so test first and keep rollbacks.
+• Traps: automation does not remove the need to understand the network; automation tools work through APIs, not only the CLI.
+6.2 Traditional versus controller-based networking
+• Traditional: each device has its own control plane and is configured one by one through the CLI, SNMP or a management tool. Changes are slow and inconsistent.
+• Controller-based: a central controller holds policy and a network-wide view, pushes configuration and exposes APIs and a GUI. Examples: Cisco Catalyst Center, SD-WAN controllers, wireless controllers.
+• Comparison: controller-based gives consistent policy and automation but adds a dependency on the controller and its security; the data plane keeps forwarding if the controller fails.
+• Traps: the controller manages devices and does not carry user traffic.
+6.3 Controller-based, software-defined architecture
+• Planes (6.3.a): the data plane forwards traffic, the control plane decides where traffic goes (routing and switching decisions), and the management plane configures and monitors. SDN separates the control plane from the data plane.
+• Underlay, overlay, fabric: the underlay is the physical network and its routing (for example OSPF or IS-IS); the overlay is a virtual network built on top using tunnels (VXLAN, IPsec); the fabric is the combination that behaves as one system.
+• APIs (6.3.b): northbound APIs connect applications and orchestration to the controller (usually REST); southbound APIs connect the controller to devices (NETCONF, RESTCONF, SSH and CLI, SNMP, OpenFlow, gRPC).
+• Cisco examples: Catalyst Center with SD-Access (VXLAN data plane, LISP, TrustSec policy), SD-WAN, and Cisco ISE for identity.
+• Traps: northbound goes up toward applications and southbound goes down toward devices; the overlay is virtual and the underlay is physical.
+6.4 AI and machine learning in network operations
+• Generative AI: creates new content from prompts. Network uses: summarizing alerts, drafting configurations or documentation, answering natural-language questions about the network.
+• Predictive AI and machine learning: models trained on historical and live telemetry spot anomalies, forecast failures and capacity needs, and suggest optimizations.
+• ML basics: supervised learning (labeled data), unsupervised learning (finds patterns on its own), and why data quality matters.
+• Benefits: faster troubleshooting, less alert noise, proactive maintenance.
+• Limits and risks: wrong or invented answers, bias in training data, data privacy, and over-trusting output. Engineers verify AI suggestions before acting.
+• Traps: generative creates and predictive forecasts; AI output is advice to verify, not a guaranteed fix.
+6.5 REST APIs
+• Principles: client-server, stateless (each request carries everything the server needs), resources identified by URIs, standard HTTP methods.
+• CRUD to HTTP verbs: Create is POST, Read is GET, Update is PUT or PATCH, Delete is DELETE.
+• Status codes: 200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 500 Internal Server Error.
+• Authentication types: basic (username and password), API key, bearer token and OAuth tokens, always over HTTPS.
+• Data encoding: JSON is the most common, then XML and YAML. A header such as Content-Type: application/json says how the body is encoded.
+• URI structure: protocol, host, resource path and optional query, for example https://controller.example.com/api/v1/devices?type=switch.
+• Related: RESTCONF exposes YANG-modeled device data over REST; NETCONF uses XML over SSH.
+• Traps: PUT replaces a resource while PATCH changes part of it; 401 means not authenticated and 403 means not allowed.
+6.6 Configuration management with Ansible and Terraform
+• Ansible: agentless (connects over SSH or APIs), push model, playbooks written in YAML, an inventory of devices, and modules that do the work. Tasks are meant to be idempotent, so repeated runs give the same result. Common for configuring devices.
+• Terraform: HashiCorp’s infrastructure-as-code tool. Declarative HCL files describe the desired infrastructure, providers talk to platforms (cloud, network), it keeps a state file and works in a plan then apply cycle. Common for provisioning infrastructure.
+• Other tools: Puppet and Chef use agents and a pull model with their own languages.
+• Benefits: consistency, repeatability, version control, fewer manual mistakes.
+• Traps: Ansible is agentless and push; Puppet and Chef are agent-based and pull; Terraform declares the end state while a script lists steps.
+6.7 Reading JSON
+• Building blocks: data is key-value pairs inside curly braces {}; arrays are ordered lists inside square brackets []. Keys are strings in double quotes. Values can be strings, numbers, true or false, null, objects or arrays.
+• Example: {"interface": "GigabitEthernet0/1", "enabled": true, "ipv4": [{"address": "10.1.1.1", "mask": "255.255.255.0"}]} reads as an object with a name, an on/off flag and a list holding one address and mask.
+• Reading skill: follow the nesting, spot where each object or array opens and closes, and pick out a value by walking the keys (the first address in the list above is ipv4[0].address).
+• Validity rules: double quotes only, commas between items, no trailing comma, matching braces.
+• Compared with others: XML uses tags, YAML uses indentation, and JSON is compact and the REST default.
+• Traps: square brackets mean a list and curly braces mean an object; a missing comma or quote makes JSON invalid.
+Part B: CCNA v2.0 (exam from February 3, 2027)
+v2.0 has five domains: 1 Network Infrastructure and Connectivity (25%), 2 Switching and Network Access (25%), 3 IP Routing (20%), 4 Network Services and Security (20%), 5 AI, and Network Operations and Management (10%). Compared with v1.1 it moves from describing to troubleshooting, and it adds AI. Where a topic is marked ↻, the core notes are in Part A and you only need the v2.0 differences listed here, so a learner who has already read Part A treats it as revision. Topics with no ↻ are new and need the full notes. Study order inside each domain follows prerequisites.
+v2.0 Domain 1: Network Infrastructure and Connectivity (25%)
+v2.0 1.1 Diagnose interface and cable issues
+• ↻ Revise first: Part A 1.3 (cabling types) and 1.4 (interface and cable issues).
+• Diagnosing, not just describing: start at Layer 1 with link lights and show interfaces status, then read the counters. The causes to separate are collisions, CRC and input errors, duplex and speed mismatches, cable distance, optical signal levels, wrong pinouts and wrong cable types.
+• Distance: copper is limited to 100 m; fiber limits depend on fiber type and optics. Going past them gives errors or no link.
+• Signal levels: optical transceivers report transmit and receive power in dBm (show interfaces transceiver detail). Receive power that is too low points to a dirty connector, a bad patch cord or too much distance; too high can overload the receiver.
+• Pinouts: T568A and T568B wiring, straight-through versus crossover, and console rollover cables. Split pairs or a wrong pinout cause errors or no link even though the cable looks fine.
+• Cable types: UTP categories (Cat5e, Cat6, Cat6a), single-mode versus multimode fiber, and matching them to the transceiver.
+• Method: check the physical layer, then status, then counters, then configuration; swap in a known-good cable; compare both ends; clear counters and watch whether errors keep rising.
+• Tools: cable tester, optical power meter, show interfaces, show interfaces counters errors, show interfaces transceiver detail.
+• Traps: an interface can be up/up with a duplex mismatch; error counters are cumulative, so clear them before judging.
+v2.0 1.3 Troubleshoot IPv4 addressing and subnetting
+• ↻ Revise first: Part A 1.6 (IPv4 addressing and subnetting) and 1.7 (private addressing).
+• Symptom to cause: cannot reach other subnets means a wrong gateway or mask; intermittent connectivity means a duplicate IP; a 169.254.x.x address means DHCP failed; hosts on the same wire cannot talk because a mask error put them in different subnets; a host configured with its subnet’s network or broadcast address.
+• Method: read the host’s IP, mask and gateway; work out the subnet range; ping the host itself, the gateway, then a remote address; check the router interface (show ip interface brief, show running-config interface); look for overlapping subnets elsewhere in the network; check the ARP table.
+• Public and private: private addresses need NAT to reach the internet. If you see a private source address on the internet side, NAT is missing or misapplied.
+• Traps: a /23 versus /24 mismatch between two hosts looks like a routing fault; always calculate the range instead of guessing.
+v2.0 1.4 Troubleshoot IPv6 addressing and prefix sizing
+• ↻ Revise first: Part A 1.8 (IPv6 addressing) and 1.9 (address types, modified EUI-64).
+• Prefix sizing: /64 for LAN subnets (SLAAC requires it), /127 or /64 on point-to-point links, /128 for loopbacks, /48 or /56 per site.
+• Common faults: ipv6 unicast-routing missing (no routing, no RAs); wrong prefix length; duplicate address detection failing; a link-local next hop without an exit interface; the wrong default gateway (hosts learn it from the RA’s source link-local address); an ACL blocking ICMPv6, which breaks neighbor discovery.
+• Commands: show ipv6 interface brief, show ipv6 interface g0/0, show ipv6 neighbors, show ipv6 route, ping, traceroute.
+• Host checks: Windows ipconfig and netsh interface ipv6 show neighbors; Linux ip -6 addr and ip -6 route.
+• Traps: ICMPv6 must be permitted; a LAN using SLAAC must stay a /64.
+v2.0 1.5 Wireless principles
+• ↻ Revise first: Part A 1.11 (wireless principles) and 5.9 (wireless security protocols).
+• Band and channel selection: use 1, 6 and 11 in 2.4 GHz; in 5 GHz use wider channels carefully, remembering DFS channels can move if radar is detected; 6 GHz is cleaner but needs newer clients. Avoid co-channel overlap between neighboring APs. Band steering nudges capable clients to 5 GHz.
+• RF characteristics: signal strength (RSSI in dBm), SNR, attenuation, multipath and noise. A common design target for voice and video is about −67 dBm or better with a healthy SNR.
+• Security protocols: WPA2 and WPA3 in Personal and Enterprise forms; choose WPA3 where clients support it and be aware of mixed-mode transitions.
+• Interference sources: microwave ovens, Bluetooth, cordless phones, neighboring Wi-Fi networks and radar. Spectrum analysis tools show non-Wi-Fi interference.
+• Traps: more transmit power is not always better because clients cannot answer as loudly; 2.4 GHz is the most crowded band.
+v2.0 1.7 Troubleshoot DHCPv4 client, server and relay
+• ↻ Revise first: Part A 4.3 (DHCP and DNS roles) and 4.6 (DHCP client and relay).
+• Client side: symptoms include a 169.254.x.x address, ipconfig /renew failing, a client in the wrong VLAN, or DHCP snooping dropping offers.
+• Server side on IOS: the pool’s network and mask match the clients; exclusions do not remove needed addresses; the pool is not exhausted; conflicts are logged (ip dhcp conflict logging, show ip dhcp conflict); default-router and dns-server are correct.
+• Relay: ip helper-address on the client-facing interface, a route to the server, no ACL or firewall blocking UDP 67 and 68, and a pool that matches the relay interface’s subnet (the giaddr selects the pool).
+• Commands: show ip dhcp binding, show ip dhcp pool, show ip dhcp server statistics, show ip dhcp conflict, show ip interface g0/0 (to see the helper address), debug ip dhcp server events (use carefully).
+• Method: test whether the client reaches the server inside one VLAN first, then check that the Discover leaves the VLAN, the server replies, and the relay forwards the reply.
+• Traps: a relayed request is matched to a pool by the relay interface’s subnet; a pool for the wrong subnet will never serve it.
+v2.0 1.6 Troubleshoot client connectivity on Windows, macOS and Linux
+• ↻ Revise first: Part A 1.10 (verifying IP parameters on client operating systems).
+• Wired clients: link light, correct VLAN or switch port, IP, mask, gateway and DNS. Tools per OS: ipconfig or ip or ifconfig, ping, tracert or traceroute, nslookup or dig, arp -a.
+• Wireless clients: SSID or security type mismatch, wrong passphrase, weak signal or wrong band, channel congestion, MAC filtering, DHCP exhaustion in the WLAN’s VLAN, roaming problems. Client-side diagnostics: Windows netsh wlan show interfaces, Linux iw dev wlan0 link and nmcli dev wifi list, and the Wireless Diagnostics tool on macOS.
+• Wireless security parameters on the client: security mode, EAP method and certificate for Enterprise networks, and the passphrase for Personal networks.
+• Method: link, then IP configuration, then gateway, then a remote IP, then a DNS name; the first step that fails shows the layer to investigate.
+• Traps: a client that connects but has no internet may have an IP or DNS problem rather than a Wi-Fi problem; a wrong security type blocks association entirely.
+v2.0 1.2 Hypervisors, virtual machines and containers
+• ↻ Revise first: Part A 1.12. VRFs are not named in the v2.0 list, so treat them as background.
+• What to know: Type 1 versus Type 2 hypervisors; what a VM contains (vCPU, vRAM, virtual NIC, virtual disk); how virtual switches connect VMs and map to VLANs through trunks to the physical switch; how containers share the host kernel, run from images and are managed by orchestrators.
+• Networking impact: a virtualization host’s uplink is often a trunk or an LACP bundle, VM MAC addresses move between hosts, and a VM on the wrong port group or VLAN looks like a network fault.
+• Traps: containers are not VMs; the physical switch port for a host usually needs a trunk, not an access port.
+v2.0 Domain 2: Switching and Network Access (25%)
+Prerequisite: how switches work
+• ↻ Read first: Part A 1.13 (MAC learning, flooding, the MAC table) and Unit 0.4. Every Domain 2 topic assumes you understand them.
+v2.0 2.2 Configure Layer 2 port attributes for edge hosts
+• ↻ Revise first: Part A 2.1 (VLANs, access ports, voice VLAN).
+• Port profile by device type:
+• Desktops, printers and IoT: access port in the right VLAN, PortFast with BPDU guard, port security, PoE where needed (cameras), storm control.
+• Access points: an access port for lightweight APs in local mode, or a trunk when the AP maps several VLANs locally (FlexConnect, autonomous), plus PoE and PortFast.
+• VoIP phones: access port with a data VLAN and switchport voice vlan, QoS trust, PoE, CDP or LLDP-MED to tell the phone its VLAN.
+• Virtualized hosts: a trunk with a limited allowed-VLAN list, often an LACP port channel and spanning-tree portfast trunk.
+• Network appliances: a trunk or routed link, usually an EtherChannel for redundancy.
+• PoE: power inline auto, power inline never, power inline max, show power inline.
+• Port channels and LACP for hosts: the switch side uses channel-group 1 mode active, and the host must also run LACP (NIC teaming).
+• Verification: show running-config interface g0/5, show interfaces status, show vlan brief, show power inline, show spanning-tree interface g0/5.
+• Traps: PortFast on a link to another switch risks a loop; a phone and PC share one port but live in different VLANs.
+v2.0 2.1 Switch-to-switch and switch-to-router connectivity
+• ↻ Revise first: Part A 2.2 (trunks, 802.1Q, native VLAN) and 2.4 (EtherChannel with LACP).
+• Layer 2 versus Layer 3 interfaces: a switchport is Layer 2; no switchport makes a routed port with an IP address; an SVI (interface vlan 10) is a virtual Layer 3 interface for a VLAN; router subinterfaces (g0/0.10, encapsulation dot1q 10) support router-on-a-stick.
+• Choosing: a trunk between switches; a routed link between Layer 3 switches or to a router for scale (no spanning-tree dependence); an LACP EtherChannel for bandwidth and redundancy; an SVI as each VLAN’s gateway.
+• Checklist when linking two devices: matching speed and duplex, the trunk’s allowed VLANs and native VLAN, LACP modes, VLANs created on both sides, gateway SVI up/up, ip routing enabled on Layer 3 switches.
+• Verification: show interfaces trunk, show etherchannel summary, show ip interface brief, show interfaces g0/1 switchport.
+• Traps: an SVI is down/down if its VLAN is missing or has no active port; a routed port carries no VLAN.
+v2.0 2.5 Rapid PVST+
+• ↻ Revise first: all of Part A 2.5.
+• What v2.0 names: root bridge and root port, port states and roles, PortFast, root guard, loop guard and BPDU guard. BPDU filter is not named, but know it anyway.
+• Interpreting output: in show spanning-tree vlan 10, find the line saying this bridge is the root (or the root’s address and the path cost), then read each interface’s role (Root, Desg, Altn), state (FWD, BLK or discarding), cost, priority and port number, and link type (P2p).
+• Troubleshooting: an unexpected root bridge (a new switch with a lower priority), a loop because BPDU guard is missing, a root-inconsistent port from root guard, a loop-inconsistent port from loop guard.
+• Traps: the root bridge is chosen per VLAN; root guard and loop guard solve different problems.
+v2.0 2.3 Validate network documentation with CDP and LLDP
+• ↻ Revise first: Part A 2.3.
+• Method: compare show cdp neighbors detail or show lldp neighbors detail against the network diagram and the port labels. Look for undocumented neighbors, cables in the wrong port, unexpected platforms or software versions, and native VLAN mismatches. Use a neighbor’s management IP to log in to the next device and keep walking the network.
+• What to validate: device names, interface names, IP addresses, trunk and native VLAN settings.
+• Traps: discovery protocols show only direct neighbors; update the diagram after you fix a mismatch.
+v2.0 2.4 Troubleshoot Layer 2 and Layer 3 connectivity (new in v2.0)
+• Approach: follow the packet’s path: client, switch port, VLAN and trunk, gateway, route, destination, and back. Check Layer 1, then Layer 2, then Layer 3, working outward from the symptom.
+• Show commands: show interfaces status, show interfaces counters errors, show vlan brief, show interfaces trunk, show mac address-table, show spanning-tree, show ip interface brief, show ip route, show ip arp, show ipv6 neighbors, show cdp neighbors, and show logging for link flaps, spanning-tree events and err-disable messages.
+• Ping symbols: ! success, . timeout, U destination unreachable, N network unreachable, M could not fragment.
+• Extended ping: type ping with no destination to be prompted for the source address or interface, packet size, repeat count and the DF bit. Use it to test the return path (ping 10.2.2.1 source g0/0) and to find MTU problems.
+• Traceroute: shows each hop. * * * means no reply from that hop (filtered or down) and the path may still work. Where it stops points to the failing router or a missing return route.
+• Packet capture output: recognize ARP request and reply, the DHCP Discover, Offer, Request and Ack sequence, the TCP SYN, SYN-ACK, ACK handshake, DNS query and response, ICMP echo request and reply, TCP resets and retransmissions. Wireshark-style filters such as ip.addr == 10.1.1.5 and tcp.port == 443 narrow the view.
+• Faults to practice: wrong VLAN on an access port, a VLAN missing from a trunk, native VLAN mismatch, STP blocking the path, duplex mismatch, no SVI or gateway, wrong mask, missing return route, an ACL in the way, incomplete ARP entries.
+• Decision shortcuts: a ping that works to the gateway but not beyond points to routing, NAT or an ACL; an incomplete ARP entry points to Layer 2; trouble in only one VLAN points to the VLAN or trunk configuration.
+• Traps: a successful ping one way does not prove the return path; an extended ping from the right source tests the return route; an asterisk in traceroute is not always a failure.
+v2.0 Domain 3: IP Routing (20%)
+v2.0 3.1 Interpret the routing table
+• ↻ Revise first: Part A 3.1 (routing table components) and 3.2 (forwarding decision).
+• What v2.0 asks: read the protocol code, prefix and mask, administrative distance, metric, default route and next hop from real output, for IPv4 and IPv6.
+• Practice: given show ip route output, predict the exit path for several destinations using longest prefix match, then AD, then metric; explain why a route is missing; spot the gateway of last resort, floating statics (high AD), summary routes pointing to Null0, and the difference between O, O IA and O E2.
+• Traps: compare IPv4 and IPv6 tables carefully; the longest prefix wins before AD is ever considered.
+v2.0 3.2 Troubleshoot IPv4 and IPv6 static routing
+• ↻ Revise first: Part A 3.3.
+• Checklist: is the route present in show ip route static? Is the next hop itself reachable? Is the exit interface up? Are the prefix and mask right? Does a return route exist on the far router? Is a floating static’s AD set correctly? For IPv6: ipv6 unicast-routing enabled, link-local next hops given an exit interface, correct prefix length.
+• Common mistakes: wrong next hop, a typo in the network, next hop and exit interface mixed up, a forgotten return route, a more specific route steering traffic elsewhere (longest prefix match), a default route pointing at the wrong ISP.
+• Tools: ping with source, traceroute, show ip route 10.2.2.5, show ip cef 10.2.2.0.
+• Traps: ping needs routes in both directions; a static route using only an exit interface on a multi-access link can cause ARP trouble.
+v2.0 3.3 Single-area OSPFv2 and OSPFv3
+• ↻ Revise first: Part A 3.4 covers OSPFv2: neighbor states, DR and BDR election, router ID, configuration and verification.
+• What v2.0 names: neighbor adjacencies without authentication, point-to-point and broadcast networks (with DR and BDR) and router ID, for both versions.
+• OSPFv3 differences: carries IPv6 prefixes; ipv6 unicast-routing and ipv6 router ospf 1 first, then OSPF is enabled per interface with ipv6 ospf 1 area 0; neighbors form using link-local addresses; hellos go to FF02::5 and FF02::6; the router ID is still a 32-bit dotted value and must be set manually with router-id 1.1.1.1 if the router has no IPv4 address. Neighbor states, DR and BDR election and cost logic work the same as in OSPFv2.
+• Troubleshooting adjacencies: the interface is not in OSPF (show ip ospf interface brief), a passive interface, mismatched hello and dead timers, area, subnet or mask, MTU, network type mismatch, duplicate router IDs, an ACL blocking 224.0.0.5 or protocol 89, and authentication mismatch if it is configured.
+• Commands: show ip ospf neighbor, show ip ospf interface, show ipv6 ospf neighbor, show ipv6 ospf interface brief, show ip route ospf, show ipv6 route ospf, debug ip ospf adj (use carefully).
+• Traps: OSPFv3 is enabled on the interface, not with a network statement; OSPFv3 needs a router ID even when IPv4 is absent.
+v2.0 3.4 Interpret HSRP and VRRP operational status
+• ↻ Revise first: Part A 3.5 for the concepts.
+• Reading show standby brief: columns are Interface, Grp (group), Pri (priority), P (preempt flag), State, Active (the active router’s IP), Standby (the standby router’s IP) and Virtual IP. A line like Gi0/0 1 110 P Active local 10.1.1.2 10.1.1.254 means this router is active with priority 110 and preempt on, its standby peer is 10.1.1.2, and the virtual gateway is 10.1.1.254.
+• HSRP states: Initial, Learn, Listen, Speak, Standby, Active.
+• VRRP: show vrrp brief shows the group, priority, preempt flag, state (Initialize, Backup or Master), the master’s address and the virtual address.
+• Interpreting failover: the highest priority becomes active (a tie goes to the higher IP address); without preempt, a recovered higher-priority router does not take over; interface tracking lowers priority when an uplink fails (standby 1 track g0/1 20). HSRP version 1 uses virtual MAC 0000.0C07.ACxx, version 2 uses 0000.0C9F.Fxxx, and VRRP uses 0000.5E00.01xx.
+• IPv6 note: HSRP version 2 and VRRPv3 support IPv6, with a virtual link-local gateway address.
+• Traps: the preempt flag in the output tells you whether a recovered router will take back the role; hosts must point at the virtual IP.
+v2.0 Domain 4: Network Services and Security (20%)
+v2.0 4.4 Diagnose DNS records
+• ↻ Revise first: Part A 4.3 (DNS role).
+• Records in detail: A (name to IPv4), AAAA (name to IPv6), CNAME (an alias that points to another name; it cannot share a name with other records), MX (mail exchanger with a priority, lower is preferred), NS (the zone’s authoritative name servers) and PTR (reverse lookup, under in-addr.arpa for IPv4 and ip6.arpa for IPv6).
+• Tools: nslookup example.com, nslookup -type=MX example.com, nslookup -type=NS example.com, dig example.com A, dig -x 203.0.113.10, ipconfig /displaydns, ipconfig /flushdns.
+• Interpreting output: note which server answered; “Non-authoritative answer” means it came from a cache; read the TTL; several A records usually mean round-robin load sharing.
+• Common faults: wrong IP in an A record, a stale cache that has not yet expired, a CNAME that points nowhere or loops, a missing AAAA record, a missing or wrong PTR (mail may be rejected), an MX pointing at a CNAME or with the wrong priority, wrong NS delegation, a client using the wrong DNS server, port 53 blocked.
+• Traps: if the name resolves but the address is unreachable, the problem is not DNS.
+v2.0 4.3 NAT and PAT on IOS XE
+• ↻ Revise first: Part A 4.1; the same commands apply on IOS XE routers.
+• v2.0 emphasis: configure and diagnose static NAT, dynamic NAT and PAT, and read the translation table.
+• Reading show ip nat translations: columns are Pro, Inside global, Inside local, Outside local and Outside global. PAT entries include ports, for example inside global 203.0.113.2:1024 mapped to inside local 192.168.1.10:51000.
+• Common faults: inside and outside swapped, an ACL that does not match the hosts, no default route or return path, pool exhausted, overload missing, NAT applied but an interface ACL blocks the traffic.
+• Checks: show ip nat statistics (hits, misses, and which interfaces are inside and outside), show ip nat translations verbose, and debug ip nat sparingly.
+• Traps: zero hits usually means a wrong interface role or ACL; misses mean traffic matched no rule.
+v2.0 4.6 IPv4 ACLs
+• ↻ Revise first: Part A 5.6.
+• Troubleshooting emphasis: choose where an ACL belongs and in which direction; use hit counters to see which line matches; fix ordering; use named ACL sequence numbers to insert a fix; confirm placement with show ip interface g0/1; remember the implicit deny; test with ping, a TCP connection to a port, or an extended ping from a chosen source.
+• Exercises to practice: block one host from a server but allow everyone else; allow only web traffic to a server; allow return traffic with permit tcp any any established; protect the vty lines with access-class.
+• Traps: an ACL on the wrong interface or direction does nothing useful; standard ACLs near the source block too much.
+v2.0 4.7 Layer 2 security
+• ↻ Revise first: Part A 5.7 for port security, DHCP snooping and dynamic ARP inspection.
+• New in v2.0, storm control: limits broadcast, multicast or unicast flooding on a port by a threshold: storm-control broadcast level 20, storm-control action shutdown (or trap), show storm-control. It protects against broadcast storms from loops or faulty NICs.
+• New in v2.0, IPv6 RA guard: blocks rogue router advertisements (which could redirect hosts to a malicious gateway) on untrusted host-facing ports. Define a policy with ipv6 nd raguard policy HOST and device-role host, then attach it to host ports with ipv6 nd raguard attach-policy HOST; router-facing ports use a policy with device-role router. Verify with show ipv6 nd raguard policy.
+• Review: trusted versus untrusted ports for snooping and DAI, and the three port security violation modes.
+• Traps: RA guard is the IPv6 counterpart of DHCP snooping; storm control thresholds are a percentage of port bandwidth.
+v2.0 4.1 Local usernames and AAA client
+• ↻ Revise first: Part A 5.3 (local passwords) and 5.8 (AAA).
+• Local usernames: username admin privilege 15 secret Str0ngPass!, privilege levels 0, 1 and 15, and login local on the lines.
+• Acting as an AAA client: aaa new-model; define servers, for example radius server ISE1 with address ipv4 10.1.1.20 auth-port 1812 acct-port 1813 and key ..., or tacacs server TAC1 with address ipv4 10.1.1.21 and key ...; then method lists such as aaa authentication login default group tacacs+ local, aaa authorization exec default group tacacs+ local and aaa accounting exec default start-stop group tacacs+. The default list applies to all lines unless a named list is attached with login authentication NAME.
+• Fallback behavior: local at the end of the list lets you log in when the server does not respond, not when the server rejects you.
+• Troubleshooting: server unreachable, key mismatch, wrong port, missing source interface, user not on the server, lockout. Use test aaa group tacacs+ user pass new-code, show aaa servers, debug aaa authentication, and keep console access with a local account for recovery.
+• Traps: the fallback happens only on no response; always test from a second session before you close the first.
+v2.0 4.2 Secure file transfer with SFTP and SCP (new in v2.0)
+• Why: TFTP and FTP send data and credentials unencrypted; SFTP and SCP run over SSH (TCP 22) and protect both.
+• SCP: copies files over SSH. On IOS, SSH must work first, then enable the server with ip scp server enable (with authorization configured), and copy with copy flash:image.bin scp://admin@10.1.1.50/ or copy scp://admin@10.1.1.50/config.txt running-config.
+• SFTP: an SSH subsystem that adds file management operations such as listing and resuming. Clients include sftp admin@host, FileZilla and WinSCP. Support for SFTP in copy commands depends on the platform, so check yours.
+• Do not confuse: FTPS is FTP wrapped in TLS and is a different thing from SFTP.
+• Prerequisites: SSH with keys and a user, a route to the server, correct permissions.
+• Comparison: TFTP (UDP 69, no authentication, no encryption), FTP (TCP 20 and 21, authentication, no encryption), FTPS (FTP plus TLS), SFTP and SCP (TCP 22, encrypted through SSH).
+• Verify: verify /md5 flash:image.bin or a SHA-256 check after any image transfer.
+• Traps: SFTP is not FTP over SSL; both SCP and SFTP use port 22.
+v2.0 4.5 IPsec remote-access and site-to-site VPNs
+• ↻ Revise first: Part A 5.5.
+• What v2.0 names: remote-access versus site-to-site VPNs, and the protocols and transport modes.
+• Protocols: ESP (protocol 50) encrypts and authenticates; AH (protocol 51) authenticates only. IKE negotiates keys in phase 1 and builds the IPsec tunnel in phase 2.
+• Modes: tunnel mode wraps the entire original packet in a new IP header (site-to-site gateways); transport mode protects only the payload and keeps the original header (host to host, or GRE over IPsec where the GRE packet is protected).
+• What must match on both ends: encryption algorithm, hash, Diffie-Hellman group, authentication method and lifetimes.
+• Troubleshooting concepts: show crypto isakmp sa or show crypto ikev2 sa (phase 1), show crypto ipsec sa (packets encrypted and decrypted). Typical faults: mismatched policies, a wrong pre-shared key, an access list for interesting traffic that does not match on both sides, NAT in the path (NAT-T uses UDP 4500), and UDP 500 blocked.
+• Traps: AH does not encrypt; if encrypted packet counters stay at zero, traffic is not matching the VPN policy.
+v2.0 Domain 5: AI, and Network Operations and Management (10%)
+v2.0 5.3 Management approaches
+• ↻ Revise first: Part A 6.1, 6.2 and 6.3.
+• Device-based: configure each device through the CLI, SSH or its own GUI. Maximum control, minimum scale, easy to drift.
+• Cloud-based: devices managed from a vendor cloud dashboard (for example Meraki). Quick to deploy, depends on the cloud service.
+• Controller-based: a central controller (for example Catalyst Center) applies policy and configuration to many devices.
+• Automation-based: scripts and tools such as Ansible call device APIs or the CLI to repeat tasks reliably.
+• Infrastructure as code: infrastructure described in version-controlled files (for example with Terraform), reviewed like software and deployed automatically, often through CI/CD.
+• Comparing them: scale, consistency, skills required, risk of mistakes, and rollback options.
+• Traps: controller-based and automation-based are different things (a controller is a product, automation is a method); infrastructure as code needs version control to be meaningful.
+v2.0 5.4 SNMP
+• ↻ Revise first: Part A 4.4.
+• Troubleshooting a device that is not polled: community string or v3 credentials, an ACL tied to the community (snmp-server community READONLY ro 10), UDP 161 reachability, source interface, the OID or MIB being queried.
+• Troubleshooting traps that never arrive: snmp-server host target and version, snmp-server enable traps for the right categories, UDP 162 allowed, and the receiver’s settings.
+• v3 problems: authentication or privacy password mismatch, or the wrong security level.
+• Commands: show snmp, show snmp community, show snmp host, show snmp user.
+• Traps: polling and notifications use different ports (161 and 162); v2c community strings are plain text.
+v2.0 5.6 Syslog message content
+• ↻ Revise first: Part A 4.5.
+• Interpreting messages: %OSPF-5-ADJCHG: Process 1, Nbr 2.2.2.2 on GigabitEthernet0/1 from FULL to DOWN, Neighbor Down: Dead timer expired means the OSPF neighbor stopped sending hellos. %LINK-3-UPDOWN reports a physical state change and %LINEPROTO-5-UPDOWN reports a protocol state change. %SYS-5-CONFIG_I records who changed the configuration. %SW_MATM-4-MACFLAP_NOTIF signals a MAC address flapping between ports (often a loop). %PM-4-ERR_DISABLE: psecure-violation means port security shut a port. %SPANTREE-2-BLOCK_BPDUGUARD means BPDU guard disabled a port.
+• Triage by severity: 0 to 2 need action now, 3 errors need investigation, 4 warnings are watch items, 5 notices are normal events, 6 and 7 are informational and debug.
+• Correlate: use timestamps (with NTP running) and sequence numbers across several devices to build a timeline.
+• Traps: the number inside the message is the severity; a low number is more serious.
+v2.0 5.5 Configuration management tools such as Ansible
+• ↻ Revise first: Part A 6.6.
+• Running commands with Ansible: an inventory file lists devices and groups; a playbook is an ordered list of tasks in YAML; modules do the work, for example cisco.ios.ios_command (run show commands), cisco.ios.ios_config (push configuration lines) and cisco.ios.ios_facts (gather information); connections use network_cli over SSH.
+• Useful behaviors: ad-hoc commands for one-off jobs, check mode (--check) to preview changes, idempotency so repeated runs are safe, variables and Jinja2 templates, and Ansible Vault for credentials.
+• Reading a playbook: find the target hosts, each task’s name, the module used and its parameters.
+• Typical uses: back up configurations, push the same NTP or syslog settings to every switch, and audit settings.
+• Traps: YAML indentation is part of the syntax; Ansible needs no agent on the device.
+v2.0 5.1 The role of agentic AI in network operations (new in v2.0)
+• What it is: an AI system that goes beyond answering a question: it plans steps, uses tools (show commands, APIs, a ticketing system) and acts toward a goal, usually with human approval. Generative AI responds to prompts and predictive AI scores risk or forecasts.
+• Digital network assistants: chat-style tools that query network data and explain issues in plain language.
+• Use cases: automated troubleshooting and root-cause analysis (collect show output, correlate logs, propose a fix), ticket triage, configuration compliance checks and drift remediation, change validation after maintenance, anomaly and capacity alerts.
+• Keeping it safe: a human approves risky actions, access is read-only by default, credentials are least privilege, every action is logged, and each change has a rollback plan.
+• Risks: confident wrong answers, unsafe commands, prompt injection hidden in logs or tickets, leaking sensitive configurations, and over-automation.
+• Evaluating a recommendation: verify it with show commands and documentation, ask whether it addresses the root cause, estimate the blast radius, and prefer reversible steps. Practice format: read an assistant’s diagnosis and mark it correct, partly correct or wrong, then say why.
+• Traps: agentic AI acts across several steps while generative AI only responds; an AI suggestion is a hypothesis to test, not a verified fix.
+v2.0 5.2 Choosing a prompt for a generative AI system (new in v2.0)
+• A good prompt has: a clear task, relevant context, constraints, the output format you want and a role or persona.
+• Data classification: decide what may be shared before you type. Never paste passwords, keys, customer data or sensitive configurations into a tool that is not approved; redact or replace secrets and real IP addresses; know the organization’s tiers (public, internal, confidential, restricted).
+• Output format: ask for a table, numbered steps, JSON, or CLI commands only; ask it to list assumptions and to include a rollback plan.
+• Persona: for example, act as a senior network engineer reviewing a change. A persona sets depth and tone.
+• Instructions: say what to include and exclude, ask it to question missing information, and tell it to say when it is unsure. Examples in the prompt steer style.
+• Comparing prompts: a weak prompt such as fix my network gives vague output; a strong one gives the topology, the symptom, redacted show output, and asks for ranked causes with verification commands and a rollback. Exam-style questions ask you to pick the best of several prompts.
+• Verify the result: treat AI output as a draft and test it in a lab or against documentation.
+• Traps: the best prompt is specific about format and context, not the longest; sensitive data must be classified before it is shared.
+Topics in v1.1 that the v2.0 list does not name
+The v2.0 list as published no longer names these as separate topics: TCP versus UDP, the two-tier, three-tier and spine-leaf architectures, component roles (1.1 in v1.1), NTP, QoS, the TFTP and FTP topic as such, Cisco wireless architectures and AP modes, WLAN controller GUI configuration, general security concepts and password policies, and the REST, JSON and SDN topics. Treat them as background: they explain topics that are tested, and real networks use them every day. Check Cisco’s current exam topics page for any change.
+Appendix: key numbers to memorize
+• Administrative distance: connected 0, static 1, eBGP 20, EIGRP 90, OSPF 110, IS-IS 115, RIP 120, EIGRP external 170, iBGP 200.
+• Private IPv4: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16; link-local 169.254.0.0/16; loopback 127.0.0.0/8.
+• Ports: FTP 20/21, SSH 22, Telnet 23, SMTP 25, DNS 53, DHCP 67/68, TFTP 69, HTTP 80, NTP 123, SNMP 161/162, HTTPS 443, syslog 514, RADIUS 1812/1813, TACACS+ 49.
+• STP: priority default 32768 in steps of 4096; costs 10 Gbps = 2, 1 Gbps = 4, 100 Mbps = 19; timers hello 2 s, forward delay 15 s, max age 20 s.
+• OSPF: hello 10 s and dead 40 s on broadcast and point-to-point; multicast 224.0.0.5 and 224.0.0.6; DR priority default 1.
+• Syslog levels: 0 Emergency, 1 Alert, 2 Critical, 3 Error, 4 Warning, 5 Notice, 6 Informational, 7 Debug.
+• ACL numbers: standard 1–99 and 1300–1999, extended 100–199 and 2000–2699.
+• VLANs: normal range 1–1005, extended 1006–4094; 802.1Q tag is 4 bytes.
+• PoE: 802.3af 15.4 W, 802.3at 30 W, 802.3bt 60 W and up to roughly 90–100 W.
+• Wi-Fi 2.4 GHz non-overlapping channels (US): 1, 6, 11.
+• MAC aging: 300 seconds; EtherChannel: up to 8 active links.
+Command syntax and output vary a little between platforms and IOS versions. Practice in a lab and confirm details a

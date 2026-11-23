@@ -1,3 +1,6 @@
+import { SERVICE_DESK_SCENARIOS_PART_2 } from './serviceDeskScenariosPart2';
+import { SERVICE_DESK_SCENARIOS_PART_3 } from './serviceDeskScenariosPart3';
+
 export type SimSkillLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';
 export type SimDeskTier = 'tier-1' | 'tier-2';
 
@@ -1543,4 +1546,6 @@ export const SERVICE_DESK_SCENARIOS: ServiceDeskScenario[] = [
     howAndWhy:
       'HOW & WHY: Windows BSOD stop screens often name the exact faulting `.sys` kernel driver (`igdkmdn64.sys` = Intel Graphics, `nvlddmkm.sys` = NVIDIA, `Netwtw10.sys` = Intel Wi-Fi). When multiple identical models fail after an update window, Tier 2 rolls back the driver immediately for business continuity and creates an ITSM Problem Record to halt the bad Intune/WSUS deployment before the rest of the fleet crashes.',
   },
+  ...SERVICE_DESK_SCENARIOS_PART_2,
+  ...SERVICE_DESK_SCENARIOS_PART_3,
 ];

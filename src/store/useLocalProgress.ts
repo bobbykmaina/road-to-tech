@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   LearningTrackId,
   LocalProgressState,
@@ -8,25 +8,45 @@ import {
   SubnetDrillMode,
   SubnetModeStat,
 } from '../types/ccna';
+import {
+  ActiveStudyTrackId,
+  CcnaVersionId,
+  LessonProgressStatus,
+} from '../types/curriculum';
+import { loadProgressFromIdb, saveProgressToIdb } from './idbStorage';
 
 const STORAGE_KEY = 'road_to_ccna_state_v2';
 
 const DEFAULT_SUBNET_STATS: Record<SubnetDrillMode, SubnetModeStat> = {
+  'binary-hex': { attempts: 0, solved: 0, totalMs: 0 },
   'network-broadcast': { attempts: 0, solved: 0, totalMs: 0 },
   'host-range': { attempts: 0, solved: 0, totalMs: 0 },
   wildcard: { attempts: 0, solved: 0, totalMs: 0 },
   vlsm: { attempts: 0, solved: 0, totalMs: 0 },
+  'triage-mask': { attempts: 0, solved: 0, totalMs: 0 },
+  summarize: { attempts: 0, solved: 0, totalMs: 0 },
   ipv6: { attempts: 0, solved: 0, totalMs: 0 },
 };
 
 const DEFAULT_STATE: LocalProgressState = {
   theme: 'dark',
   activeTrack: null,
+  activeStudyTrack: null,
   selectedLevel: null,
+  ccnaVersion: 'v2.0',
   completedLessons: [],
+  completedInTrack: {},
+  revisionCompletedByTrack: {},
+  addendumReadByTrack: {},
+  lastLessonByTrack: {},
   completedLabs: [],
+  lessonStatusById: {},
+  bookmarkedLessons: [],
+  comfortableReadingMode: false,
   lessonNotes: {},
   subtopicChecks: {},
+  deepCheckResults: {},
+  revisionCheckResults: {},
   topicExams: {},
   subtopicSrs: {},
   subnetSolved: 0,
@@ -42,7 +62,16 @@ const DEFAULT_STATE: LocalProgressState = {
 function mergeSubnetStats(
   raw: Partial<Record<SubnetDrillMode, Partial<SubnetModeStat>>> | undefined,
 ): Record<SubnetDrillMode, SubnetModeStat> {
-  const modes: SubnetDrillMode[] = ['network-broadcast', 'host-range', 'wildcard', 'vlsm', 'ipv6'];
+  const modes: SubnetDrillMode[] = [
+    'binary-hex',
+    'network-broadcast',
+    'host-range',
+    'wildcard',
+    'vlsm',
+    'triage-mask',
+    'summarize',
+    'ipv6',
+  ];
   const result = { ...DEFAULT_SUBNET_STATS };
   if (!raw || typeof raw !== 'object') return result;
   for (const mode of modes) {
@@ -54,6 +83,91 @@ function mergeSubnetStats(
     };
   }
   return result;
+}
+
+function deriveStudyTrack(
+  rawStudy: unknown,
+  rawTrack: LearningTrackId | null,
+  version: CcnaVersionId,
+): ActiveStudyTrackId | null {
+  if (rawStudy === 'ccna-v1.1' || rawStudy === 'ccna-v2.0' || rawStudy === 'it-support') {
+    return rawStudy;
+  }
+  if (rawTrack === 'it-support') return 'it-support';
+  if (rawTrack === 'ccna') return version === 'v1.1' ? 'ccna-v1.1' : 'ccna-v2.0';
+  return null;
+}
+
+function normalizeState(parsed: Partial<LocalProgressState> | null | undefined): LocalProgressState {
+  if (!parsed || typeof parsed !== 'object') return DEFAULT_STATE;
+  const activeTrack =
+    parsed.activeTrack === 'ccna' || parsed.activeTrack === 'it-support'
+      ? parsed.activeTrack
+      : null;
+  const ccnaVersion: CcnaVersionId = parsed.ccnaVersion === 'v1.1' ? 'v1.1' : 'v2.0';
+  const activeStudyTrack = deriveStudyTrack(parsed.activeStudyTrack, activeTrack, ccnaVersion);
+
+  return {
+    ...DEFAULT_STATE,
+    ...parsed,
+    theme: parsed.theme === 'light' ? 'light' : 'dark',
+    activeTrack,
+    activeStudyTrack,
+    selectedLevel: parsed.selectedLevel ?? null,
+    ccnaVersion,
+    completedLessons: Array.isArray(parsed.completedLessons) ? parsed.completedLessons : [],
+    completedInTrack:
+      parsed.completedInTrack && typeof parsed.completedInTrack === 'object'
+        ? parsed.completedInTrack
+        : {},
+    revisionCompletedByTrack:
+      parsed.revisionCompletedByTrack && typeof parsed.revisionCompletedByTrack === 'object'
+        ? parsed.revisionCompletedByTrack
+        : {},
+    addendumReadByTrack:
+      parsed.addendumReadByTrack && typeof parsed.addendumReadByTrack === 'object'
+        ? parsed.addendumReadByTrack
+        : {},
+    lastLessonByTrack:
+      parsed.lastLessonByTrack && typeof parsed.lastLessonByTrack === 'object'
+        ? parsed.lastLessonByTrack
+        : {},
+    completedLabs: Array.isArray(parsed.completedLabs) ? parsed.completedLabs : [],
+    lessonStatusById:
+      parsed.lessonStatusById && typeof parsed.lessonStatusById === 'object'
+        ? parsed.lessonStatusById
+        : {},
+    bookmarkedLessons: Array.isArray(parsed.bookmarkedLessons) ? parsed.bookmarkedLessons : [],
+    comfortableReadingMode: Boolean(parsed.comfortableReadingMode),
+    lessonNotes:
+      parsed.lessonNotes && typeof parsed.lessonNotes === 'object' ? parsed.lessonNotes : {},
+    subtopicChecks:
+      parsed.subtopicChecks && typeof parsed.subtopicChecks === 'object'
+        ? parsed.subtopicChecks
+        : {},
+    deepCheckResults:
+      parsed.deepCheckResults && typeof parsed.deepCheckResults === 'object'
+        ? parsed.deepCheckResults
+        : {},
+    revisionCheckResults:
+      parsed.revisionCheckResults && typeof parsed.revisionCheckResults === 'object'
+        ? parsed.revisionCheckResults
+        : {},
+    topicExams:
+      parsed.topicExams && typeof parsed.topicExams === 'object' ? parsed.topicExams : {},
+    subtopicSrs:
+      parsed.subtopicSrs && typeof parsed.subtopicSrs === 'object' ? parsed.subtopicSrs : {},
+    subnetStatsByMode: mergeSubnetStats(parsed.subnetStatsByMode),
+    examHistory: Array.isArray(parsed.examHistory) ? parsed.examHistory : [],
+    answeredQuestions:
+      parsed.answeredQuestions && typeof parsed.answeredQuestions === 'object'
+        ? parsed.answeredQuestions
+        : {},
+    completedSimTickets:
+      parsed.completedSimTickets && typeof parsed.completedSimTickets === 'object'
+        ? parsed.completedSimTickets
+        : {},
+  };
 }
 
 function computeNextSrs(
@@ -81,7 +195,6 @@ function computeNextSrs(
     };
   }
 
-  // Needs spaced-repetition reinforcement soon (due immediately / same day)
   return {
     ease: Math.max(1.3, Number((prevEase - 0.25).toFixed(2))),
     intervalDays: 0,
@@ -92,55 +205,46 @@ function computeNextSrs(
   };
 }
 
-function readInitialState(): LocalProgressState {
+function readInitialSync(): LocalProgressState {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_STATE;
-    const parsed = JSON.parse(raw) as Partial<LocalProgressState>;
-    return {
-      ...DEFAULT_STATE,
-      ...parsed,
-      activeTrack:
-        parsed.activeTrack === 'ccna' || parsed.activeTrack === 'it-support'
-          ? parsed.activeTrack
-          : null,
-      selectedLevel: parsed.selectedLevel ?? null,
-      completedLessons: Array.isArray(parsed.completedLessons) ? parsed.completedLessons : [],
-      completedLabs: Array.isArray(parsed.completedLabs) ? parsed.completedLabs : [],
-      lessonNotes:
-        parsed.lessonNotes && typeof parsed.lessonNotes === 'object' ? parsed.lessonNotes : {},
-      subtopicChecks:
-        parsed.subtopicChecks && typeof parsed.subtopicChecks === 'object'
-          ? parsed.subtopicChecks
-          : {},
-      topicExams:
-        parsed.topicExams && typeof parsed.topicExams === 'object' ? parsed.topicExams : {},
-      subtopicSrs:
-        parsed.subtopicSrs && typeof parsed.subtopicSrs === 'object' ? parsed.subtopicSrs : {},
-      subnetStatsByMode: mergeSubnetStats(parsed.subnetStatsByMode),
-      examHistory: Array.isArray(parsed.examHistory) ? parsed.examHistory : [],
-      answeredQuestions:
-        parsed.answeredQuestions && typeof parsed.answeredQuestions === 'object'
-          ? parsed.answeredQuestions
-          : {},
-      completedSimTickets:
-        parsed.completedSimTickets && typeof parsed.completedSimTickets === 'object'
-          ? parsed.completedSimTickets
-          : {},
-    };
+    return normalizeState(JSON.parse(raw) as Partial<LocalProgressState>);
   } catch {
     return DEFAULT_STATE;
   }
 }
 
 export function useLocalProgress() {
-  const [state, setState] = useState<LocalProgressState>(() => readInitialState());
+  const [state, setState] = useState<LocalProgressState>(() => readInitialSync());
+  const idbHydratedRef = useRef(false);
+
+  // Hydrate from IndexedDB on mount (preferring IndexedDB if present)
+  useEffect(() => {
+    let active = true;
+    void loadProgressFromIdb<Partial<LocalProgressState>>().then((idbData) => {
+      if (!active) return;
+      idbHydratedRef.current = true;
+      if (idbData && typeof idbData === 'object') {
+        setState(normalizeState(idbData));
+      } else {
+        void saveProgressToIdb(state);
+      }
+    });
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
       // Ignore storage quota errors gracefully
+    }
+    if (idbHydratedRef.current) {
+      void saveProgressToIdb(state);
     }
   }, [state]);
 
@@ -160,13 +264,68 @@ export function useLocalProgress() {
     }));
   }, []);
 
-  const selectTrackAndLevel = useCallback(
-    (track: LearningTrackId, level: SkillLevelId) => {
-      setState((prev) => ({
+  const setStudyTrack = useCallback((studyTrack: ActiveStudyTrackId | null) => {
+    setState((prev) => {
+      if (!studyTrack) {
+        return {
+          ...prev,
+          activeTrack: null,
+          activeStudyTrack: null,
+        };
+      }
+      const nextTrack: LearningTrackId = studyTrack === 'it-support' ? 'it-support' : 'ccna';
+      const nextVersion: CcnaVersionId =
+        studyTrack === 'ccna-v1.1'
+          ? 'v1.1'
+          : studyTrack === 'ccna-v2.0'
+            ? 'v2.0'
+            : prev.ccnaVersion;
+      return {
         ...prev,
-        activeTrack: track,
-        selectedLevel: level,
-      }));
+        activeTrack: nextTrack,
+        activeStudyTrack: studyTrack,
+        ccnaVersion: nextVersion,
+        selectedLevel: prev.selectedLevel ?? 'beginner',
+      };
+    });
+  }, []);
+
+  const setCcnaVersion = useCallback((version: CcnaVersionId) => {
+    setState((prev) => ({
+      ...prev,
+      ccnaVersion: version,
+      activeStudyTrack:
+        prev.activeTrack === 'it-support'
+          ? prev.activeStudyTrack
+          : version === 'v1.1'
+            ? 'ccna-v1.1'
+            : 'ccna-v2.0',
+    }));
+  }, []);
+
+  const selectTrackAndLevel = useCallback(
+    (track: LearningTrackId, level: SkillLevelId, explicitStudyTrack?: ActiveStudyTrackId) => {
+      setState((prev) => {
+        const resolvedStudy: ActiveStudyTrackId =
+          explicitStudyTrack ??
+          (track === 'it-support'
+            ? 'it-support'
+            : prev.ccnaVersion === 'v1.1'
+              ? 'ccna-v1.1'
+              : 'ccna-v2.0');
+        return {
+          ...prev,
+          activeTrack: track,
+          activeStudyTrack: resolvedStudy,
+          ccnaVersion:
+            resolvedStudy === 'ccna-v1.1'
+              ? 'v1.1'
+              : resolvedStudy === 'ccna-v2.0'
+                ? 'v2.0'
+                : prev.ccnaVersion,
+          selectedLevel: level,
+        };
+      });
     },
     [],
   );
@@ -175,7 +334,145 @@ export function useLocalProgress() {
     setState((prev) => ({
       ...prev,
       activeTrack: track,
+      activeStudyTrack:
+        track === null
+          ? null
+          : track === 'it-support'
+            ? 'it-support'
+            : prev.ccnaVersion === 'v1.1'
+              ? 'ccna-v1.1'
+              : 'ccna-v2.0',
       selectedLevel: track ? prev.selectedLevel ?? 'beginner' : prev.selectedLevel,
+    }));
+  }, []);
+
+  const setLastLessonForTrack = useCallback((trackId: ActiveStudyTrackId, entryId: string) => {
+    setState((prev) => {
+      if (prev.lastLessonByTrack[trackId] === entryId) return prev;
+      return {
+        ...prev,
+        lastLessonByTrack: {
+          ...prev.lastLessonByTrack,
+          [trackId]: entryId,
+        },
+      };
+    });
+  }, []);
+
+  const setLessonStatus = useCallback(
+    (contentId: string, status: LessonProgressStatus, completedTrack?: ActiveStudyTrackId) => {
+      setState((prev) => {
+        const nextCompleted =
+          status === 'mastered'
+            ? prev.completedLessons.includes(contentId)
+              ? prev.completedLessons
+              : [...prev.completedLessons, contentId]
+            : prev.completedLessons.filter((id) => id !== contentId);
+
+        const nextCompletedInTrack = { ...prev.completedInTrack };
+        if (status === 'mastered') {
+          if (!nextCompletedInTrack[contentId] && completedTrack) {
+            nextCompletedInTrack[contentId] = completedTrack;
+          }
+        } else {
+          delete nextCompletedInTrack[contentId];
+        }
+
+        return {
+          ...prev,
+          completedLessons: nextCompleted,
+          completedInTrack: nextCompletedInTrack,
+          lessonStatusById: {
+            ...prev.lessonStatusById,
+            [contentId]: status,
+          },
+        };
+      });
+    },
+    [],
+  );
+
+  const markAddendumRead = useCallback((trackId: ActiveStudyTrackId, entryId: string) => {
+    setState((prev) => {
+      const existing = prev.addendumReadByTrack[trackId] ?? [];
+      if (existing.includes(entryId)) return prev;
+      return {
+        ...prev,
+        addendumReadByTrack: {
+          ...prev.addendumReadByTrack,
+          [trackId]: [...existing, entryId],
+        },
+      };
+    });
+  }, []);
+
+  const completeRevisionForTrack = useCallback(
+    (trackId: ActiveStudyTrackId, contentId: string) => {
+      setState((prev) => {
+        const existing = prev.revisionCompletedByTrack[trackId] ?? [];
+        if (existing.includes(contentId)) return prev;
+        return {
+          ...prev,
+          revisionCompletedByTrack: {
+            ...prev.revisionCompletedByTrack,
+            [trackId]: [...existing, contentId],
+          },
+        };
+      });
+    },
+    [],
+  );
+
+  const saveRevisionCheck = useCallback(
+    (
+      trackId: ActiveStudyTrackId,
+      contentId: string,
+      record: QuizAttemptRecord,
+      markRevisionDone: boolean,
+    ) => {
+      setState((prev) => {
+        const revKey = `${trackId}:${contentId}`;
+        const prevList = prev.revisionCompletedByTrack[trackId] ?? [];
+        const nextList =
+          markRevisionDone && !prevList.includes(contentId)
+            ? [...prevList, contentId]
+            : prevList;
+        return {
+          ...prev,
+          revisionCheckResults: {
+            ...prev.revisionCheckResults,
+            [revKey]: record,
+          },
+          revisionCompletedByTrack: {
+            ...prev.revisionCompletedByTrack,
+            [trackId]: nextList,
+          },
+          subtopicSrs: {
+            ...prev.subtopicSrs,
+            [contentId]: computeNextSrs(prev.subtopicSrs[contentId], record.score, record.total),
+          },
+        };
+      });
+    },
+    [],
+  );
+
+  const toggleBookmarkLesson = useCallback((contentId: string) => {
+    setState((prev) => {
+      const exists = prev.bookmarkedLessons.includes(contentId);
+      return {
+        ...prev,
+        bookmarkedLessons: exists
+          ? prev.bookmarkedLessons.filter((id) => id !== contentId)
+          : [...prev.bookmarkedLessons, contentId],
+      };
+    });
+  }, []);
+
+  const toggleComfortableReadingMode = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      comfortableReadingMode: !prev.comfortableReadingMode,
     }));
   }, []);
 
@@ -187,9 +484,46 @@ export function useLocalProgress() {
         completedLessons: exists
           ? prev.completedLessons.filter((id) => id !== lessonId)
           : [...prev.completedLessons, lessonId],
+        lessonStatusById: {
+          ...prev.lessonStatusById,
+          [lessonId]: exists ? 'in-progress' : 'mastered',
+        },
       };
     });
   }, []);
+
+  const saveDeepLessonCheck = useCallback(
+    (contentId: string, record: QuizAttemptRecord, trackId?: ActiveStudyTrackId) => {
+      setState((prev) => {
+        const passed = record.total > 0 && record.score / record.total >= 0.7;
+        const nextCompletedInTrack = { ...prev.completedInTrack };
+        if (passed && !nextCompletedInTrack[contentId] && trackId) {
+          nextCompletedInTrack[contentId] = trackId;
+        }
+        return {
+          ...prev,
+          deepCheckResults: {
+            ...prev.deepCheckResults,
+            [contentId]: record,
+          },
+          subtopicSrs: {
+            ...prev.subtopicSrs,
+            [contentId]: computeNextSrs(prev.subtopicSrs[contentId], record.score, record.total),
+          },
+          lessonStatusById: {
+            ...prev.lessonStatusById,
+            [contentId]: passed ? 'mastered' : 'in-progress',
+          },
+          completedInTrack: nextCompletedInTrack,
+          completedLessons:
+            passed && !prev.completedLessons.includes(contentId)
+              ? [...prev.completedLessons, contentId]
+              : prev.completedLessons,
+        };
+      });
+    },
+    [],
+  );
 
   const saveSubtopicCheck = useCallback((subtopicId: string, record: QuizAttemptRecord) => {
     setState((prev) => ({
@@ -201,6 +535,10 @@ export function useLocalProgress() {
       subtopicSrs: {
         ...prev.subtopicSrs,
         [subtopicId]: computeNextSrs(prev.subtopicSrs[subtopicId], record.score, record.total),
+      },
+      lessonStatusById: {
+        ...prev.lessonStatusById,
+        [subtopicId]: record.score >= record.total ? 'mastered' : 'in-progress',
       },
       completedLessons: prev.completedLessons.includes(subtopicId)
         ? prev.completedLessons
@@ -328,34 +666,9 @@ export function useLocalProgress() {
   const importBackupJson = useCallback((jsonText: string): boolean => {
     try {
       const parsed = JSON.parse(jsonText) as Partial<LocalProgressState>;
-      if (!parsed || typeof parsed !== 'object') return false;
-      setState({
-        ...DEFAULT_STATE,
-        ...parsed,
-        theme: parsed.theme === 'light' ? 'light' : 'dark',
-        completedLessons: Array.isArray(parsed.completedLessons) ? parsed.completedLessons : [],
-        completedLabs: Array.isArray(parsed.completedLabs) ? parsed.completedLabs : [],
-        lessonNotes:
-          parsed.lessonNotes && typeof parsed.lessonNotes === 'object' ? parsed.lessonNotes : {},
-        subtopicChecks:
-          parsed.subtopicChecks && typeof parsed.subtopicChecks === 'object'
-            ? parsed.subtopicChecks
-            : {},
-        topicExams:
-          parsed.topicExams && typeof parsed.topicExams === 'object' ? parsed.topicExams : {},
-        subtopicSrs:
-          parsed.subtopicSrs && typeof parsed.subtopicSrs === 'object' ? parsed.subtopicSrs : {},
-        subnetStatsByMode: mergeSubnetStats(parsed.subnetStatsByMode),
-        examHistory: Array.isArray(parsed.examHistory) ? parsed.examHistory : [],
-        answeredQuestions:
-          parsed.answeredQuestions && typeof parsed.answeredQuestions === 'object'
-            ? parsed.answeredQuestions
-            : {},
-        completedSimTickets:
-          parsed.completedSimTickets && typeof parsed.completedSimTickets === 'object'
-            ? parsed.completedSimTickets
-            : {},
-      });
+      const normalized = normalizeState(parsed);
+      setState(normalized);
+      void saveProgressToIdb(normalized);
       return true;
     } catch {
       return false;
@@ -363,18 +676,29 @@ export function useLocalProgress() {
   }, []);
 
   const resetProgress = useCallback(() => {
-    setState((prev) => ({
-      ...DEFAULT_STATE,
-      theme: prev.theme,
-    }));
+    setState((prev) => {
+      const next = { ...DEFAULT_STATE, theme: prev.theme };
+      void saveProgressToIdb(next);
+      return next;
+    });
   }, []);
 
   return {
     progress: state,
     toggleTheme,
+    setStudyTrack,
+    setCcnaVersion,
     selectTrackAndLevel,
     selectTrack,
+    setLastLessonForTrack,
+    setLessonStatus,
+    markAddendumRead,
+    completeRevisionForTrack,
+    saveRevisionCheck,
+    toggleBookmarkLesson,
+    toggleComfortableReadingMode,
     toggleLessonComplete,
+    saveDeepLessonCheck,
     saveSubtopicCheck,
     saveTopicExam,
     saveLessonNote,

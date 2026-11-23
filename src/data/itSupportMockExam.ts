@@ -1,6 +1,7 @@
 import { ExamDomainMeta, ExamQuestion } from '../types/ccna';
 import { IT_SUPPORT_QUESTIONS_PART_1 } from './itSupportMockExamPart1';
 import { IT_SUPPORT_QUESTIONS_PART_2 } from './itSupportMockExamPart2';
+import { IT_SUPPORT_QUESTIONS_PART_3 } from './itSupportMockExamPart3';
 
 export const IT_SUPPORT_DOMAINS: ExamDomainMeta[] = [
   {
@@ -586,4 +587,5 @@ export const IT_SUPPORT_EXAM_QUESTIONS: ExamQuestion[] = [
   ...CORE_IT_SUPPORT_QUESTIONS,
   ...IT_SUPPORT_QUESTIONS_PART_1,
   ...IT_SUPPORT_QUESTIONS_PART_2,
+  ...IT_SUPPORT_QUESTIONS_PART_3,
 ];

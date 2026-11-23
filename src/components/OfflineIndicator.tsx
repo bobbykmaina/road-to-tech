@@ -15,7 +15,7 @@ export function OfflineIndicator() {
         <WifiOff className="w-3.5 h-3.5 text-amber-500 shrink-0" />
         <span>
           Offline Mode — Guided lessons, IOS CLI labs, subnetting drills, and mock exams remain
-          active locally (Coach Zero requires internet).
+          active locally (Coach Ping requires internet).
         </span>
       </div>
     </div>

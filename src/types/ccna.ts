@@ -1,3 +1,5 @@
+import type { ActiveStudyTrackId, CcnaVersionId, LessonProgressStatus } from './curriculum';
+
 export type WorkspaceTab =
   | 'launch'
   | 'overview'
@@ -19,7 +21,15 @@ export type DomainId =
   | 'security'
   | 'automation';
 
-export type SubnetDrillMode = 'network-broadcast' | 'host-range' | 'wildcard' | 'vlsm' | 'ipv6';
+export type SubnetDrillMode =
+  | 'binary-hex'
+  | 'network-broadcast'
+  | 'host-range'
+  | 'wildcard'
+  | 'vlsm'
+  | 'triage-mask'
+  | 'summarize'
+  | 'ipv6';
 
 export interface SubnetModeStat {
   attempts: number;
@@ -118,14 +128,35 @@ export type DeviceKind = 'router' | 'switch' | 'host';
 export interface SimInterface {
   name: string;
   shortName: string;
+  description?: string;
   ip?: string;
   mask?: string;
   adminUp: boolean;
   protocolUp: boolean;
+  errDisabled?: boolean;
+  errDisabledReason?: string;
+  speed?: 'auto' | '100' | '1000';
+  duplex?: 'auto' | 'half' | 'full';
+  routedPort?: boolean;
+  isSvi?: boolean;
   switchportMode?: 'access' | 'trunk';
   accessVlan?: number;
   trunkAllowedVlans?: string;
   nativeVlan?: number;
+  channelGroup?: {
+    id: number;
+    mode: 'active' | 'passive' | 'on';
+  };
+  portFast?: boolean;
+  bpduGuard?: boolean;
+  helperAddress?: string;
+  natRole?: 'inside' | 'outside';
+  hsrp?: {
+    group: number;
+    vip: string;
+    priority?: number;
+    preempt?: boolean;
+  };
   subinterfaces?: Record<
     string,
     {
@@ -153,6 +184,9 @@ export interface SimInterface {
 export interface OspfConfig {
   processId?: number;
   routerId?: string;
+  passiveInterfaces?: string[];
+  defaultOriginate?: boolean;
+  referenceBandwidthMbps?: number;
   networks: {
     network: string;
     wildcard: string;
@@ -173,11 +207,41 @@ export interface AclEntry {
   rules: string[];
 }
 
+export interface DhcpPoolConfig {
+  network: string;
+  mask: string;
+  defaultRouter?: string;
+  dnsServer?: string;
+}
+
 export interface SimDevice {
   id: string;
   hostname: string;
   kind: DeviceKind;
   enableSecret?: string;
+  bannerMotd?: string;
+  domainName?: string;
+  sshVersion?: number;
+  rsaModulus?: number;
+  users?: Record<string, string>;
+  vty?: {
+    loginLocal?: boolean;
+    transportInput?: string[];
+    accessClass?: string;
+  };
+  ipRouting?: boolean;
+  lldpEnabled?: boolean;
+  dhcpSnooping?: {
+    enabled: boolean;
+    vlans: number[];
+  };
+  dhcpPools?: Record<string, DhcpPoolConfig>;
+  dhcpExcluded?: string[];
+  natRules?: {
+    aclId: string;
+    overloadInterface: string;
+  }[];
+  syslogBuffer?: string[];
   vlans: Record<number, string>;
   interfaces: Record<string, SimInterface>;
   ospf: OspfConfig;
@@ -207,6 +271,8 @@ export interface CcnaLab {
   id: string;
   number: string;
   domainId: DomainId;
+  category?: 'Build' | 'Troubleshoot';
+  faultSummary?: string;
   title: string;
   difficulty: 'Foundational' | 'Intermediate' | 'Exam-Level';
   estimatedMinutes: number;
@@ -287,11 +353,22 @@ export interface SimTicketAttempt {
 export interface LocalProgressState {
   theme: 'dark' | 'light';
   activeTrack: LearningTrackId | null;
+  activeStudyTrack: ActiveStudyTrackId | null;
   selectedLevel: SkillLevelId | null;
+  ccnaVersion: CcnaVersionId;
   completedLessons: string[];
+  completedInTrack: Record<string, ActiveStudyTrackId>;
+  revisionCompletedByTrack: Record<string, string[]>;
+  addendumReadByTrack: Record<string, string[]>;
+  lastLessonByTrack: Record<string, string>;
   completedLabs: string[];
+  lessonStatusById: Record<string, LessonProgressStatus>;
+  bookmarkedLessons: string[];
+  comfortableReadingMode: boolean;
   lessonNotes: Record<string, string>;
   subtopicChecks: Record<string, QuizAttemptRecord>;
+  deepCheckResults: Record<string, QuizAttemptRecord>;
+  revisionCheckResults: Record<string, QuizAttemptRecord>;
   topicExams: Record<string, QuizAttemptRecord>;
   subtopicSrs: Record<string, SrsReviewRecord>;
   subnetSolved: number;

@@ -1,0 +1,865 @@
+IT Support and Help Desk Study Map: Topics, Subtopics and What to Know
+Road to TECH · From complete beginner to interview-ready · Prepared November 22, 2026
+This is a topic-by-topic outline of what a beginner needs to work on a service desk and to interview with confidence, broken down to subtopic level. Units are in learning order, and each unit assumes only the units before it. Ticketing is taught first as a process, in vendor-neutral words (Unit 1). Named ticketing platforms such as Jira Service Management appear only in Unit 9, after you know what a ticketing system is for, and Jira is one tool among several, never the only one.
+Layout of each topic: subtopics with the key facts, then Hands-on (what to practice), then Interview angle (how it shows up in interviews).
+How this map is built
+• Define before use: no term, acronym, product or tool is used before it has been introduced. When a later unit needs something new, it explains it in one plain sentence first.
+• Tools: until Unit 9 the words are generic (ticket, queue, ticketing system, remote tool). Products are introduced one at a time with what they are, who uses them and what the alternatives are.
+• Verify product details: product names, plans and screen layouts change often. Treat tool details as a guide and confirm them in the vendor’s own documentation.
+• Units: 0 What IT support is; 1 Tickets and the support process; 2 Hardware; 3 Operating systems; 4 Networking for support staff; 5 Identity and access; 6 Microsoft 365 and cloud; 7 Security basics; 8 Troubleshooting method and remote support; 9 Help desk tools tour; 10 ITSM in practice; 11 Interview readiness.
+Unit 0: What IT support is
+0.1 The help desk and its place in a company
+• What it is: the help desk (often called the service desk) is the single point of contact where employees report problems and ask for things. Its job is to keep people productive, not only to fix computers.
+• Three kinds of contact: something is broken, someone wants something, or someone has a question. Unit 1 gives these formal names.
+• Who you support: end users, meaning employees at every level, contractors and sometimes customers. They care about getting their work done, not about the technology.
+• Where support sits in IT: the service desk (first contact), desktop or field support (visits the user’s desk), system administrators (servers, accounts, email), the network team, the security team, the applications team, and outside vendors.
+• Internal versus outsourced: an in-house team supports one company; a managed service provider (MSP) supports many client companies for a fee. Support can be remote, on site or both.
+• Operating hours: business hours only, 24/7 with shifts, follow-the-sun (teams in different time zones hand over to each other), or on-call rotas for out-of-hours emergencies.
+• Hands-on: for five sample problems (a broken keyboard, a forgotten password, a server outage, a suspicious email, a new starter needing a laptop), decide which team should own each.
+• Interview angle: “What does a help desk do?” and “What is the difference between help desk and desktop support?” A strong answer covers being the first point of contact, resolving what you can, and routing the rest well.
+0.2 Support tiers and escalation
+• Level 0, self-service: the user helps themselves with a knowledge base, FAQs, a password reset page or a chatbot. It removes simple contacts from the queue.
+• Level 1, first line: log the contact, identify the problem, follow scripts and known fixes, reset passwords, handle simple faults, and escalate when the problem is out of scope or taking too long. The goal is to resolve on first contact where possible.
+• Level 2, second line: deeper technical work such as desktop support, account and access problems, remote tools and issues that can be reproduced.
+• Level 3, specialists: system administrators, network engineers or developers who find root causes and fix the platform itself.
+• Level 4, vendors: outside suppliers who support their own products.
+• Escalation types: functional (hand over to a more specialized team) and hierarchical (inform a manager because of urgency, risk or a sensitive matter).
+• A good escalation includes: what the user reported, what you tried and the results, the evidence (error text, screenshots, times), the user’s impact and contact details. The next person should not have to ask the user the same questions again.
+• Hands-on: write an escalation note for “a shared drive has been unavailable for 30 users for 20 minutes.”
+• Interview angle: “When would you escalate?” Good answers name clear triggers (out of scope, nearing a deadline, wide impact, security concern). “I never escalate” and “I escalate everything” are both weak answers.
+0.3 Customer service skills
+• The shape of a good contact: greet, listen, confirm you understood, explain in plain language, set expectations, fix or hand over, then close the loop by checking the user is happy.
+• Active listening: let the user finish, repeat the problem back in your own words, and avoid interrupting or guessing. Silence while someone describes a problem is normal.
+• Asking good questions: start open (“What were you doing when it happened?”), then narrow with closed questions (“Does it happen on other websites?”). Standard set: What exactly happens? What is the exact error text? When did it start? What changed recently? Does it affect others? What have you already tried?
+• Empathy in words: “I can see how disruptive that is. Let’s get you working again.” Acknowledge the feeling first, then move to action. Empathy is not agreeing that IT is at fault.
+• Plain language: avoid acronyms and jargon, give steps one at a time (“Click the Start button, then type Settings”), and confirm each step worked before the next.
+• Setting expectations: give a realistic time and what happens next. Never promise what you do not control. Update the user before they have to chase you.
+• Handling a frustrated user: stay calm and slow your voice, let them vent briefly, acknowledge it, state what you can do now, avoid taking it personally, and involve a team lead if the conversation turns abusive.
+• Phone etiquette: a standard greeting (company, your name, offer to help), ask permission before putting someone on hold, return within about two minutes, and summarize the next steps at the end.
+• Chat etiquette: acknowledge quickly, keep messages short, use saved replies carefully so they never sound robotic, and tell the user if you are handling several chats.
+• Email etiquette: a clear subject line, short paragraphs, numbered steps, a polite tone, caution with reply-all, and no jargon.
+• Awareness: time zones and cultures, and basic accessibility needs such as screen readers and large text.
+• Hands-on: role-play three calls: a calm user, a rushed manager and an angry user with a repeating fault.
+• Interview angle: “Tell me about a time you dealt with a difficult customer.” Prepare a story using the STAR method (Situation, Task, Action, Result; Unit 11 covers it).
+0.4 Professional habits
+• Document as you go: if it is not written down, it did not happen. Notes protect you, help your colleagues and feed the knowledge base.
+• Ownership: keep ownership of a contact until it is resolved or properly handed over, and follow up.
+• Prioritizing: do first what hurts the most people or the business most, not whoever shouts loudest. Unit 1 turns this into a formula.
+• Confidentiality: you will see private information. Access only what the task needs, never share or ask for a user’s password, and verify identity before changing an account (Units 5 and 7).
+• Admitting what you do not know: say “I don’t know yet, let me find out,” then find out. Guessing and bluffing cause damage.
+• Research skills: search the exact error text, read vendor documentation, check the knowledge base and ask a colleague with a specific question and what you already tried.
+• Resilience: queues get busy and some users are rude. Take breaks, ask for help and do not carry frustration into the next contact.
+• Hands-on: keep a daily log of what you fixed, how and what you learned.
+• Interview angle: “How do you keep learning?” and “What do you do when you don’t know the answer?”
+0.5 Vocabulary you will hear on day one
+• Endpoint: any device a person uses (laptop, desktop, phone, tablet). A workstation is a desktop-style computer, and a peripheral is something plugged into it such as a mouse, monitor or printer.
+• Patch and update: software changes that fix bugs or security holes. A driver lets the operating system talk to hardware; firmware is the software built into a device.
+• Reboot, restart and shutdown: a restart reloads the operating system; a full shutdown powers off; Windows “fast startup” can make a shutdown behave like hibernation, which is why a real restart fixes more.
+• Outage: a service is unavailable for many people. Degradation means it works badly.
+• Backup and restore: a copy of data kept elsewhere, and the act of bringing it back.
+• Workaround, fix and root cause: a workaround avoids the symptom (use the web version of the app); a fix removes the immediate fault; the root cause is the underlying reason it happened. Good support offers a workaround while the real fix is found.
+• Hands-on: make flashcards for these terms and explain each to someone non-technical.
+• Interview angle: being able to explain basic terms simply is itself a test of communication.
+Unit 1: Tickets and the support process (vendor-neutral)
+Everything here uses plain words such as ticket, queue and ticketing system. No product is named until Unit 9. Practice happens in a generic, unbranded practice tool.
+1.1 What a ticket is and why companies use them
+• Definition: a ticket is a record of one user’s problem or request, tracked from the moment it is raised until it is closed.
+• Why companies use them: accountability (someone owns it), a history of what was done, fair prioritizing, easy handover between people, measurement (how fast and how often), an audit trail, and a source for the knowledge base. Hallway requests and private messages leave none of that.
+• How tickets are created: a web portal, email, phone, chat, walk-up, or automatically from a monitoring alert.
+• The ticketing system: software that stores tickets, routes them to the right people, sends notifications, tracks time against deadlines and produces reports.
+• Hands-on: log your first ticket in the practice tool from a short scenario.
+• Interview angle: “Why do we use tickets for everything?” Answer with accountability, history and measurement, not “because it’s the rule.”
+1.2 Ticket anatomy: the fields
+• Who: the requester (who asked), the affected user (who has the problem; may differ), and contact details.
+• What: a short summary (the title), a description, and category and subcategory (for example Software, Email).
+• How serious: impact, urgency and the priority that comes from them (see 1.4).
+• Who is working on it: status, assignee, and the assignment group or queue (a list of tickets waiting for a team).
+• Context: source channel, created and updated times, attachments, linked tickets, tags, the affected device or asset, and the deadline clock (see 1.5).
+• Resolution: a resolution note and a resolution code (what kind of fix it was).
+• Good versus bad titles: “Outlook crashes when opening attachments (Windows 11, since this morning)” helps everyone; “Email problem” helps no one.
+• Forms and templates: a good ticket form asks the right questions up front (device name, error text, when it started) so the analyst does not have to.
+• Hands-on: rewrite five vague ticket titles into good ones.
+• Interview angle: “What information do you collect when a user calls?”
+1.3 The ticket lifecycle
+• Typical statuses: New, Assigned, In Progress, Pending (waiting on the user, a vendor or a change), Resolved, Closed, and Reopened if the problem comes back.
+• Resolved versus closed: resolved means a fix has been applied and is waiting for confirmation; closed means it is confirmed done, or auto-closed after a set number of days with no reply.
+• Pending and the clock: waiting on the user usually pauses the deadline clock, because the delay is not IT’s. Waiting on IT does not pause it. The policy decides.
+• The flow of work: receive, triage, diagnose, resolve, confirm with the user, close.
+• Reopening: if the issue returns, reopen the same ticket (keeping the history) unless policy says to create a new one linked to it.
+• Hands-on: take a practice ticket through every status with proper notes at each step.
+• Interview angle: “Walk me through what happens to a ticket from start to finish.”
+1.4 Triage: categorizing and prioritizing
+• Triage steps: confirm who the user is, understand the problem, categorize it, set impact and urgency, check for duplicates and known issues, and route it to the right queue or fix it yourself.
+• Categories: hardware, software, network, accounts and access, email, printing, security, and requests such as new equipment. Consistent categories make reporting meaningful.
+• Impact: how many people or how much of the business is affected (one user, a team, a site, the whole company).
+• Urgency: how quickly it must be fixed (is a deadline or a safety or legal issue involved?).
+• Priority = impact × urgency: a common four-level scale. P1 Critical (high impact, high urgency), P2 High, P3 Medium, P4 Low. Examples: company-wide email down is P1; one user with a failed mouse is P4; a team that cannot access payroll on pay day is P1 or P2.
+• Priority is not seniority: a senior person’s problem is not automatically higher priority. Some companies flag VIP users for extra care, but the formula still decides the order.
+• Duplicates and known issues: link tickets about the same fault to one parent so the fix updates everyone.
+• Hands-on: triage ten sample tickets, assigning category, impact, urgency and priority.
+• Interview angle: “Two tickets arrive: the CEO cannot print, and 50 users cannot log in. Which first and why?” (Fifty users locked out, because of impact; then communicate politely with the CEO.)
+1.5 Service level agreements (SLAs) and related measures
+• SLA: a service level agreement is a promise about how fast a ticket gets a first response and how fast it should be resolved, usually set per priority.
+• Response versus resolution: response is the first meaningful reply or action; resolution is the fix.
+• Illustrative targets: P1 response in 15 minutes and resolution in 4 hours; P2 1 hour and 8 hours; P3 4 hours and 3 working days; P4 1 working day and 5 working days. Every organization sets its own.
+• Business hours versus calendar hours: the clock may run only in working hours, or around the clock.
+• Clock pauses: the clock stops while a ticket waits on the user (policy permitting).
+• At risk and breach: the system warns as a deadline nears and records a breach when it is missed. Warnings trigger escalation.
+• Related terms: an OLA (operational level agreement) is a promise between internal teams; an underpinning contract is the promise a vendor makes to IT.
+• Key measures: first response time, time to resolution, first contact resolution rate (fixed at the first contact), backlog (open tickets), reopen rate, and customer satisfaction (a short survey after closure). Unit 10 goes deeper.
+• Hands-on: calculate due times for tickets of different priorities, including a pause while waiting for the user.
+• Interview angle: “What is an SLA and what do you do when one is about to be breached?”
+1.6 Escalation within the ticket process
+• Functional escalation: reassign to the specialist group with a complete note.
+• Hierarchical escalation: inform a manager when a ticket is high impact, sensitive or about to breach.
+• Do not bounce tickets: the sender stays responsible until the receiver accepts. Include evidence so the receiver can start immediately.
+• Keep the user informed: tell them who has the ticket now and what to expect.
+• Hands-on: escalate two practice tickets, one functional and one hierarchical, with notes.
+• Interview angle: “How do you hand a ticket over so the next person is not confused?”
+1.7 Writing excellent ticket notes
+• Principles: facts rather than opinions, times and names, steps tried and their results, and a clear next action.
+• Public versus internal notes: a public reply goes to the user; an internal (private) note is for the support team. Keep user-facing updates in plain language and keep technical detail internal.
+• A reliable structure: Issue, Impact, Environment (device, operating system, location), Steps taken, Result, Next action.
+• A good note, for example: “User reports Outlook closes when opening PDFs. Windows 11, laptop LT-0423, started this morning after an update. Tried restarting Outlook and the laptop with no change. Outlook starts fine in safe mode, so an add-in is likely. Disabling the PDF add-in now.”
+• A poor note: “Fixed.” or “User is confused.”
+• Resolution notes: state the cause, what fixed it and any prevention advice, so the next person and the knowledge base benefit.
+• Never include: passwords, security answers, sarcasm or blame. Tickets are records that can be audited.
+• Hands-on: write the notes for a Wi-Fi fault from first contact to resolution.
+• Interview angle: “Show me a ticket note you are proud of” or “Why are notes important?”
+1.8 Knowledge base basics
+• What it is: a collection of articles that explain how to fix common problems or do common tasks. Internal articles help analysts; public ones help users help themselves.
+• Structure of a good article: a clear title, symptoms, cause, step-by-step solution, how to confirm it worked, and related articles.
+• When to write one: the same problem keeps coming back, or a tricky fix took you a long time to find.
+• Using it well: search the knowledge base first, link the article in the ticket, and correct it if it is wrong or out of date.
+• Keeping it healthy: owners, review dates, retiring old articles, and searchable keywords.
+• Deflection: good self-service articles prevent tickets from being raised at all.
+• Hands-on: write an article on resetting your own password through a self-service page.
+• Interview angle: “How do you use a knowledge base, and have you ever created an article?”
+1.9 Incident, service request, problem and change in plain words
+• Incident: something that worked has stopped or is working badly (for example, email will not open). The goal is to restore service quickly, with a workaround if necessary.
+• Service request: a standard thing someone asks for (a new laptop, software installed, access to a folder). It usually follows an approved process and can often be pre-approved.
+• Problem: the underlying cause behind one or more incidents (for example, why Wi-Fi keeps dropping on the third floor). The goal is to find and remove the root cause.
+• Change: adding, modifying or removing something that could affect services (patching, a new firewall rule). It needs assessment and approval so it does not cause an incident.
+• Where the names come from: ITIL, a widely used set of IT service management practices, and ITSM, short for IT service management. Unit 10 explains both properly.
+• Workaround versus fix versus root cause: the same distinction from Unit 0 now applied to tickets.
+• Hands-on: classify fifteen example situations as incident, request, problem or change.
+• Interview angle: “What is the difference between an incident and a problem?”
+1.10 The practice ticketing tool
+• How you practice: an in-app, unbranded ticketing tool presents realistic scenarios. You triage, ask clarifying questions, set priority, assign, write notes, resolve or escalate, and keep SLAs.
+• How you are scored: correct category and priority, quality of questions, quality of notes, correct resolution or escalation, tone of user communication and whether the SLA was met.
+• Hands-on: finish ten scenarios before moving on. Unit 9 shows how the same ideas look in named products.
+Unit 2: Hardware
+2.1 Inside a computer
+• CPU (processor): executes instructions. Cores and threads let it do several things at once; clock speed is how fast each core runs. It needs cooling (a heatsink and fan with thermal paste between chip and heatsink). Overheating makes the machine slow down (throttle) or shut off.
+• RAM (memory): short-term working space, lost when power is off. Desktops use DIMMs and laptops use smaller SODIMMs; DDR4 and DDR5 are not interchangeable. Roughly 8 GB is a minimum and 16 GB is comfortable for office work. Faulty RAM shows up as random crashes, blue screens, failure to start, or beep codes.
+• Storage: an HDD (hard disk drive) has spinning platters, is cheap, slow and fragile; an SSD (solid-state drive) uses flash, is fast and has no moving parts. SATA and NVMe (M.2) are the common connections, and NVMe is faster. A failing disk shows as clicking noises, very slow performance, file corruption or a “boot device not found” message. S.M.A.R.T. is the drive’s built-in health reporting.
+• Motherboard: the board everything plugs into: CPU socket, RAM slots, PCIe and M.2 slots, ports. A small CMOS battery keeps the clock and firmware settings; a dead one makes the date reset.
+• Power supply (PSU): converts mains power to the low voltages components need. Failure shows as no power, random shutdowns or restarts. A laptop has an external charger plus a battery.
+• GPU (graphics): integrated into the CPU or a separate graphics card. Display glitches and artifacts often point to drivers or an overheating GPU.
+• NIC (network interface card): the wired Ethernet port or the Wi-Fi adapter that connects the machine to a network.
+• Firmware (BIOS or UEFI): the first software that runs at power-on. UEFI is the modern version. It holds boot order, Secure Boot, TPM and virtualization settings; the key to enter it (often F2, F10, F12 or Delete) varies by maker.
+• Form factors: tower, small form factor, all-in-one, laptop, 2-in-1 and thin client (a minimal device that connects to a remote desktop).
+• Hands-on: identify each component on a real machine or labeled photos; open a spare desktop and reseat the RAM.
+• Interview angle: “A computer will not turn on. What do you check?” Walk from outside in: power source, cable, outlet, power button and lights, then internal parts if you are permitted to open it.
+2.2 How a computer starts
+• The sequence: power on, then POST (power-on self-test, which checks basic hardware and may give beep codes), then firmware looks for a boot device, loads a bootloader, loads the operating system, and shows the sign-in screen.
+• Boot order: the list of devices firmware tries first (internal drive, USB, network). A wrong order can boot a USB stick by accident or fail to find the drive.
+• Secure Boot and TPM: Secure Boot only lets trusted boot software run. The TPM (Trusted Platform Module) is a chip that stores encryption keys; Windows 11 requires one and disk encryption uses it.
+• Where the failure shows: no lights or fans points to power; fans spin but no display points to RAM, graphics or the monitor; a POST error or beep code points to hardware; “no bootable device” points to storage or boot order; a blue screen or boot loop points to the operating system or drivers.
+• Recovery options: safe mode (minimal drivers), startup repair and system restore from the recovery environment, and reinstalling as a last step.
+• Hands-on: match ten symptoms to the boot stage where they occur.
+• Interview angle: “Describe what happens between pressing the power button and seeing the login screen.”
+2.3 Peripherals and ports
+• Ports: USB-A, USB-C (can also carry video and charging, sometimes through Thunderbolt), HDMI, DisplayPort, VGA and DVI (older video), Ethernet (RJ-45), audio jacks. Adapters and docks convert between them.
+• USB speeds, roughly: USB 2.0 about 480 Mbps, USB 3.x 5 to 20 Gbps, USB4 up to 40 Gbps. A slow USB 2.0 port or cable is a common reason for a slow external drive.
+• Monitors: resolution, refresh rate and scaling; extending versus mirroring displays (Windows key + P switches modes); a missing second screen is usually a cable, port, input source or display setting.
+• Keyboards, mice and headsets: wired or wireless (USB dongle or Bluetooth). Common fixes are new batteries, re-pairing, a different port and checking the correct device is selected as default.
+• Docking stations: one connection that brings power, video, network and USB to a laptop. Dock faults are often cable, firmware or driver problems and are worth swapping with a known-good dock.
+• Webcams and microphones: apps need permission in the operating system’s privacy settings, and the right device must be chosen inside the meeting app.
+• Hands-on: set up dual monitors, pair a Bluetooth headset, and switch the default audio device.
+• Interview angle: “A user’s second monitor is not detected. What do you try?”
+2.4 Printers and scanners
+• Types: laser (toner, fast, office use), inkjet (ink, photos), thermal (labels and receipts) and multifunction printers that print, scan and copy.
+• Connections: USB, network (the printer has its own IP address), via a print server (a computer or service that shares printers), or cloud and “follow-me” printing where a job is released at any printer after sign-in.
+• How printing works: the app sends the job to the driver, which converts it for that printer; the job waits in the print queue (the spooler) and is sent to the printer.
+• Common faults: paper jams, printer shows offline, wrong default printer, stuck job in the queue, streaks or faded print (low toner, dirty drum), driver problems, the printer’s IP address changing, and permissions.
+• Fix path: check the printer’s own screen and power, check the cable or network link, clear the queue and restart the print spooler service, reinstall or update the driver, check the printer’s IP, print a test page, and try adding the printer by IP address.
+• Hands-on: add a network printer by IP, clear a stuck queue and print a test page.
+• Interview angle: “A user cannot print. Walk me through what you do.” Answers should separate the user’s machine, the print queue, the printer and the network.
+2.5 Laptops and mobile devices
+• Laptops: battery health and charger wattage matter; sleep, hibernate and power plans cause “it won’t wake” complaints; screens, keyboards and hinges are common physical faults; heat and dust reduce performance.
+• Phones and tablets: you will meet iPhones and Android devices. Common tasks are Wi-Fi and mobile data, email setup, updates, storage, app permissions and Bluetooth.
+• Mobile device management (MDM): software that lets IT apply settings, push apps and remotely lock or wipe a phone. Unit 6 covers a Microsoft example.
+• BYOD versus company-owned: BYOD means bring your own device. It is cheaper but harder to secure and to separate personal and company data.
+• Lost or stolen devices: report immediately, use remote lock or wipe, and reset passwords for accounts used on it.
+• Typical faults: will not charge (cable, port, adapter, lint in the port), battery drains (apps, screen brightness, age), cannot join Wi-Fi, cannot sync email.
+• Hands-on: create a Windows battery health report with powercfg /batteryreport.
+• Interview angle: “What are the risks of letting staff use personal phones for work email?”
+2.6 Diagnosing hardware faults safely
+• Method: observe the symptoms, check power and cables, reseat connections, swap in known-good parts one at a time, strip down to minimal hardware to isolate, and use diagnostics (vendor tools, memory tests, S.M.A.R.T., stress tests). Change one thing at a time and write down what you did.
+• Clues: beep codes, indicator lights, error messages and event logs.
+• Safety: protect components from static electricity (ESD) with a wrist strap or by touching bare metal, unplug power before opening, hold parts by the edges, never open a power supply, lift heavy equipment properly, and dispose of batteries and old electronics through the proper e-waste route.
+• Warranty and vendors: record the serial or service tag, check warranty status before opening a machine, and use the vendor’s return process (RMA) when a part is faulty.
+• Data first: back up data before any hardware repair, and never wipe a drive without authorization.
+• Repair or replace: consider the age, the cost of the part against a new device, and the user’s downtime.
+• Hands-on: work through five scenarios: black screen, no power, slow performance, repeated beeping and overheating.
+• Interview angle: “How do you decide whether a fault is hardware or software?” (Try a different environment: boot from USB, swap parts, test another user.)
+Unit 3: Operating systems
+3.1 What an operating system does
+• Job of an OS: it manages hardware, runs applications, provides the user interface, handles files and enforces security. The kernel is its core; drivers let it talk to hardware; processes are running programs.
+• Common systems: Windows (the usual choice for business desktops), macOS, Linux, ChromeOS, and iOS and Android on phones.
+• Windows versions and editions: Windows 10 reached end of support in October 2025, so new deployments use Windows 11, but you will still meet Windows 10 machines. Windows 11 requires a supported processor, TPM 2.0 and Secure Boot. Home edition lacks features that business needs; Pro and Enterprise add joining a company network (Unit 5), centrally managed disk encryption and Remote Desktop hosting.
+• 32-bit versus 64-bit: 64-bit systems can use more than 4 GB of RAM and run 64-bit apps.
+• Practice safely: use a virtual machine (a software computer running inside your computer) so mistakes cost nothing.
+• Hands-on: find your OS version with winver or systeminfo, and install a Windows or Linux virtual machine.
+• Interview angle: “What is the difference between Windows Home and Pro?” and “Which operating systems have you supported?”
+3.2 Windows essentials: the tools you use daily
+• Settings and Control Panel: Settings is the modern interface; Control Panel still holds some older tools.
+• Task Manager (Ctrl + Shift + Esc): shows processes, CPU, memory, disk and network use, startup apps and signed-in users. It is the first stop for a slow machine or a frozen app (End task).
+• Device Manager (devmgmt.msc): lists hardware and drivers. A yellow warning icon means a driver problem; you can update, roll back or uninstall a driver.
+• Event Viewer (eventvwr.msc): logs of what happened. Look at Windows Logs, Application and System, and match the time of the fault to errors and warnings.
+• Services (services.msc): background programs. You can start, stop and restart them and change the startup type (Automatic, Manual, Disabled). The print spooler and Windows Update are services you will restart often.
+• Disk Management (diskmgmt.msc): shows disks, partitions and drive letters.
+• Registry Editor (regedit): a database of system and app settings. Wrong edits can break Windows, so export a backup first and only edit with a clear instruction.
+• System tools: System Information (msinfo32), System Configuration (msconfig), Resource Monitor and Reliability Monitor.
+• Handy Run commands (Windows key + R): appwiz.cpl (installed programs), ncpa.cpl (network adapters), devmgmt.msc, services.msc, control.
+• Hands-on: find the program using the most memory, disable a startup app, and find the error behind the last crash in Event Viewer.
+• Interview angle: “Where would you look to find out why a PC crashed?”
+3.3 Windows command line: Command Prompt and PowerShell
+• Command Prompt basics: cd, dir, copy, del, ipconfig /all, ping, tracert, nslookup, netstat, tasklist, taskkill, whoami, hostname, systeminfo, net use (map a network drive), shutdown /r /t 0 (restart now).
+• Repair commands: sfc /scannow checks and repairs protected system files; DISM /Online /Cleanup-Image /RestoreHealth repairs the component store that sfc relies on; chkdsk checks a disk for errors; gpupdate /force refreshes company policies (Unit 5).
+• PowerShell: a more powerful shell built on commands called cmdlets, named Verb-Noun. Examples: Get-Process, Get-Service, Restart-Service, Get-WinEvent, Test-NetConnection -ComputerName example.com -Port 443, Get-ComputerInfo, Get-Help. The pipe | passes one command’s output to the next, as in Get-Service | Where-Object Status -eq Stopped.
+• Running as administrator: many commands need an elevated window (right-click, Run as administrator). Elevate only when needed.
+• Saving output: command > output.txt writes results to a file you can attach to a ticket.
+• Safety: test on one machine first, read a command before you paste it, and be careful with deletions and bulk actions.
+• Hands-on: run each command above and save the output of ipconfig /all and systeminfo to a file.
+• Interview angle: “What command-line tools do you use to troubleshoot a Windows machine?”
+3.4 macOS and Linux essentials
+• macOS tools: Finder (files), System Settings, Activity Monitor (processes, like Task Manager), Disk Utility (First Aid checks a drive), Keychain Access (stored passwords), Terminal, Time Machine (backups), FileVault (disk encryption) and Software Update. Gatekeeper limits which apps can run.
+• macOS commands: ls, cd, pwd, sudo, ping, ifconfig, diskutil list, softwareupdate -l. Recovery mode and safe mode help with boot problems.
+• Linux distributions: Ubuntu, Debian, Red Hat Enterprise Linux and Fedora are common. Many servers run Linux, and some staff use it on the desktop.
+• Linux package managers: apt (Debian and Ubuntu) and dnf (Fedora and Red Hat) install and update software.
+• Linux commands: ls, cd, pwd, cat, less, cp, mv, rm, mkdir, grep, ps, top, df -h (disk space), free -h (memory), ip addr, systemctl status, systemctl restart, journalctl, sudo, chmod, chown, man (manual pages). Logs live mostly in /var/log.
+• Hands-on: install an Ubuntu virtual machine and use each command; on a Mac, check free disk space and run Disk Utility First Aid.
+• Interview angle: “How would you check disk space and running processes on a Linux machine?”
+3.5 File systems, folders and permissions
+• File systems: NTFS (the Windows default), FAT32 (old, limited to 4 GB files), exFAT (removable drives that work on Windows and Mac), APFS (modern Mac), ext4 (common on Linux).
+• Where things live: on Windows, each user’s files sit in a profile folder inside the Users folder on the C: drive (Documents, Desktop, Downloads); AppData is hidden and holds app settings. macOS uses /Users and Linux uses /home.
+• Windows permissions (NTFS): Read, Write, Modify and Full Control, inherited from parent folders. Deny overrides Allow. Check effective access on the Security tab. Best practice is to give permissions to groups (Unit 5) rather than to individuals.
+• Shares: a network share is a folder made available over the network, reached by a path such as \\server\share. You can map it to a drive letter with net use Z: \\server\share. When share permissions and NTFS permissions both apply, the stricter result wins.
+• Linux permissions: read, write and execute (rwx) for the owner, the group and everyone else. Numeric forms such as 755 (owner full, others read and execute) and 644 (owner read and write, others read) are set with chmod; chown changes the owner.
+• Common faults: access denied (permissions), path not found (wrong name or the server is unreachable), disk full, file in use by another program.
+• Hands-on: create a folder, give two test accounts different permissions, and map a network drive.
+• Interview angle: “A user says they cannot open a folder they could open yesterday. What do you check?” (Group membership changes, permissions, network connectivity, whether the share still exists.)
+3.6 Installing, updating and imaging
+• Installing software: installers such as .exe, .msi and .msix, the Microsoft Store, package managers (winget on Windows, apt and dnf on Linux) and the Mac App Store or .pkg files. Check licensing and approval first.
+• Standard users and administrators: least privilege means people work with standard accounts and use admin rights only when required. User Account Control (UAC) is the Windows prompt that asks before an admin action.
+• Updates: Windows Update delivers quality updates (monthly security and bug fixes) and feature updates (a new version). Microsoft releases monthly security updates on the second Tuesday of the month, often called Patch Tuesday. Schedule restarts so people do not lose work.
+• When an update fails: free disk space, restart, run sfc /scannow and DISM /Online /Cleanup-Image /RestoreHealth, restart the Windows Update service, uninstall the problem update, then try again. Drivers and firmware have their own updates.
+• Imaging: a golden image is a prepared copy of the operating system and standard software used to set up many machines the same way. Newer approaches provision a machine from the cloud (Windows Autopilot; Unit 6 introduces Microsoft Intune, a cloud tool for managing devices).
+• Reset and recovery: Reset this PC can keep or remove personal files; recovery media on a USB stick starts a machine that will not boot; restore points can undo a bad change.
+• User data: back up or migrate files before a reset or reimage.
+• Hands-on: create a Windows installation USB and use Reset this PC in a virtual machine.
+• Interview angle: “A Windows update keeps failing. What do you do?”
+3.7 Performance and common operating system problems
+• Slow computer: in Task Manager look at CPU, memory, disk and startup apps; check free disk space; scan for malware; look for pending updates and background syncing; consider a failing drive or overheating; fixes are restarting, removing startup apps, freeing space, adding RAM or an SSD, or reinstalling.
+• App crashes or freezes: update, repair or reinstall the app, check Event Viewer for the faulting module, run as administrator once to test, and test with a fresh user profile.
+• Blue screen (BSOD): note the stop code, ask what changed recently (driver, update, new hardware), test RAM and disk, boot into safe mode and roll back the change.
+• Boot problems: use the recovery environment: Startup Repair, System Restore, uninstall updates, Reset this PC.
+• Profile problems: if only one user is affected, sign in with a test account. If the test account works, the user’s profile is damaged and a new profile may be needed.
+• Questions that narrow the scope: one app or the whole system? One user or everyone? What changed? Can you reproduce it?
+• Hands-on: work through five virtual machine scenarios, such as a slow startup, a driver crash and a missing profile.
+• Interview angle: “A PC is running slowly. What is your process?” Strong answers show a method: scope, recent changes, resource use, logs, then a fix.
+Unit 4: Networking for support staff
+4.1 How networks work, from the support desk’s view
+• The pieces: a LAN (local area network) is the network inside a building; a WAN (wide area network) links sites; the internet is the global network of networks. A switch connects wired devices, an access point provides Wi-Fi, a router connects different networks, a modem links to the internet provider (ISP), and a firewall filters traffic.
+• IP address: the address that identifies a device on a network, for example 192.168.1.25 (IPv4). IPv6 is the newer, longer format. Private addresses (such as 192.168.x.x and 10.x.x.x) are used inside organizations; public addresses are used on the internet.
+• Subnet mask and default gateway: the mask says which part of the address names the network and which names the device. The default gateway is the router a device uses to reach anything outside its own network.
+• MAC address: the hardware address of a network adapter. It only matters on the local network segment.
+• Ports and protocols: a port is a numbered door to a service on a device. Protocols are agreed rules. Common ports: 80 web (HTTP), 443 secure web (HTTPS), 22 SSH, 3389 Remote Desktop, 53 DNS, 25 and 587 email sending.
+• How a website loads: your device asks DNS for the address behind the name, connects to that address and port, sets up an encrypted session and exchanges data.
+• Hands-on: draw your own home or lab network and find your device’s IP address, mask, gateway and DNS server.
+• Interview angle: “Explain what happens when you type a website address into a browser.”
+4.2 DHCP and DNS
+• DHCP (Dynamic Host Configuration Protocol): a service that hands out IP address, mask, gateway and DNS settings automatically for a limited time (a lease). It saves anyone configuring each device by hand.
+• DHCP problems: an address starting 169.254 means the device could not get one; the pool of addresses may be full; the device may be on the wrong network; a rogue DHCP server may hand out wrong settings. Try ipconfig /release then ipconfig /renew, check the cable or Wi-Fi, and check the DHCP server.
+• Static versus dynamic addressing: servers, printers and network devices often have fixed addresses (set manually or reserved in DHCP); laptops and phones use dynamic addresses.
+• DNS (Domain Name System): the internet’s phone book that turns names into IP addresses. Common records: A (name to IPv4 address), AAAA (name to IPv6 address), CNAME (an alias), MX (where email goes) and PTR (address back to name).
+• DNS problems: the classic sign is that you can reach an address such as 8.8.8.8 but not a name. Check with nslookup, clear the cache with ipconfig /flushdns, and check which DNS servers the device uses. Companies often have internal DNS for internal names, which does not resolve from outside.
+• Hosts file: a local file that can override DNS for a name; check it when one machine resolves differently from the others.
+• Hands-on: release and renew an address, point a lab machine at a wrong DNS server, observe the symptoms and fix it.
+• Interview angle: “A user can browse by IP address but not by name. What is wrong?”
+4.3 Network troubleshooting commands
+• ping: sends a small test message and times the reply. “Request timed out” means no reply (the target may be off, unreachable or blocking pings); “Destination host unreachable” means a router or your own machine reports no route. Some devices block ping on purpose, so a failed ping is a clue and not proof.
+• tracert (Windows) or traceroute (macOS and Linux): lists the hops between you and the target and where it stops.
+• ipconfig /all (Windows) or ip addr (Linux): shows your own configuration.
+• nslookup or dig: asks DNS a question and shows which server answered.
+• arp -a: shows which hardware addresses your machine has recently talked to on the local network.
+• netstat -ano: lists connections and listening ports with process IDs.
+• Test-NetConnection (PowerShell): tests whether a specific port on a target is reachable.
+• route print: shows the routing table (where traffic is sent).
+• The ping ladder: ping 127.0.0.1 (the network software on your own machine), then your own IP address, then your default gateway, then an outside address such as 8.8.8.8, then a name such as example.com. The first step that fails shows where to look: local setup, the link to the gateway, the path beyond the gateway, or DNS.
+• Hands-on: run the ladder on a working machine and on one with a deliberately broken gateway setting.
+• Interview angle: “Which commands do you use first when a user says the internet is down, and in what order?”
+4.4 Wi-Fi for support staff
+• Bands: 2.4 GHz travels farther but is slower and crowded; 5 GHz is faster with shorter range; 6 GHz is newer and cleaner. An SSID is the Wi-Fi network’s name.
+• Security types: a shared passphrase (WPA2 or WPA3 personal) versus sign-in with company credentials (enterprise). Guest networks are separate and often use a captive portal (a sign-in page that appears in a browser).
+• Signal and interference: walls, distance, microwaves and neighboring networks reduce quality. Signal strength and speed are displayed in the OS; netsh wlan show interfaces shows details on Windows.
+• Troubleshooting: check airplane mode and the Wi-Fi switch, forget and rejoin the network, update the Wi-Fi driver, move closer, try another band, check whether the problem is only this device, and confirm credentials have not expired on enterprise networks.
+• “Connected, no internet”: the device joined Wi-Fi but cannot get an address, DNS or a route. Check for a 169.254 address, a captive portal waiting for sign-in, or an outage beyond the access point.
+• Hands-on: join a network, read your signal details and fix a device with a wrong stored password.
+• Interview angle: “A laptop keeps dropping Wi-Fi in one meeting room. How do you investigate?”
+4.5 VPN and remote connectivity
+• VPN (virtual private network): an encrypted tunnel from a remote device to the company network, so the user can reach internal systems safely from anywhere. A site-to-site VPN joins two offices.
+• Full tunnel versus split tunnel: full tunnel sends all traffic through the company; split tunnel sends only company traffic.
+• Common VPN faults: no internet before connecting, wrong credentials, MFA prompts not arriving, an out-of-date VPN client, a hotel or public network blocking VPN traffic, an expired certificate, a wrong system clock, and DNS not working inside the tunnel.
+• Remote Desktop (RDP): shows another computer’s desktop and uses port 3389. It is normally reached through the VPN and should not be exposed directly to the internet.
+• Hands-on: connect to a lab VPN, then connect to a lab machine with Remote Desktop.
+• Interview angle: “A remote user cannot connect to the VPN. What do you ask and check?”
+4.6 “The internet is down” is rarely one thing
+• First, find the scope: one device or many? Wired and wireless? One site or everywhere? Internal systems only, or the internet only? When did it start?
+• Common causes: an unplugged cable, a disabled adapter, Wi-Fi off, the wrong network, an IP configuration problem, DHCP failure, DNS failure, a failed router or switch, an ISP outage, a firewall or proxy block, a VPN conflict, or a captive portal.
+• A simple decision flow: only one device affected means look at that device (adapter, IP, DNS); several devices on one switch or area means look at the local network equipment; everyone at a site means the router, firewall or ISP; only some websites means DNS, a proxy or a block.
+• When to escalate to the network team: many users affected, suspected switch, router or ISP fault. Attach what you tested, the results, the time it started and the number of users.
+• Hands-on: work through eight scenarios with a flowchart and write the ticket note for each.
+• Interview angle: “Multiple users on the second floor lose connectivity at the same time. What do you do?”
+4.7 Network equipment you will meet
+• Switch, router, firewall, access point, modem: see 4.1. A patch panel is a board of ports where cables from walls end, and patch cables connect it to a switch.
+• VLAN: a virtual separation of one physical network into several, for example staff, guests and phones. Different VLANs cannot talk without a router, which is why a device in the wrong VLAN loses access.
+• PoE (Power over Ethernet): a switch port that powers a device such as a phone or access point over the network cable.
+• Link lights: a lit link light and flashing activity light show a working connection; no light suggests a bad cable, port or device.
+• Rules of the network closet: keep it tidy, label everything, and do not change switch or router settings unless you are authorized.
+• Hands-on: identify devices in photos and trace a patch cable from a wall port to a switch.
+• Interview angle: “What is a VLAN and why might one cause a connectivity problem?”
+Unit 5: Identity and access
+5.1 Why identity matters
+• Authentication versus authorization: authentication proves who you are; authorization decides what you are allowed to do.
+• Account types: user accounts for people; admin accounts for privileged work (kept separate from everyday accounts); service accounts used by software; shared or generic accounts (avoid them because nobody is accountable); guest accounts for outsiders.
+• Groups: a group is a collection of users. Give access to the group once, and everyone who joins gets it. This is faster, safer and easier to audit than setting access user by user.
+• Least privilege: give people the minimum access they need to do their job.
+• The identity lifecycle: joiner (new starter), mover (role change) and leaver. Each stage needs the right access changes.
+• Hands-on: list five accounts at a company and decide what each should and should not access.
+• Interview angle: “What is least privilege and why does it matter?”
+5.2 Directories: Active Directory and Microsoft Entra ID
+• What a directory is: a central database of users, groups and devices that many systems use for sign-in and access.
+• Active Directory Domain Services (AD DS): Microsoft’s directory for company networks run on their own servers. A domain controller is a server that holds the directory and checks sign-ins. A domain is the managed boundary. Organizational units (OUs) are folders for organizing users, computers and groups, and policies can be applied by OU.
+• Objects and groups: users, computers and groups are the main objects. Security groups assign permissions; distribution groups are for email lists.
+• Signing in: DOMAIN\username or the user principal name format user@company.com. A computer that is joined to the domain trusts the domain controller for sign-in.
+• Tools: Active Directory Users and Computers (ADUC) for everyday tasks, and PowerShell with the Active Directory module for bulk work.
+• Microsoft Entra ID (formerly Azure Active Directory): Microsoft’s cloud identity service, used for Microsoft 365 and many cloud apps. It holds users, groups and devices in the cloud.
+• Hybrid setups: many companies keep on-premises Active Directory and sync it to Entra ID so one identity works in both places. Device states you will hear: domain joined, Entra joined, hybrid joined and registered.
+• Other identity systems: Okta, Google Workspace, JumpCloud and OpenLDAP are alternatives you may meet.
+• Hands-on: in a lab domain, create a user, add them to a group and view their group memberships.
+• Interview angle: “What is Active Directory and what have you done in it?”
+5.3 Everyday account tasks: resets, unlocks and verification
+• Verify identity first: follow policy before you change anything. Typical checks: employee ID, manager name, a call-back to the number on file, a prompt to an enrolled app, or approval from the manager. Never reset a password on the strength of an email or an unverified caller; this is exactly what social engineers exploit.
+• Resetting a password: reset the account, require a change at next sign-in, and give the temporary password through an approved private channel. Self-service password reset lets users do this themselves after verifying with MFA, which cuts ticket volume.
+• Account lockout: too many wrong attempts lock an account for a period. Unlock it, then find out why it locked: an old password saved on a phone, a mapped drive or a service using the old password.
+• Other states: the password has expired, the account is disabled, or the account has an expiry date.
+• Trust relationship errors: “the trust relationship between this workstation and the domain failed” usually means the computer’s own domain password is out of sync; it needs rejoining or resetting. Wrong clocks and long periods offline also cause it.
+• Hands-on: reset a password, unlock an account and track down a lockout source in the lab.
+• Interview angle: “A caller asks you to reset their manager’s password because the manager is travelling. What do you do?” (Do not; verify and use the approved process.)
+5.4 Multi-factor authentication and single sign-on
+• MFA (multi-factor authentication): requires two or more kinds of proof: something you know (password), something you have (phone, security key) and something you are (fingerprint, face).
+• Common methods: an authenticator app prompt (best with number matching), one-time codes, text messages (weaker), hardware security keys (FIDO2) and biometrics.
+• MFA fatigue: attackers spam approval prompts hoping the user taps approve. Users should deny unexpected prompts and report them.
+• Support issues: a new or lost phone, notifications turned off, a phone clock that is out of sync with code apps. Verify identity strongly before resetting someone’s MFA and register the new method.
+• Single sign-on (SSO): sign in once and reach many apps. A central identity provider tells each app who you are. If SSO is down, many apps fail at once, which is a clue.
+• Conditional access: rules such as “require MFA when signing in from outside the office” or “block unmanaged devices.”
+• Passwordless: Windows Hello and passkeys replace the password with a device-bound credential.
+• Hands-on: enroll an authenticator app and walk through a lost-phone scenario.
+• Interview angle: “A user got a new phone and cannot approve MFA. How do you help them safely?”
+5.5 Groups, permissions and access requests
+• The standard process: the user raises a request, the manager (or resource owner) approves, you add the user to the right group, you document it and confirm with the user. Avoid granting permissions to individuals directly.
+• Access objects: security groups for folders and apps, shared mailboxes and distribution lists for email, and Microsoft 365 groups for Teams and SharePoint (Unit 6).
+• Principles: least privilege, and separation of duties (no one person can complete a sensitive process alone).
+• Access denied troubleshooting: identify the exact resource and user; check group membership; check permissions on the resource and how they are inherited; remember that group changes usually apply only after the user signs out and back in; allow for sync delays between directories.
+• Hands-on: process three access requests, including one that should be refused.
+• Interview angle: “A user cannot open a shared folder after changing teams. What do you check?”
+5.6 Group Policy and device management basics
+• Group Policy: rules applied automatically to the computers and users in a domain, such as password requirements, mapped drives, security settings and desktop restrictions. Policies attach to OUs, so where an account or computer sits decides what applies.
+• Refreshing and checking: gpupdate /force refreshes policies; gpresult /r shows which policies applied and which did not.
+• Policy not applying: the computer or user is in the wrong OU, the machine cannot reach a domain controller (off the network, VPN down), or there has not yet been a refresh.
+• The cloud equivalent: many companies now manage devices with a cloud tool instead or as well (Unit 6 introduces Microsoft Intune).
+• Hands-on: run gpresult /r and identify one applied policy.
+• Interview angle: “What is Group Policy used for?”
+5.7 Onboarding, role changes and offboarding
+• Onboarding checklist: create the account using the naming standard, add role-based group memberships, create the mailbox, assign licenses, prepare and assign a device (imaged and asset-tagged), install the standard software, register MFA, give access to required systems and the building, and record everything in the ticket. Do it before the start date.
+• Movers: when someone changes role, add the new access and remove the old; otherwise people collect permissions over time.
+• Offboarding checklist: disable the account at the agreed time (do not delete it at once), reset the password, revoke active sessions and MFA methods, remove group memberships, hand over or convert the mailbox to the manager, preserve data as policy and legal requirements say, recover the laptop, phone and access cards, remove licenses after the retention period, and update asset records. For involuntary leavers, act immediately at the moment of notice.
+• Hands-on: write both checklists and complete an onboarding scenario in the lab.
+• Interview angle: “Walk me through what you do when an employee leaves the company.”
+5.8 Common identity troubleshooting patterns
+• “I can’t sign in”: wrong or expired password, locked or disabled account, wrong domain or username format, MFA problem, an incorrect device clock, a conditional access block, or no network path to the domain.
+• Works on one device but not another: a cached credential, a device that is not joined or compliant, or a conditional access rule.
+• Works in the browser but not the app: a cached or stale sign-in token. Sign out of the app, or clear its stored credentials in Windows Credential Manager.
+• Keeps asking for a password: stale saved credentials, a recently changed password, or an account needing MFA re-registration.
+• Where to look: the sign-in logs in the cloud identity service, the Security log in Event Viewer on Windows, and the account properties in ADUC.
+• Hands-on: diagnose five sign-in scenarios and write the note for each.
+• Interview angle: “A user cannot sign in to Outlook but can sign in to the browser. Where do you start?”
+Unit 6: Microsoft 365 and cloud
+6.1 What cloud and SaaS mean for support
+• Cloud: services that run on a provider’s servers and are used over the internet. SaaS (software as a service) is finished software you rent, such as Microsoft 365, Google Workspace or Salesforce. PaaS is a platform for building apps and IaaS is rented servers and storage.
+• Public, private and hybrid: public cloud is shared infrastructure run by a provider, private is dedicated to one organization, hybrid mixes cloud and on-premises systems.
+• Tenant: a company’s own private space inside a cloud service, for example its Microsoft 365 tenant.
+• Shared responsibility: the provider secures the platform; the customer secures its accounts, data and settings. Most cloud incidents come from account and configuration mistakes, not from the provider’s data center.
+• What changes for support: outages can be at the provider (check its service health page before troubleshooting locally), updates arrive without notice, and licenses decide who gets which features.
+• Hands-on: find the service health page of Microsoft 365 or Google Workspace and read how an incident is described.
+• Interview angle: “What is SaaS and how does supporting it differ from supporting software installed on a PC?”
+6.2 Microsoft 365 overview and licensing
+• What it is: a subscription that bundles apps and services: the Office apps (Word, Excel, PowerPoint, Outlook), Exchange Online (email and calendars), Teams (chat, meetings, calling), SharePoint Online (team sites and document libraries), OneDrive (personal cloud storage), Microsoft Entra ID (identity) and security and device management tools.
+• Licenses: each user is assigned a license, and the license decides which services they get. Typical families are business plans, enterprise plans and frontline worker plans. Plan names change, so verify in Microsoft’s documentation.
+• Classic license faults: a user with no mailbox, no Teams or a feature missing almost always lacks the right license. Licenses can be assigned to a user directly or through group membership.
+• Admin roles: Global Administrator (everything), User Administrator, Helpdesk Administrator (limited to tasks such as password resets), Exchange Administrator and others. Give help desk staff the smallest role that lets them work.
+• Admin portals: the Microsoft 365 admin center (users, licenses, service health), the Entra admin center (identity and sign-ins), the Exchange admin center, the Teams admin center and the Intune admin center.
+• Hands-on: in a trial or developer tenant, find a user, view their licenses and read the service health page.
+• Interview angle: “A new user has no mailbox. What do you check first?” (Their license.)
+6.3 Email: Exchange Online and Outlook
+• How email moves: the sender’s server uses SMTP to deliver to the recipient’s mail server, which is found through the domain’s MX DNS record. Exchange Online holds the mailboxes in Microsoft 365.
+• Mailbox types: user mailboxes, shared mailboxes (a mailbox several people open, often needing no license of their own), room and equipment mailboxes, and distribution lists or groups that fan one address out to many people.
+• Limits and retention: mailboxes have size limits and often an online archive; policies decide how long mail is kept.
+• Outlook basics: a profile ties Outlook to a mailbox; cached mode keeps a local copy (an OST file) for speed; the new and classic Outlook apps look different but connect to the same mailbox.
+• Common Outlook fixes: start in safe mode (outlook.exe /safe) to rule out add-ins, disable suspect add-ins, clear stored credentials, create a new profile, re-add the account, check the mailbox is not full, and test in the web version of Outlook. If the web version works, the problem is the desktop app or profile.
+• Bounce messages (NDRs): read the code. For example 550 5.1.1 means the address does not exist, 552 means the mailbox is full and 554 5.7.1 means the message was blocked.
+• Message trace: an Exchange admin tool that shows what happened to a message (delivered, filtered, quarantined, delayed).
+• Email authentication: SPF, DKIM and DMARC are DNS-based checks that help receivers confirm a message really came from the sender’s domain. Failures cause spoofed mail to be blocked and legitimate mail to land in junk.
+• Hands-on: send a message to a bad address and read the bounce; run a message trace; add a shared mailbox to Outlook.
+• Interview angle: “A user says they never received an important email. What do you do?” (Check junk and quarantine, run a message trace, check rules and forwarding, confirm the sender address.)
+6.4 Teams, OneDrive and SharePoint
+• Teams: chat, channels (inside teams), meetings and calls. A team is backed by a Microsoft 365 group, so membership controls access to its files. Common issues: audio and video (check the selected devices and OS privacy permissions), cannot join a meeting (wrong link, lobby, guest access), sign-in loops, a stale app cache, missing files (permissions). The browser version is a quick workaround.
+• OneDrive: personal work storage that syncs to the device. Files On-Demand shows files as cloud-only or available offline. Known Folder Move redirects Desktop, Documents and Pictures into OneDrive so they are backed up. Sync problems are usually sign-in state, a full quota, invalid characters or very long file paths, or sync paused. Deleted files go to a recycle bin for a limited period (commonly 93 days; verify your tenant’s setting).
+• SharePoint: sites hold document libraries, lists and pages. Permissions are managed through groups such as Owners, Members and Visitors, and inherited by default. Libraries can be synced to a computer, files keep version history, and several people can edit together.
+• Sharing links: anyone with the link, people in the organization, or specific people. Prefer specific people for anything sensitive, and follow the company’s external sharing policy.
+• Access denied: check the user’s membership in the site or team, the sharing permissions on the item, and whether a link has expired.
+• Hands-on: share a file with a specific person, restore a deleted file from the recycle bin and sync a library.
+• Interview angle: “A OneDrive folder stopped syncing. What do you check?”
+6.5 Microsoft 365 admin tasks for the service desk
+• Everyday tasks: create and disable users, assign and remove licenses, reset passwords, manage group membership, create shared mailboxes and delegate access, review service health, run message traces, read sign-in logs and audit logs (who did what).
+• Portal or PowerShell: the portal suits one-off tasks; PowerShell (including the Microsoft Graph module) suits bulk work. Test on one account first.
+• Take care with impact: removing a license can start the deletion of that user’s data after a grace period, so follow the offboarding process (Unit 5) before changing licenses.
+• Always: have an approved ticket, make one change at a time, record exactly what you changed, and confirm with the user.
+• Hands-on: in a trial tenant, create a user, assign a license, add them to a team and a shared mailbox, then disable the user.
+• Interview angle: “How would you set up a new starter with email, Teams and access to a shared mailbox?”
+6.6 Device management: Intune and mobile devices
+• Endpoint management: tools that configure, secure and update many devices from one place. Microsoft Intune is Microsoft’s cloud-based option. Alternatives you may meet include Jamf and Kandji (Apple devices), VMware Workspace ONE, ManageEngine Endpoint Central and Microsoft Configuration Manager (the older, on-premises approach).
+• Core ideas: enrollment (registering a device with the service), compliance policies (for example must be encrypted, have a PIN and be up to date), configuration profiles (settings pushed to devices), and app deployment.
+• Remote actions: sync, restart, lock, reset passcode, retire (remove company data) and wipe (factory reset).
+• Autopilot: a new Windows device signs in for the first time and configures itself from the cloud, so IT does not hand-build each laptop.
+• Compliance and access: conditional access (Unit 5) can block devices that are not compliant, which is why a device can lose access to email after missing an update.
+• Mobile devices: company-owned phones are fully managed; personal phones (BYOD) usually enroll with app protection that separates and protects company data. The Company Portal app is where users enroll and install approved apps.
+• Troubleshooting: a device shows non-compliant (read the reason), a device is not syncing (force a sync, check connectivity and sign-in), an app is not installing (assignment, license, device group, install status), enrollment fails (device limit, missing license, an old enrollment still present).
+• Hands-on: enroll a test device in a trial tenant and review its compliance status.
+• Interview angle: “A user’s laptop lost access to email overnight. What could cause that?” (Non-compliance flagged by device management, a changed password, MFA registration, or a conditional access rule.)
+6.7 Other cloud suites and cloud habits
+• Google Workspace: Gmail, Calendar, Drive, Docs, Meet and an admin console. The tasks match Microsoft 365: users, groups, licenses, shared drives, account recovery and security settings.
+• Other common cloud apps: Slack, Zoom, Dropbox, Box and Salesforce. Each has its own admin console and sign-in settings, often tied to a single sign-on provider.
+• Backup of cloud data: sync and version history are not the same as a backup. Many companies add a separate backup for SaaS data.
+• Handling a cloud outage: check the provider’s status page, tell users it is a provider issue with an expected update time, offer workarounds, and do not spend time troubleshooting machines that are not at fault.
+• Hands-on: compare the admin console of two suites and map the same task (add a user, reset a password) in each.
+• Interview angle: “How is administering Google Workspace similar to and different from Microsoft 365?”
+Unit 7: Security basics
+7.1 Security fundamentals
+• CIA triad: confidentiality (only the right people see data), integrity (data is not changed improperly) and availability (systems and data are usable when needed). A leaked HR file breaks confidentiality, a tampered invoice breaks integrity, and ransomware attacks availability.
+• Threat, vulnerability, risk: a threat can cause harm, a vulnerability is a weakness it can exploit, and risk is the likelihood and impact.
+• Threats you will actually see: phishing, malware and ransomware, stolen or reused passwords, lost devices, unpatched software, mistakes by staff and unapproved tools (shadow IT).
+• Defense in depth: several layers of protection so one failure does not expose everything. Zero trust means no device or user is trusted automatically, and every request is verified.
+• Why the help desk matters: you are often the first to see the signs. A culture of reporting early prevents small events becoming major incidents.
+• Hands-on: map three real incidents to the CIA triad.
+• Interview angle: “Explain confidentiality, integrity and availability with examples.”
+7.2 Phishing and social engineering
+• Phishing: fraudulent messages that pretend to be trusted senders. Variants: spear phishing (targeted at one person), whaling (aimed at executives), smishing (text messages), vishing (phone calls), QR code phishing and business email compromise (a fake or hijacked mailbox asking for payments or data).
+• Red flags: urgency or threats, a sender address or link that does not match the real organization (hover to see the true address), unexpected attachments, requests for credentials, payments or gift cards, and unusual requests from known people.
+• Social engineering at the help desk: callers may pretend to be an executive or a colleague in a hurry. Pretexting (a made-up story) and tailgating (following someone through a secure door) are common. Your protection is the identity verification policy, applied to everyone.
+• If a user clicked or entered a password: do not blame them. Treat it as a security incident: have them disconnect if instructed, reset the password and sessions, check for forwarding rules, notify the security team and record exact times.
+• Reporting: most mail systems have a report phishing button, which also helps filtering.
+• Hands-on: analyze ten sample emails and write a short script for handling a suspicious caller.
+• Interview angle: “A user entered their password on a fake sign-in page. What do you do?”
+7.3 Malware and endpoint protection
+• Types: virus (attaches to files), worm (spreads by itself), trojan (pretends to be useful), ransomware (encrypts files and demands payment), spyware and keyloggers (steal information), adware, rootkits (hide deep in the system) and botnets (networks of hijacked machines).
+• Signs of infection: unusual slowness, pop-ups, unknown programs, browser redirects, security software switched off, files that will not open or have new extensions, a ransom note.
+• Protection: antivirus and EDR (endpoint detection and response, which monitors behavior and can isolate a device), timely patching, firewalls, least privilege, email filtering, application control, user training and good backups.
+• Response steps: isolate the device from the network (disconnect or use the security tool’s isolate function), follow policy on powering off so evidence is kept, notify the security team, do not reuse the device until it is cleaned or reimaged, reset passwords from a clean device, and check whether others are affected.
+• Ransomware: the standard advice is to restore from backups and avoid paying; the decision belongs to leadership and legal advisers. Offline or immutable backups are what make recovery possible.
+• Hands-on: run a scan, read an example security alert and rehearse isolating a lab machine.
+• Interview angle: “A laptop shows a ransom note. What are your first three actions?”
+7.4 Passwords, encryption, data protection and backups
+• Password hygiene: long passphrases, a different password for every service, a password manager and MFA. Never share passwords, and never write them on sticky notes.
+• Encryption: at rest (data on a disk, with BitLocker on Windows, FileVault on macOS and LUKS on Linux) and in transit (HTTPS or TLS in browsers, and VPNs). Without the key, encrypted data is unreadable.
+• Recovery keys: BitLocker keeps a recovery key, usually stored in the directory or device management tool. You may be asked to retrieve it after a hardware change; verify the user’s identity first. manage-bde -status shows a drive’s encryption state.
+• Data classification: labels such as public, internal, confidential and restricted decide how data can be shared and stored. DLP (data loss prevention) tools help stop sensitive data leaving.
+• Privacy law: many places have data protection laws, such as GDPR, UK GDPR and Kenya’s Data Protection Act. Support staff must handle personal data only as needed and report suspected breaches promptly.
+• Backups: the 3-2-1 rule means three copies of data, on two kinds of media, with one copy offsite. Test restores regularly. RPO (recovery point objective) is how much data loss is acceptable, and RTO (recovery time objective) is how quickly service must return.
+• Hands-on: check BitLocker status on a lab machine and retrieve its recovery key.
+• Interview angle: “What is the 3-2-1 backup rule and why test restores?”
+7.5 Physical and device security
+• Everyday habits: lock the screen when leaving (Windows key + L), keep a clean desk, protect sensitive screens from shoulder surfing, and do not leave devices unattended.
+• Access to buildings and rooms: badges, visitor sign-in and escorts, challenging tailgaters politely, locked network and server rooms.
+• Lost or stolen devices: report at once, lock or wipe remotely, reset passwords and revoke sessions for accounts used on it.
+• Secure disposal: wipe or physically destroy drives and keep a record, because old disks can leak data.
+• Risky behavior: unknown USB drives (a classic attack), public Wi-Fi without a VPN, and charging from untrusted public ports.
+• Hands-on: write a one-page lost-laptop procedure.
+• Interview angle: “An employee’s laptop was stolen from their car. What do you do?”
+7.6 Security incidents: recognize, report, respond
+• What counts: a phishing success, malware, a lost device, unauthorized access, a data leak or an account that looks compromised.
+• Your role: recognize and record it, contain only what procedure allows, escalate to the security team immediately, preserve evidence (do not delete emails, keep screenshots and exact times), keep calm, and do not speculate publicly.
+• Incident response phases: preparation, detection and analysis, containment, eradication, recovery, and lessons learned.
+• What to capture in the ticket: who, what, when, which systems and data, what has been done, and who has been told.
+• Obligations: breach notification rules can apply, and the security, legal or compliance team decides what to report and to whom.
+• Hands-on: run a tabletop exercise for three scenarios: a phishing click, a missing laptop and an account sending spam.
+• Interview angle: “You suspect a user’s account has been compromised. What do you do?”
+7.7 Security habits for people with privileged access
+• Separate accounts: use a normal account for email and browsing and an admin account only for admin work.
+• Remote sessions: get the user’s consent, tell them what you are doing, end the session when done and close any tools you opened.
+• Sensitive tickets: HR, finance and executive matters need extra care and a need-to-know approach.
+• Ethics: never browse mailboxes, files or messages without an approved reason, because access is logged and audited.
+• Own mistakes: report them immediately. A quickly reported mistake is a small incident; a hidden one becomes a big one.
+• Hands-on: write your own short code of conduct for working with user data.
+• Interview angle: “You see something confidential while helping a user. What do you do?”
+Unit 8: Troubleshooting method and remote support
+8.1 A structured troubleshooting method
+• Six steps (the classic method): 1. Identify the problem: gather information, question the user, find the symptoms, ask what changed and try to reproduce it. 2. Establish a theory of probable cause, starting with the obvious. 3. Test the theory; if it is wrong, form a new theory or escalate. 4. Plan and carry out the fix, thinking about side effects and approvals. 5. Verify that everything works and put preventive measures in place. 6. Document what you found, did and the outcome.
+• Ways to search for the cause: top-down (start at the application), bottom-up (start at the cable and hardware), divide and conquer (test the middle and move toward the fault), follow the path of the data, compare a working machine with the broken one, and swap in a known-good part.
+• Discipline: change one thing at a time, undo changes that did not help, keep notes as you go, and rule out the simple things first (power, plug, restart, correct account).
+• Scope questions: one user or many? One app or the whole machine? Always or sometimes? Since when? What changed?
+• Time-boxing: set a limit (for example 15 to 20 minutes) after which you escalate with your notes instead of struggling alone.
+• Hands-on: apply the six steps in writing to five different problems.
+• Interview angle: “Walk me through how you troubleshoot a problem you have never seen before.”
+8.2 Gathering information well
+• Questions that help: What exactly happens? What is the exact error text or code? When did it begin? Has it ever worked? What changed (update, new software, moved desks, password change)? Who else is affected? How urgent is it for your work?
+• Evidence to collect: a screenshot or short screen recording, the exact error text, the device name, the operating system version, the network and location (office, home, VPN), and relevant logs such as exported Event Viewer entries or the output of ipconfig /all and systeminfo.
+• Reading error messages: copy the text exactly, note any code, and search for it with the product name. Do not paraphrase an error from memory.
+• Check before you dive in: the knowledge base, recent changes, known issues, and outage notices.
+• Question technique: avoid leading questions (“You clicked a link, right?”), confirm each answer, and let the user finish describing.
+• Hands-on: take five vague statements (“it doesn’t work”, “the internet is slow”) and write the questions that turn each into a clear problem statement.
+• Interview angle: “What do you ask when a user simply says ‘my computer is broken’?”
+8.3 Remote support tools and etiquette
+• What they are: remote support tools let a technician see and sometimes control a user’s screen. Examples by kind: built into Windows (Quick Assist, and Remote Help through device management), Remote Desktop Protocol (RDP) for connecting to a computer on the network, commercial tools (TeamViewer, AnyDesk, ConnectWise ScreenConnect, Splashtop, Zoho Assist), screen sharing and control inside Teams, Apple’s screen sharing, and SSH for command-line access to Linux and network devices.
+• RMM platforms: remote monitoring and management tools (for example NinjaOne, Datto RMM, N-able and ConnectWise Automate) let IT monitor many devices, run scripts and patch them. Managed service providers use them heavily.
+• Attended versus unattended: attended means the user is present and approves the session; unattended means the technician can connect without the user, which needs strong controls and consent policies.
+• Etiquette: ask permission, explain what you will do, ask the user to close private windows, narrate your actions, do not change unrelated settings, never ask the user for their password (let them type it themselves), end the session when finished, and confirm the fix with the user before closing.
+• Security: use only approved tools. Teach users that legitimate IT will not contact them unprompted and ask for remote access; support scams do exactly that.
+• Troubleshooting the tools: a firewall or VPN blocking the tool, an expired session code, an elevation prompt you cannot click remotely, or poor performance on a slow link. Have a fallback such as the phone or a screen share.
+• Hands-on: run a Quick Assist session with a friend or a lab machine and complete a small task.
+• Interview angle: “What would you do before and after taking remote control of a user’s PC?”
+8.4 Troubleshooting by phone or chat without screen access
+• Guide step by step: one instruction at a time in plain words (“Press the Windows key and type Settings”), and ask the user to describe what they see after each step.
+• Confirm the basics early: which device, which operating system and where they are working.
+• Use screenshots: ask users to send one when words are not enough, and avoid asking for sensitive content to be shared in a public chat.
+• Pace and tone: slow down for anyone nervous, summarize what you did, and check they are comfortable before ending.
+• Know when to switch: move to remote control, a call or an in-person visit when the steps become too complex or the user is struggling.
+• Accessibility: adapt for users with visual, hearing or motor needs.
+• Hands-on: role-play guiding a non-technical user to find their IP address and run a ping.
+• Interview angle: “How would you walk someone through a fix when you cannot see their screen?”
+8.5 The scenario bank (60 or more realistic scenarios)
+Every scenario in the practice tool follows the same pattern: the user’s symptom statement, the clarifying questions to ask, likely causes ranked by probability, the steps to test, the resolution, a model ticket note and a prevention tip. Categories and examples:
+• Printing: cannot print; prints blank pages; prints to the wrong printer; printer offline; scan-to-email fails.
+• Boot and hardware: laptop will not turn on; black screen; battery drains fast; USB device not recognized; second monitor not detected; keys not working; laptop overheating; clicking noise from the drive.
+• Windows and apps: slow after an update; app keeps crashing; blue screen; disk full; cannot install software (needs admin rights); damaged user profile; update stuck; wrong clock; sign-in loop.
+• Network: no internet; Wi-Fi drops; cannot reach the file share; VPN fails; slow internet; website blocked; DNS failure; 169.254 address; mapped drive missing.
+• Accounts and access: password reset; locked account; MFA not working; access denied to a folder; new starter cannot sign in; shared mailbox missing.
+• Email and Microsoft 365: Outlook keeps asking for a password; mailbox full; missing email; calendar invite problems; cannot join a Teams meeting; OneDrive not syncing; cannot open an attachment.
+• Security: phishing reported; suspected malware; lost laptop; found USB stick; suspicious caller asking for a reset.
+• Mobile: email not syncing on a phone; phone will not join Wi-Fi; MFA after getting a new phone.
+• Peripherals: headset not detected in a meeting; webcam not working; docking station not working.
+• Hands-on: complete the scenarios in the practice tool, writing notes and a user update for each.
+• Interview angle: interviewers often give you a scenario and watch your method more than the answer.
+Unit 9: Help desk tools tour
+You now know what a ticket, a queue, a knowledge base and a remote session are. This unit names the products that deliver those ideas. Tool details change, so confirm names, plans and features in each vendor’s own documentation.
+9.1 The tool landscape by category
+• Ticketing and ITSM platforms (where tickets live): Jira Service Management, ServiceNow, Zendesk, Freshservice, ManageEngine ServiceDesk Plus, HaloITSM, TOPdesk, Zoho Desk, SolarWinds Service Desk, Ivanti and BMC Helix. Open-source options include osTicket and GLPI. Many small teams start with a shared mailbox.
+• Remote support and RMM: Quick Assist, TeamViewer, AnyDesk, ConnectWise ScreenConnect, NinjaOne, Datto RMM and N-able.
+• Identity and directory: Active Directory, Microsoft Entra ID, Okta, Google Workspace and JumpCloud.
+• Endpoint management: Microsoft Intune, Jamf, Workspace ONE, Kandji and ManageEngine Endpoint Central.
+• Monitoring and alerting: Nagios, Zabbix, PRTG, SolarWinds and Datadog.
+• Knowledge and documentation: the knowledge base built into a ticketing tool, Confluence, SharePoint, Notion and Guru.
+• Asset management: the configuration database inside an ITSM platform, plus tools such as Lansweeper and Snipe-IT.
+• Communication: Teams, Slack, email and phone systems.
+• Password managers and privileged access: Bitwarden, 1Password and privileged access tools such as CyberArk.
+• Why companies differ: size, budget, existing vendors and regulations decide the stack. Job advertisements list tools to show what is used, but the concepts transfer from one tool to another.
+• Hands-on: make your own chart placing each of these tools in its category.
+9.2 Same ideas, different names
+• Ticket: an incident or request in ServiceNow; an issue or request in Jira; a ticket in Zendesk and Freshservice; a request in ServiceDesk Plus.
+• Queue or list of work: a queue in Jira Service Management; a view in Zendesk; lists and filters in ServiceNow; ticket views in Freshservice.
+• Workflow and status: statuses and a workflow in Jira; a state in ServiceNow; ticket statuses such as New, Open, Pending, On-hold, Solved and Closed in Zendesk; statuses in Freshservice.
+• Category or type of request: a request type in Jira; category, subcategory and catalog items in ServiceNow; ticket forms in Zendesk; catalog items in Freshservice.
+• Assignment: assignee and queue in Jira; assignment group and assigned to in ServiceNow; group and agent in Zendesk and Freshservice.
+• SLA: SLA goals in Jira; SLA definitions in ServiceNow; SLA policies in Zendesk and Freshservice.
+• Automation: automation rules in Jira; business rules and flows in ServiceNow; triggers and automations in Zendesk; the workflow automator in Freshservice.
+• Saved replies: canned responses in Jira and Freshservice; macros in Zendesk.
+• Knowledge base: knowledge articles in ServiceNow; the help center in Zendesk; solution articles in Freshservice; Confluence pages linked to Jira Service Management.
+• Public versus internal comments: a reply to the customer versus an internal note exists in every tool, with different labels (in ServiceNow, additional comments are visible to the customer and work notes are internal).
+• Takeaway: learn the concepts from Unit 1 first. A new tool is mostly a new vocabulary on the same ideas, and labels vary by version and by how an administrator configured it.
+• Interview angle: “Which ticketing tools have you used?” An honest answer names what you practiced and explains how the concepts transfer.
+9.3 The practice tool’s terminology switch
+• The in-app practice tool can relabel the same fields the way each product names them, so the same scenario can be worked with ServiceNow-style, Jira-style, Zendesk-style or Freshservice-style words. Use it after each tool tour to prove the ideas transfer.
+9.4 Tool tour: Jira Service Management (from zero)
+• What Jira is: Jira is work-tracking software from Atlassian. Teams track units of work called issues inside projects. Atlassian’s related products include Jira Service Management (for IT and service teams), Jira Software (for software development teams) and Confluence (documents and a knowledge base). Packaging and product names change, so verify the current lineup.
+• What Jira Service Management is: the version used for help desks. It adds a customer portal, request forms, queues for agents, SLAs, approvals and automation on top of the Jira foundation.
+• Why companies choose it: many already use Atlassian tools, workflows are flexible, automation is built in, and it connects well with software development tools. It is offered in cloud and self-managed forms (verify current options and pricing).
+• People: customers raise requests and generally need no paid license; agents work the requests and do need one; administrators configure projects (verify licensing details).
+• Vocabulary, one term at a time:
+• Project: the container for one team’s requests, for example an IT Support project.
+• Request (also called an issue): a single ticket. It has a key made of the project key and a number, such as ITSM-123.
+• Request type: the form a customer picks, such as Get IT help or Request new software. It decides which fields appear and which workflow runs.
+• Customer portal: the web page where customers raise and track requests. Email and chat tools can also create requests.
+• Queue: a filtered list of requests for agents, such as Unassigned, My open requests or Breached SLAs.
+• Workflow and status: the statuses a request moves through (for example Open, In Progress, Waiting for customer, Resolved, Closed) and the allowed transitions between them.
+• SLA: goals such as time to first response and time to resolution, with clocks that pause in chosen statuses.
+• Priority, impact and urgency: fields that help triage. Service project templates also separate incidents, service requests, changes and problems.
+• Automation rules: when something happens (trigger), check a condition, then do an action, for example auto-assign by category, notify a manager on breach, or close a request after five days of waiting.
+• Knowledge base: articles in Confluence suggested to customers on the portal, which reduces tickets.
+• JQL (Jira Query Language): a search language for requests, for example project = ITSM AND status = Open AND priority = High ORDER BY created DESC. Useful helpers include currentUser() and startOfDay(). Saved searches become filters and feed dashboards.
+• Comments: reply to the customer (public) or add an internal note (private). The same rule from Unit 1 applies.
+• Approvals and reports: some requests need approval before work starts; reports show SLA performance and created-versus-resolved trends.
+• An agent’s day: open a queue, take or assign a request, read it, ask the customer questions through a public reply, do the work, move the status, add resolution details, and let the customer confirm.
+• Mapping to Unit 1: request or issue equals ticket, queue equals the queue of work, request type equals category and form, workflow equals lifecycle.
+• Hands-on: create a free or trial site if one is available (verify), build an IT service project from a template, add three request types, create a queue, set an SLA, write an automation rule, write five JQL searches, and resolve five practice requests.
+• Interview angle: “Have you used Jira? What is JQL?” A short, honest answer that shows you understand requests, queues, workflows, SLAs and basic JQL is enough.
+9.5 Tool tour: ServiceNow
+• What it is: a large enterprise platform (the Now Platform) used by big organizations for IT service management and for other departments such as HR and security.
+• Core records: Incident, Service Request (and its requested items), Change, Problem, Knowledge articles and the CMDB (configuration management database: the records of devices, applications and how they relate).
+• Key fields and ideas: assignment group and assigned to; a state field (for example New, In Progress, On Hold, Resolved, Closed); priority calculated from impact and urgency; SLA definitions; the service catalog for requestable items.
+• Comments: work notes are internal; additional comments go to the user.
+• Automation: business rules and flows react to changes and run actions.
+• Interfaces: lists with filters and views, forms, an employee portal and a virtual agent (chatbot), plus dashboards and reporting.
+• An agent’s flow: open the incident list, open a record, read the fields, add work notes, update the state, resolve with resolution notes and a code, then let it close.
+• Learning it: ServiceNow has offered free personal developer instances for learning; verify what is currently available.
+• Interview angle: “Have you used ServiceNow?” If not, describe the record types and how they map to the ticket lifecycle you know.
+9.6 Tool tour: Zendesk
+• What it is: a ticketing tool built first for customer support, also used for internal help desks.
+• Core ideas: a ticket has a requester, an assignee and a group. Common statuses are New, Open, Pending, On-hold, Solved and Closed.
+• Productivity tools: views (lists of tickets), macros (saved replies and actions), triggers (run when a ticket changes), automations (run based on time), and SLA policies.
+• Customer-facing pieces: a help center (knowledge base), several channels (email, chat, voice, messaging) and satisfaction ratings.
+• An agent’s flow: pick a ticket from a view, reply publicly or add an internal note, apply a macro, set the status, solve it.
+• Hands-on: if a free trial is available, create a view, a macro and a trigger.
+• Interview angle: “What is the difference between a trigger and an automation?” (An event versus a timer.)
+9.7 Tool tour: Freshservice
+• What it is: Freshworks’ IT service management tool for small and mid-size teams. Freshdesk is its sibling for customer support.
+• Core ideas: tickets with incident and service request types, problem, change and release management, a priority matrix, SLA policies, agent groups, canned responses, solution articles and a service catalog.
+• Automation: the workflow automator and scenario automations chain several actions.
+• Assets: a built-in asset and configuration database.
+• Hands-on: create a catalog item, an SLA policy and a canned response in a trial.
+• Interview angle: compare how it handles the same incident-to-resolution flow as other tools.
+9.8 Tool tour: ManageEngine ServiceDesk Plus
+• What it is: an ITSM suite from ManageEngine (part of Zoho Corporation), available as cloud or self-hosted software, often chosen by mid-size organizations. It includes asset management and a configuration database.
+• Core ideas: requests (tickets), requesters and technicians, templates, business rules, SLAs, solutions (knowledge articles), change and problem management, and technician groups.
+• Hands-on: request a trial and map its screens to the ticket lifecycle.
+• Interview angle: show that you recognize the same building blocks.
+9.9 Short comparison cards for other tools
+• HaloITSM: flexible and popular with managed service providers.
+• TOPdesk: widely used in parts of Europe, strong service management focus.
+• Zoho Desk: the help desk product from Zoho, suited to teams already using Zoho apps.
+• SolarWinds Service Desk, Ivanti and BMC Helix: established enterprise-style platforms.
+• Atera, NinjaOne and Datto: MSP-oriented platforms that combine ticketing with remote monitoring and management.
+• osTicket and GLPI: open-source tools you can host yourself. GLPI also covers assets.
+• Starter options: a shared mailbox with a simple tracking list is how many small teams begin.
+• Check before relying on any tool: availability, licensing and whether the vendor still supports it, because products are renamed, merged and retired.
+• How to choose: team size, budget, integrations, how formal the processes are, reporting needs, ease of use and whether it is for internal staff or external customers.
+• Hands-on: recommend a tool for a 30-person company and justify the choice in five lines.
+• Interview angle: “How would you learn a new ticketing tool quickly?” (Map it to the concepts you know, read the vendor guides, and practice in a sandbox.)
+9.10 Hands-on lab plan
+• Build a mini service desk: in one free or trial tool, set up a portal or form, request types, a queue, an SLA, an automation and a knowledge base article.
+• Prove it transfers: recreate two of those ideas in a second tool, using the terminology switch for practice.
+• Capture it: screenshots and a short write-up make a strong portfolio piece.
+Unit 10: ITSM in practice
+10.1 ITSM and ITIL 4 in plain terms
+• ITSM (IT service management): how an IT team designs, delivers, supports and improves services so the business can work. The help desk is its front door.
+• ITIL: a widely used framework of good practice for ITSM. ITIL 4 is the current major version. It describes a service value system: guiding principles, governance, a service value chain (plan, improve, engage, design and transition, obtain or build, deliver and support) and a set of practices.
+• Practices the help desk touches daily: service desk, incident management, service request management, problem management, change enablement, knowledge management, service level management, monitoring and event management, IT asset management, service configuration management, and continual improvement.
+• The seven guiding principles: focus on value, start where you are, progress iteratively with feedback, collaborate and promote visibility, think and work holistically, keep it simple and practical, and optimize and automate.
+• Certification: ITIL 4 Foundation is the entry-level qualification (verify the current exam details).
+• Other frameworks you may hear about: COBIT and ISO/IEC 20000. You do not need depth in them for an entry-level role.
+• Hands-on: explain ITIL to a non-technical friend in under two minutes.
+• Interview angle: “What is ITIL and how does it affect your daily work?” A good answer links it to consistent incident, request, problem and change handling.
+10.2 Incident management in depth
+• Goal: restore normal service as fast as possible, even with a workaround, and keep the user informed.
+• The flow: log, categorize, prioritize, do an initial diagnosis, escalate if needed, investigate, resolve and recover, confirm with the user and close.
+• Incident models: predefined steps for common incident types so analysts handle them the same way.
+• Links to other records: a major incident for large events (10.6), a problem record when the cause is unknown or repeating (10.4), and a change record when a change caused it.
+• Communication rhythm: the higher the priority, the more often the user hears from you. For example a P1 update every 30 minutes and a P3 update when something changes.
+• Resolved, then confirmed, then closed: do not close until the user agrees or the auto-close period passes.
+• Measures: time to resolve (the average is often called MTTR) and first contact resolution.
+• Hands-on: work five incidents in the practice tool with updates at the right intervals.
+• Interview angle: “Take me through how you handle an incident from the first call to closure.”
+10.3 Service request management and the service catalog
+• Service request: a standard, repeatable ask such as a new laptop, a software install or access to a folder. The steps are known in advance, so they can be automated.
+• Service catalog: a menu of the services users can request. Each item has a description, a form, an approval rule, a target delivery time and sometimes a cost.
+• Approvals: some requests are pre-approved because they are low risk; others need a manager or an owner’s approval before work begins.
+• Fulfillment workflow: request, approval, tasks for the teams involved (for example procurement, then IT setup), delivery, confirmation and closure.
+• Common confusion: a request is not an incident. “I need Adobe installed” is a request; “Adobe crashes” is an incident.
+• Automation: onboarding is a good candidate, since one request can create the account, license, device and access tasks together.
+• Hands-on: design a catalog item called New laptop with its form fields, approvals and tasks.
+• Interview angle: “What is the difference between an incident and a service request, with examples?”
+10.4 Problem management
+• Reactive and proactive: reactive problem management investigates after incidents; proactive looks for trends before more incidents occur.
+• Records and terms: a problem record links the related incidents. A known error is a problem whose cause is understood and for which a workaround exists. A known error database keeps these so analysts can resolve repeat incidents faster.
+• Root cause analysis methods: the 5 Whys (keep asking why until you reach a cause you can act on), a fishbone diagram (group possible causes by category) and a timeline of events.
+• Example: the third-floor Wi-Fi keeps dropping (many incidents), root cause found as faulty access point firmware, workaround is to move users to another access point, permanent fix is a firmware update delivered through a change.
+• Closing a problem: the cause is removed through a change, related incidents are linked and closed, and the knowledge base is updated.
+• Hands-on: run a 5 Whys exercise on a repeated printer failure.
+• Interview angle: “What is the difference between an incident and a problem?”
+10.5 Change enablement
+• Purpose: make changes to services safely, with as little disruption as possible.
+• Types: a standard change is pre-approved, low risk and repeatable (installing approved software); a normal change is assessed and approved before it happens (often by a change advisory board, or CAB); an emergency change is an urgent fix handled with a fast approval path.
+• A good change request has: a description and reason, an impact and risk assessment, an implementation plan, a test plan, a back-out (rollback) plan, a schedule or maintenance window, communication to affected users, and approvals.
+• After the change: verify it worked and review what happened. Many incidents are caused by changes, so reviewing them matters.
+• Freeze periods: times such as month-end or a launch when changes are restricted.
+• The help desk’s role: raise change requests, respect approved windows, tell users about planned maintenance, and never make unauthorized changes.
+• Hands-on: write a change request for rolling out a security update to 200 laptops, with a rollback plan.
+• Interview angle: “What is a CAB and why do we need approval for changes?”
+10.6 Major incidents and communication
+• Major incident: an incident with serious business impact (usually P1) that needs a coordinated response instead of normal queue handling.
+• Roles: an incident manager or commander who leads, technical leads who investigate, a communications lead who writes updates, and a scribe who keeps a timeline.
+• Working method: a shared call or chat channel (often called a bridge or war room), a fixed update rhythm, a status page or banner for users, and no speculation about causes before they are confirmed.
+• Post-incident review: a blameless review of the timeline, root cause, what worked and what to improve, ending with owned actions.
+• Help desk role: link new tickets to the major incident instead of working them separately, use the approved wording, update the banner, take accurate notes and keep calm with users.
+• Update template: what is affected, what we know, what we are doing, workaround if any, next update time.
+• Hands-on: write three status updates for a simulated email outage: first notice, progress and resolution.
+• Interview angle: “How would you handle a flood of calls during a company-wide outage?”
+10.7 Asset management and the CMDB
+• Asset: something of value that IT owns or manages, such as a laptop, a phone, a license or a server. Track the asset tag, serial number, owner, location, warranty and assigned user.
+• Lifecycle: procure, deploy, maintain, retire. Records must change when a device is swapped, reassigned or disposed of.
+• Software licenses: know what you own and use, to stay compliant and avoid paying for unused seats.
+• CMDB (configuration management database): records configuration items (servers, applications, services) and how they relate. It supports impact analysis (what breaks if this fails), change risk checks and faster diagnosis.
+• The challenge: a CMDB is only useful if it is accurate, which is why discovery tools and disciplined updates matter.
+• Help desk tasks: check the asset record when a ticket arrives, record the affected item in the ticket, and update asset data when you swap or issue equipment.
+• Hands-on: create asset records for five devices with the key fields.
+• Interview angle: “Why does keeping asset records accurate matter?”
+10.8 Metrics, reporting and continual improvement
+• Common measures: first response time, resolution time, first contact resolution rate, SLA compliance percentage, backlog and ticket age, reopen rate, ticket volume by category and channel, customer satisfaction (CSAT), escalation rate and cost per ticket. For phone teams: abandonment rate, average speed to answer and average handle time.
+• Reading a dashboard: look at trends and top categories, not one day’s number. A rising reopen rate suggests fixes are not holding.
+• Gaming risks: pressure on speed can lead to closing tickets too early. Balance speed with quality and customer satisfaction.
+• Continual improvement: find the most common repeat issues, remove the root cause, write a knowledge article, automate what can be automated, and use user feedback and post-incident reviews as input.
+• Hands-on: read a sample dashboard and suggest three improvements.
+• Interview angle: “How would you measure whether a help desk is doing well?”
+10.9 Working shifts, queues and workload
+• Picking work: work by priority and deadline pressure, not by what is easiest. Avoid cherry-picking simple tickets.
+• Teamwork: swarm on urgent problems, share what you learn in the team channel, and ask for help early.
+• Handover notes: at shift change, summarize open high-priority tickets, what you tried, what is waiting and who needs a call back.
+• On-call: know the escalation path and keep your phone and laptop ready; record every out-of-hours action.
+• Workload and wellbeing: take breaks, avoid taking on more than you can finish, and flag overload to your lead.
+• Hands-on: write a handover note for three open tickets.
+• Interview angle: “How do you decide what to work on when the queue is full?”
+Unit 11: Interview readiness
+11.1 How help desk interviews work
+• Typical stages: a recruiter or HR screen, a phone or video technical screen, a panel or in-person interview (technical and behavioral), sometimes a practical exercise (write a ticket note, troubleshoot a scenario), and a final conversation with the manager.
+• What interviewers look for: clear communication, patience and customer focus, a troubleshooting method, willingness to learn, reliability, honesty about what you do not know, teamwork and basic technical knowledge.
+• Red flags to avoid: bluffing, blaming past employers, rambling answers, heavy jargon with non-technical listeners, and having no questions of your own.
+• Prepare: research the company and its services; read the job description and match each requirement to something you have done or studied; prepare five STAR stories; prepare questions to ask; test your camera, microphone and connection for video interviews; and arrive early.
+• Follow up: send a short thank-you message the same day.
+• Hands-on: highlight every tool and skill in a job advertisement and note where you stand on each.
+11.2 Behavioral questions and the STAR method
+• STAR: Situation (the context), Task (what you had to do), Action (what you did, saying I rather than we), Result (the outcome, with numbers if possible). Add a one-line lesson learned. Aim for 1 to 2 minutes.
+• Common questions and what they test: a difficult customer (empathy and calm), a mistake you made (honesty and learning), several urgent tasks at once (prioritizing), learning something new quickly (adaptability), a disagreement with a colleague (teamwork), going above and beyond (ownership), explaining something technical to a non-technical person (communication), and a time you did not know the answer (honesty and research).
+• A short example (difficult customer): Situation: a user shouted because their laptop would not connect before a presentation. Task: get them working and keep them calm. Action: I acknowledged the pressure, asked two focused questions, found the Wi-Fi password had changed, reconnected them and offered a wired backup. Result: they presented on time and sent thanks to my manager.
+• If you lack job experience: use study projects, a home lab, volunteering, or stories from other jobs where you served customers, handled pressure or solved problems.
+• Hands-on: write and rehearse five STAR stories aloud, timing each one.
+11.3 The technical question bank (150+ in the app; samples with answer pointers here)
+The app holds more than 150 questions with full model answers. These samples show the topics and what a strong answer contains.
+Role and fundamentals
+• What does a help desk analyst do? First point of contact; log, diagnose, fix or route; communicate; document.
+• What happens when you receive a new ticket? Read it, clarify, triage, diagnose, fix or escalate, update the user, confirm, document.
+• How do you prioritize several tickets? Impact times urgency, SLA clocks and dependencies, then tell users what to expect.
+Tickets and ITSM
+• Incident versus problem versus request versus change? Broken now, underlying cause, standard ask, planned modification.
+• What is an SLA, and what do you do when one is at risk? Agreed response and resolution targets; escalate, communicate, prioritize.
+• What makes a good ticket note? Facts, times, steps tried and results, next action, plain wording, no passwords.
+• What is first contact resolution and why does it matter? Fixed on the first contact; faster for the user and cheaper for the company.
+• What is a CAB, and what is a major incident? The group that reviews changes; a high-impact outage needing coordinated response.
+Hardware
+• A PC will not turn on. What do you check? Power source, cable, outlet, power button and lights, then internal parts if authorized.
+• HDD versus SSD? Spinning disk, cheap and slower versus flash, fast and no moving parts.
+• A second monitor is not detected. What next? Cable, port, input source, display settings, drivers, swap a known-good monitor.
+• A user cannot print. How do you proceed? Separate user machine, queue, printer and network; check status, clear the queue, check the driver and the printer’s address.
+Operating systems
+• How do you find out why a PC crashed? Note the stop code, check Event Viewer around the time, check recent changes and drivers.
+• What does sfc /scannow do? Checks and repairs protected system files; DISM repairs the component store behind it.
+• Windows Home versus Pro? Pro adds domain join, managed encryption and Remote Desktop hosting.
+• What is User Account Control? A prompt that asks before actions needing administrator rights.
+• A PC is slow. What do you do? Scope, Task Manager, startup apps, disk space, malware, updates, failing drive.
+Networking
+• DHCP versus a static address? Automatic leased settings versus fixed manual or reserved settings.
+• A user can ping 8.8.8.8 but not a website name. Why? DNS failure; check DNS servers and flush the cache.
+• What is a default gateway? The router a device uses to leave its own network.
+• What does an address starting 169.254 mean? The device failed to get an address from DHCP.
+• Hub versus switch versus router? Repeats to all ports; forwards by MAC address; connects networks by IP address.
+• What are ports 80, 443 and 3389? HTTP, HTTPS and Remote Desktop.
+• What is a VLAN? A virtual separation of one physical network, which is why a wrong VLAN breaks access.
+• A user says the internet is down. Walk me through your steps. Scope, local setup, ping ladder, DNS, gateway, then escalate with evidence.
+Identity and access
+• What is Active Directory? A directory of users, groups and devices used for sign-in and policy on company networks.
+• What is Group Policy? Central rules applied to users and computers by OU.
+• A caller wants a password reset. What first? Verify identity using the approved process.
+• A user is locked out repeatedly. Why? An old saved password somewhere (phone, mapped drive, service); find the source.
+• A user lost their MFA phone. Verify identity strongly, register a new method, record it.
+• What do you do when someone leaves the company? The offboarding checklist: disable, revoke, hand over data, recover devices.
+• What is least privilege? Only the access needed for the job.
+Microsoft 365
+• A new user has no mailbox. Check the license first.
+• Outlook keeps asking for a password. Stale credentials, profile or token; test in the web version; clear credentials, rebuild the profile.
+• What is a shared mailbox? A mailbox several people open, usually with no license of its own.
+• OneDrive stopped syncing. Sign-in state, quota, paused sync, file names and paths, restart the client.
+Security
+• A user clicked a phishing link and typed their password. Treat as an incident: reset password and sessions, check forwarding rules, inform security, record times.
+• A laptop shows a ransom note. Isolate it, inform security, do not reuse it, check others, restore from backup.
+• What is the CIA triad? Confidentiality, integrity and availability, with an example of each.
+• What is the 3-2-1 backup rule? Three copies, two media types, one offsite; test restores.
+• A caller claims to be an executive and demands a reset. Politely apply the verification process, whoever they say they are.
+Tools
+• Which ticketing tools have you used? Name what you practiced and explain how the concepts transfer.
+• What is JQL? Jira’s query language for searching requests, with an example.
+• How would you learn a new ticketing tool quickly? Map it to the ticket lifecycle, read the vendor guide, practice in a sandbox.
+• What do you do before taking remote control of a PC? Get consent, explain, close private windows; afterward end the session and confirm the fix.
+Judgement and scenarios
+• The CEO cannot print and 50 users cannot sign in. Which first? The 50 users because of impact, while politely telling the CEO you will be right with them.
+• A user asks you to bypass a security policy. Explain kindly, offer the approved route, escalate if pressed.
+• A user is rude to you. Stay calm, acknowledge the frustration, keep to the facts, involve a lead if it continues.
+• You made a mistake. Own it at once, fix or escalate, tell those affected, learn from it.
+• You do not know the answer. Say so, explain how you would find out, and then do it.
+11.4 Role-plays and mock interviews with the coach
+• Formats: the coach acts as the interviewer, or as a user (calm, rushed or angry) with a problem you must diagnose by asking questions.
+• Timed mock interview: about 30 minutes: a short introduction, behavioral questions, technical questions, then your questions for the interviewer.
+• Scoring rubric: clarity, method, empathy, technical accuracy, honesty about gaps, and how well you would document and follow up.
+• Feedback: the coach shows what a stronger answer would have contained and lets you replay the question.
+• Technique tips: think aloud so the interviewer hears your method; it is fine to ask clarifying questions; summarize before you finish.
+• Hands-on: complete three mock interviews and one role-play per scenario category.
+11.5 Questions to ask the interviewer
+• About the team: how big is it, how is work split between tiers, and who would I work with?
+• About tools and process: which ticketing and remote tools do you use, how are tickets prioritized, and what do the SLAs look like?
+• About growth: what training and certification support is there, and what is a typical path from this role?
+• About the job: typical ticket volume, shifts or on-call duties, and how success is measured in the first months.
+• Closing: is there anything about my background you would like me to clarify, and what are the next steps?
+11.6 CV, cover letter and online profile for help desk roles
+• CV structure: a short summary at the top, skills grouped by area, work history with results, projects (including your home lab and the practice scenarios), education and certifications.
+• Show results: write what you achieved and how much, for example “resolved 25 tickets a day while keeping satisfaction above 95%.”
+• Match the advertisement: use its honest keywords where you have the skill, and do not list tools you cannot discuss.
+• Transferable experience: customer service, operations, quality control, liaison and shift work all show reliability, communication and attention to detail.
+• Length and tone: one or two pages, clear headings, no jargon walls.
+• Cover letter: three short paragraphs: why this role and company, two or three relevant strengths with evidence, and a polite close.
+• Online profile: keep your profile consistent with the CV, and publish your home lab write-ups.
+• Hands-on: rewrite one CV bullet from a task description into a result.
+11.7 Your first 90 days
+• Days 1 to 30, learn: meet the team, learn the tools, read the knowledge base, shadow experienced analysts, learn the escalation paths and take notes.
+• Days 31 to 60, own: handle tickets independently, ask good questions, improve a knowledge article and learn who to call for what.
+• Days 61 to 90, contribute: handle harder tickets, suggest one improvement backed by data, help a newer colleague and ask for feedback.
+• Habits throughout: keep a log of what you learn, write clear notes, own your tickets, and say “I don’t know yet, I’ll find out.”
+• Hands-on: write your own 30-60-90 day plan before an interview.
+11.8 Certification roadmap
+• Foundations for support: CompTIA A+ covers hardware and operating system support. The Google IT Support Professional Certificate is another beginner path.
+• Microsoft: Microsoft 365 Fundamentals, then an endpoint administrator certification, and Microsoft security or Azure fundamentals if you want a cloud direction.
+• Process: ITIL 4 Foundation.
+• Networking: CompTIA Network+ or Cisco CCNA (covered in the CCNA study map).
+• Security: CompTIA Security+.
+• Tool-specific: ServiceNow, Atlassian and Zendesk offer their own certifications once you use the tool at work.
+• Suggested order for a beginner: A+ or the Google certificate, then Microsoft 365 Fundamentals, then ITIL 4 Foundation, then Network+ or CCNA, then Security+ or an endpoint administrator certification.
+• Verify before booking: exam names, codes and objectives change, so check each vendor’s current page.
+Appendix: quick reference
+• Ticket note template: Issue, Impact, Environment (device, operating system, location), Steps taken, Result, Next action.
+• Escalation note template: what the user reported, impact and urgency, what you tried and the results, evidence (error text, screenshots, times), contact details, what you told the user.
+• Phone greeting: company name, your name, “How can I help you today?” Close with a summary of the next steps and “Is there anything else I can help with?”
+• Priority matrix (illustrative): high impact and high urgency is P1; high impact and lower urgency, or low impact and high urgency, is P2 or P3; low impact and low urgency is P4.
+• Troubleshooting steps: identify the problem, form a theory, test it, plan and fix, verify and prevent, document.
+• Status update template: what is affected, what we know, what we are doing, workaround if any, next update time.
+• Windows commands to know: ipconfig /all, ipconfig /release, ipconfig /renew, ipconfig /flushdns, ping, tracert, nslookup, netstat -ano, sfc /scannow, DISM /Online /Cleanup-Image /RestoreHealth, chkdsk, gpupdate /force, gpresult /r, whoami, systeminfo, tasklist, taskkill, net use, shutdown /r /t 0.
+• Ports to know: 22 SSH, 25 and 587 email sending, 53 DNS, 67 and 68 DHCP, 80 HTTP, 443 HTTPS, 3389 Remote Desktop.
+Product names, plans, exam codes and screen layouts change often. Practice in a lab and confirm details in each vendor’s own

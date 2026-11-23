@@ -23,6 +23,8 @@ interface CoachRequestBody {
   context?: string;
   directHint?: boolean;
   hintLevel?: 1 | 2 | 3;
+  mode?: 'coach' | 'user-roleplay' | 'interviewer';
+  coachPersona?: 'ping' | 'patch';
 }
 
 function getGeminiClient(): GoogleGenAI {
@@ -52,13 +54,17 @@ async function startServer() {
     try {
       const body = (req.body ?? {}) as CoachRequestBody;
       const userMessage = typeof body.message === 'string' ? body.message.trim() : '';
+      const persona = body.coachPersona === 'patch' ? 'patch' : 'ping';
+      const coachName = persona === 'patch' ? 'Patch' : 'Ping';
 
       if (!userMessage) {
-        res.status(400).json({ error: 'Please provide a question or message for Zero.' });
+        res.status(400).json({ error: `Please provide a question or message for ${coachName}.` });
         return;
       }
 
       const ai = getGeminiClient();
+      const mode =
+        body.mode === 'user-roleplay' || body.mode === 'interviewer' ? body.mode : 'coach';
       const hintLevel: 1 | 2 | 3 =
         body.hintLevel === 3
           ? 3
@@ -68,19 +74,42 @@ async function startServer() {
               ? 3
               : 1;
 
-      const ladderRule =
-        hintLevel === 1
-          ? 'HINT LADDER LEVEL 1 (SOCRATIC NUDGE — STRICT): NEVER reveal the final answer, exact IP/subnet, or full CLI solution. Acknowledge what is right, point to ONE observable clue (e.g. mask boundary, interface admin state, VLAN tag, AD vs OSPF, or DNS vs gateway), and end with 1 crisp guiding question.'
-          : hintLevel === 2
-            ? 'HINT LADDER LEVEL 2 (PARTIAL HINT): Narrow the problem to the exact IOS command family, OSI layer, block-size arithmetic rule, or Active Directory tool involved, give a partial template without giving away the exact completed line, and ask the learner to fill in the remaining value.'
-            : 'HINT LADDER LEVEL 3 (FULL EXPLANATION): Provide the complete, step-by-step explanation, exact Cisco IOS command(s) or calculation steps, why competing distractors fail, and one show/ping verification check.';
+      const modeInstruction =
+        mode === 'user-roleplay'
+          ? [
+              `ROLE-PLAY MODE (HELP DESK USER): You are ${coachName} acting as an everyday non-technical employee contacting the IT Help Desk with a realistic problem (such as a locked AD account before a meeting, USB-C dock video issue, VPN DNS failure, or urgent BitLocker prompt).`,
+              'Stay in character! Give realistic incomplete symptoms at first so the technician has to practice empathy, identity verification, and clarifying questions.',
+              'Only break character briefly with [Coach Feedback] if the learner explicitly asks for feedback or finishes the ticket cleanly.',
+            ].join('\n')
+          : mode === 'interviewer'
+            ? [
+                `INTERVIEWER MODE: You are ${coachName} acting as a supportive hiring manager / senior technical interviewer for ${
+                  persona === 'patch'
+                    ? 'Tier 1 / Tier 2 IT Help Desk & Systems Support roles'
+                    : 'Junior Network Engineer (CCNA) & Systems Support roles'
+                }.`,
+                'Ask ONE crisp technical or STAR behavioral question at a time, wait for the learner’s own-words answer, evaluate accuracy + clarity, point out one improvement, and then offer the next question.',
+              ].join('\n')
+            : [
+                `TEACHING LOOP: Teach Socratically using ${coachName}’s 4-step loop: Predict (what do you think will happen?) -> Verify (check it in the lab/show command/logs/ticket tools) -> Explain (ask learner why in their own words) -> Break It (what would change if a parameter shifted?).`,
+                hintLevel === 1
+                  ? 'STEP 1 (PREDICT & NUDGE): NEVER reveal the final answer, exact IP/subnet, ticket fix, or completed CLI solution right away. Point to ONE clue in the active context and ask the learner to PREDICT what happens or check one thing first.'
+                  : hintLevel === 2
+                    ? 'STEP 2 (VERIFY CLUE): Narrow down the exact IOS command family, OSI layer, subnet block rule, or Windows/AD/M365/ITSM tool that verifies the fault, without handing over the full solved answer until the learner tries.'
+                    : 'STEP 3 (EXPLAIN & BREAK IT): Only give the full step-by-step explanation once the learner asks or has attempted it, verify with one concrete show/diagnostic check, and finish with a brief "Break It" what-if question.',
+              ].join('\n');
+
+      const roleDescription =
+        persona === 'patch'
+          ? 'You are Patch, the friendly, practical IT Help Desk & Systems Support study coach inside Road to TECH (covering Tier 1/2 ticketing, triage, Windows/macOS/Linux, AD/Entra ID, Microsoft 365, endpoint security, and ITIL workflows).'
+          : 'You are Ping, the friendly, accurate Cisco CCNA 200-301 networking study coach inside Road to TECH (covering CCNA v1.1 and v2.0 networking fundamentals, switching, IP routing, services, security, IOS CLI, and AI/NetOps).';
 
       const systemInstruction = [
-        'You are Zero, the Socratic networking and IT systems support coach inside Road to TECH.',
-        'Your core teaching philosophy: guide learners step-by-step so they build durable mental models.',
-        ladderRule,
-        'Keep responses tight, scannable, and practical (usually 3-6 sentences or short bullet points). Use monospace backticks for CLI commands, IP addresses, and tools.',
-        'Align strictly to Cisco CCNA 200-301 v1.1 and enterprise Windows/M365/Active Directory IT Support best practices.',
+        roleDescription,
+        modeInstruction,
+        'GROUNDING & ACCURACY RULES: Stay grounded strictly in the provided lesson/workspace context and official Cisco CCNA 200-301 (v1.1 & v2.0) / enterprise IT Support standards.',
+        'If a command flag, exam sub-detail, or vendor rule is uncertain or outside the supplied facts, explicitly say: "I\'m not sure, verify this in official vendor documentation" and NEVER invent IOS commands, Windows flags, or RFC behavior.',
+        'Keep responses tight, practical, and beginner-respectful (plain English first, monospace backticks for CLI commands/IPs/tools).',
         body.context ? `\nActive Workspace Context:\n${body.context}` : '',
       ]
         .filter(Boolean)
@@ -109,7 +138,7 @@ async function startServer() {
 
       const reply = response.text?.trim();
       if (!reply) {
-        res.status(502).json({ error: 'Zero did not return a response. Please try again.' });
+        res.status(502).json({ error: `${coachName} did not return a response. Please try again.` });
         return;
       }
 

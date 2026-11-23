@@ -29,7 +29,7 @@ interface ServiceDeskSimulatorViewProps {
   progress: LocalProgressState;
   onBack: () => void;
   onRecordTicket: (ticketId: string, score: number, maxScore: number) => void;
-  onAskZeroTicket: (scenario: ServiceDeskScenario, notes: string) => void;
+  onAskPingTicket: (scenario: ServiceDeskScenario, notes: string) => void;
 }
 
 type WorkbenchTab = 'chat' | 'cli' | 'directory' | 'diagnostics' | 'resolve';
@@ -73,6 +73,46 @@ const TIER_FILTERS: { id: 'all' | SimDeskTier; label: string }[] = [
   { id: 'tier-2', label: 'Tier 2' },
 ];
 
+type SimCategoryFilter =
+  | 'all'
+  | 'printing'
+  | 'hardware'
+  | 'windows-apps'
+  | 'network'
+  | 'accounts'
+  | 'email-m365'
+  | 'security'
+  | 'mobile'
+  | 'peripherals';
+
+const CATEGORY_FILTERS: { id: SimCategoryFilter; label: string }[] = [
+  { id: 'all', label: 'All Categories' },
+  { id: 'printing', label: 'Printing' },
+  { id: 'hardware', label: 'Boot & Hardware' },
+  { id: 'windows-apps', label: 'Windows & Apps' },
+  { id: 'network', label: 'Network & VPN' },
+  { id: 'accounts', label: 'Accounts & Access' },
+  { id: 'email-m365', label: 'Email & M365' },
+  { id: 'security', label: 'Security' },
+  { id: 'mobile', label: 'Mobile' },
+  { id: 'peripherals', label: 'Peripherals' },
+];
+
+function matchesSimCategory(scenarioCategory: string, filter: SimCategoryFilter): boolean {
+  if (filter === 'all') return true;
+  const c = scenarioCategory.toLowerCase();
+  if (filter === 'printing') return c.includes('print') || c.includes('thermal');
+  if (filter === 'hardware') return c.includes('hardware') || c.includes('dock') || c.includes('boot');
+  if (filter === 'windows-apps') return c.includes('windows') || c.includes('bsod') || c.includes('linux') || c.includes('profile') || c.includes('firewall');
+  if (filter === 'network') return c.includes('network') || c.includes('vpn') || c.includes('wi-fi') || c.includes('vlan');
+  if (filter === 'accounts') return c.includes('directory') || c.includes('account') || c.includes('onboarding') || c.includes('gpo') || c.includes('mfa') || c.includes('trust');
+  if (filter === 'email-m365') return c.includes('m365') || c.includes('email') || c.includes('onedrive') || c.includes('outlook') || c.includes('dmarc');
+  if (filter === 'security') return c.includes('security') || c.includes('encryption') || c.includes('phish') || c.includes('ransom') || c.includes('usb');
+  if (filter === 'mobile') return c.includes('mobile') || c.includes('intune');
+  if (filter === 'peripherals') return c.includes('peripheral') || c.includes('audio') || c.includes('camera') || c.includes('dock');
+  return true;
+}
+
 function formatSkillLabel(level: SimSkillLevel): string {
   return level.charAt(0).toUpperCase() + level.slice(1);
 }
@@ -81,16 +121,111 @@ function formatDeskTierLabel(tier: SimDeskTier): string {
   return tier === 'tier-1' ? 'Tier 1' : 'Tier 2';
 }
 
+type TerminologyMode = 'neutral' | 'jsm' | 'servicenow' | 'zendesk' | 'freshservice';
+
+const TERMINOLOGY_PROFILES: Record<
+  TerminologyMode,
+  {
+    label: string;
+    shortLabel: string;
+    recordNoun: string;
+    queueLabel: string;
+    selectItem: string;
+    requestTypeLabel: string;
+    requesterLabel: string;
+    internalNoteLabel: string;
+    publicReplyLabel: string;
+    privateNoteLabel: string;
+    statusLabel: string;
+    kbLabel: string;
+  }
+> = {
+  neutral: {
+    label: 'Vendor-Neutral (Default)',
+    shortLabel: 'Generic / Neutral',
+    recordNoun: 'Ticket',
+    queueLabel: 'Ticket Queue',
+    selectItem: 'Select Ticket',
+    requestTypeLabel: 'Category',
+    requesterLabel: 'Requester',
+    internalNoteLabel: 'Investigation Notes',
+    publicReplyLabel: 'Customer Reply (Public)',
+    privateNoteLabel: 'Internal Note (Team Only)',
+    statusLabel: 'Workflow Status',
+    kbLabel: 'Knowledge Base',
+  },
+  jsm: {
+    label: 'Jira Service Management',
+    shortLabel: 'Jira (JSM)',
+    recordNoun: 'Issue',
+    queueLabel: 'JSM Queue',
+    selectItem: 'Select Issue',
+    requestTypeLabel: 'Request Type',
+    requesterLabel: 'Reporter',
+    internalNoteLabel: 'Internal Note (Restricted)',
+    publicReplyLabel: 'Reply to customer',
+    privateNoteLabel: 'Internal note',
+    statusLabel: 'Workflow Transition',
+    kbLabel: 'Confluence KB',
+  },
+  servicenow: {
+    label: 'ServiceNow',
+    shortLabel: 'ServiceNow',
+    recordNoun: 'Incident',
+    queueLabel: 'Assignment Queue',
+    selectItem: 'Select Incident',
+    requestTypeLabel: 'Catalog Item / Category',
+    requesterLabel: 'Caller',
+    internalNoteLabel: 'Work Notes',
+    publicReplyLabel: 'Additional comments (Customer visible)',
+    privateNoteLabel: 'Work notes (Internal only)',
+    statusLabel: 'Incident State',
+    kbLabel: 'Knowledge Article',
+  },
+  zendesk: {
+    label: 'Zendesk Support',
+    shortLabel: 'Zendesk',
+    recordNoun: 'Ticket',
+    queueLabel: 'Agent View',
+    selectItem: 'Select Ticket',
+    requestTypeLabel: 'Ticket Form / Type',
+    requesterLabel: 'Requester',
+    internalNoteLabel: 'Internal Note (Private)',
+    publicReplyLabel: 'Public reply',
+    privateNoteLabel: 'Internal note',
+    statusLabel: 'Ticket Status',
+    kbLabel: 'Help Center Guide',
+  },
+  freshservice: {
+    label: 'Freshservice',
+    shortLabel: 'Freshservice',
+    recordNoun: 'Ticket',
+    queueLabel: 'Ticket View',
+    selectItem: 'Select Ticket',
+    requestTypeLabel: 'Service Item / Category',
+    requesterLabel: 'Requester',
+    internalNoteLabel: 'Private Note',
+    publicReplyLabel: 'Reply (Requester)',
+    privateNoteLabel: 'Private note',
+    statusLabel: 'Ticket Status',
+    kbLabel: 'Solutions KB',
+  },
+};
+
 export function ServiceDeskSimulatorView({
   progress,
   onBack,
   onRecordTicket,
-  onAskZeroTicket,
+  onAskPingTicket,
 }: ServiceDeskSimulatorViewProps) {
+  const [terminology, setTerminology] = useState<TerminologyMode>('neutral');
   const [levelFilter, setLevelFilter] = useState<'all' | SimSkillLevel>('all');
   const [tierFilter, setTierFilter] = useState<'all' | SimDeskTier>('all');
+  const [categoryFilter, setCategoryFilter] = useState<SimCategoryFilter>('all');
   const [selectedId, setSelectedId] = useState<string>(SERVICE_DESK_SCENARIOS[0].id);
   const [workbenchTab, setWorkbenchTab] = useState<WorkbenchTab>('chat');
+
+  const terms = TERMINOLOGY_PROFILES[terminology];
 
   // Per-ticket interactive session state
   const [askedChatIds, setAskedChatIds] = useState<string[]>([]);
@@ -121,9 +256,10 @@ export function ServiceDeskSimulatorView({
     return SERVICE_DESK_SCENARIOS.filter((s) => {
       if (levelFilter !== 'all' && s.skillLevel !== levelFilter) return false;
       if (tierFilter !== 'all' && s.deskTier !== tierFilter) return false;
+      if (!matchesSimCategory(s.category, categoryFilter)) return false;
       return true;
     });
-  }, [levelFilter, tierFilter]);
+  }, [levelFilter, tierFilter, categoryFilter]);
 
   const activeScenario = useMemo(() => {
     return (
@@ -389,52 +525,108 @@ export function ServiceDeskSimulatorView({
         </div>
       </div>
 
-      {/* Filter Bar: Skill Level & Support Tier */}
-      <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#101622] flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1.5">
-            Level:
+      {/* Filter Bar: Skill Level, Support Tier & Platform Terminology Toggle */}
+      <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#101622] space-y-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1.5">
+              Level:
+            </span>
+            {LEVEL_FILTERS.map((f) => {
+              const active = levelFilter === f.id;
+              return (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setLevelFilter(f.id)}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap shrink-0 transition-colors ${
+                    active
+                      ? 'bg-slate-900 text-white dark:bg-sky-500 dark:text-slate-950'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1.5">
+              Desk Tier:
+            </span>
+            {TIER_FILTERS.map((t) => {
+              const active = tierFilter === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setTierFilter(t.id)}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap shrink-0 transition-colors ${
+                    active
+                      ? 'bg-amber-600 text-white dark:bg-amber-500 dark:text-slate-950'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Category Filter Strip (Study Map 8.5 Categories) */}
+        <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center gap-1.5">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1">
+            Category:
           </span>
-          {LEVEL_FILTERS.map((f) => {
-            const active = levelFilter === f.id;
+          {CATEGORY_FILTERS.map((cat) => {
+            const active = categoryFilter === cat.id;
             return (
               <button
-                key={f.id}
+                key={cat.id}
                 type="button"
-                onClick={() => setLevelFilter(f.id)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap shrink-0 transition-colors ${
+                onClick={() => setCategoryFilter(cat.id)}
+                className={`px-2.5 py-1 text-xs font-medium rounded-md whitespace-nowrap transition-colors ${
                   active
-                    ? 'bg-slate-900 text-white dark:bg-sky-500 dark:text-slate-950'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-sky-600 text-white dark:bg-sky-500 dark:text-slate-950 font-semibold'
+                    : 'bg-slate-100 dark:bg-[#0B0F17] text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'
                 }`}
               >
-                {f.label}
+                {cat.label}
               </button>
             );
           })}
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1.5">
-            Desk Tier:
+        {/* Platform Terminology Toggle (Vendor-Neutral vs JSM / ServiceNow / Zendesk / Freshservice) */}
+        <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1">
+              Terminology Toggle:
+            </span>
+            {(Object.keys(TERMINOLOGY_PROFILES) as TerminologyMode[]).map((mode) => {
+              const active = terminology === mode;
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setTerminology(mode)}
+                  className={`px-2.5 py-1 text-xs font-semibold rounded-md whitespace-nowrap transition-colors ${
+                    active
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-slate-100 dark:bg-[#0B0F17] text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  {TERMINOLOGY_PROFILES[mode].shortLabel}
+                </button>
+              );
+            })}
+          </div>
+
+          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            {terms.recordNoun} · {terms.queueLabel} · Public: {terms.publicReplyLabel} · Private: {terms.privateNoteLabel}
           </span>
-          {TIER_FILTERS.map((t) => {
-            const active = tierFilter === t.id;
-            return (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setTierFilter(t.id)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap shrink-0 transition-colors ${
-                  active
-                    ? 'bg-amber-600 text-white dark:bg-amber-500 dark:text-slate-950'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                {t.label}
-              </button>
-            );
-          })}
         </div>
       </div>
 
@@ -443,14 +635,16 @@ export function ServiceDeskSimulatorView({
         {/* Left Queue */}
         <aside className="lg:col-span-4 space-y-2.5">
           <div className="flex items-center justify-between px-1 text-xs font-semibold text-slate-500 dark:text-slate-400">
-            <span>Ticket Queue ({filteredScenarios.length})</span>
-            <span>Select Incident</span>
+            <span>
+              {terms.queueLabel} ({filteredScenarios.length})
+            </span>
+            <span>{terms.selectItem}</span>
           </div>
 
           {filteredScenarios.length === 0 ? (
             <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#101622] text-sm text-slate-500 dark:text-slate-400">
-              No tickets match this Level + Desk Tier combination. Try switching to All Levels or
-              All Tiers.
+              No tickets match this Level + Desk Tier + Category combination. Try resetting a filter
+              to All.
             </div>
           ) : (
             <div className="space-y-2 max-h-[760px] overflow-y-auto pr-0.5">
@@ -521,7 +715,9 @@ export function ServiceDeskSimulatorView({
                   <span aria-hidden="true">·</span>
                   <span>{formatDeskTierLabel(activeScenario.deskTier)}</span>
                   <span aria-hidden="true">·</span>
-                  <span>{activeScenario.category}</span>
+                  <span>
+                    {terms.requestTypeLabel}: {activeScenario.category}
+                  </span>
                 </div>
 
                 <h2 className="font-display text-xl font-bold text-slate-950 dark:text-white">
@@ -529,9 +725,9 @@ export function ServiceDeskSimulatorView({
                 </h2>
 
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Requester: {activeScenario.requesterName} ({activeScenario.requesterRole},{' '}
+                  {terms.requesterLabel}: {activeScenario.requesterName} ({activeScenario.requesterRole},{' '}
                   {activeScenario.department}) · Host: {activeScenario.deviceHostname} · SLA:{' '}
-                  {activeScenario.slaTarget}
+                  {activeScenario.slaTarget} · {terms.statusLabel}: Open
                 </p>
               </div>
 
@@ -548,7 +744,7 @@ export function ServiceDeskSimulatorView({
                 <button
                   type="button"
                   onClick={() =>
-                    onAskZeroTicket(
+                    onAskPingTicket(
                       activeScenario,
                       `Clues uncovered: ${unlockedClues.join(' | ') || 'None yet'}. CLI findings: ${
                         cliHistory.map((c) => c.command).join(', ') || 'None yet'
@@ -558,7 +754,7 @@ export function ServiceDeskSimulatorView({
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 dark:bg-sky-500 dark:text-slate-950 dark:hover:bg-sky-400 whitespace-nowrap shrink-0"
                 >
                   <HelpCircle className="w-3.5 h-3.5" />
-                  <span>Ask Coach Zero</span>
+                  <span>Ask Coach Patch</span>
                 </button>
               </div>
             </div>
@@ -567,7 +763,7 @@ export function ServiceDeskSimulatorView({
             {unlockedClues.length > 0 && (
               <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-1.5">
                 <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                  Investigation Findings Log ({unlockedClues.length})
+                  {terms.internalNoteLabel} ({unlockedClues.length})
                 </div>
                 <ul className="space-y-1 text-xs text-slate-700 dark:text-slate-300 list-disc list-inside">
                   {unlockedClues.map((clue, idx) => (
@@ -967,10 +1163,29 @@ export function ServiceDeskSimulatorView({
 
             {workbenchTab === 'resolve' && (
               <div className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                  <div className="p-3 rounded-lg border border-sky-200 dark:border-sky-500/30 bg-sky-50/50 dark:bg-sky-500/5">
+                    <span className="font-semibold text-sky-700 dark:text-sky-300">
+                      Customer-Facing Field:{' '}
+                    </span>
+                    <span className="text-slate-700 dark:text-slate-200">
+                      {terms.publicReplyLabel}
+                    </span>
+                  </div>
+                  <div className="p-3 rounded-lg border border-amber-200 dark:border-amber-500/30 bg-amber-50/50 dark:bg-amber-500/5">
+                    <span className="font-semibold text-amber-700 dark:text-amber-300">
+                      Team-Only Field:{' '}
+                    </span>
+                    <span className="text-slate-700 dark:text-slate-200">
+                      {terms.privateNoteLabel}
+                    </span>
+                  </div>
+                </div>
+
                 {actionLog.length > 0 && (
                   <div className="p-3.5 rounded-lg border border-emerald-500/30 bg-emerald-500/5 text-xs space-y-1">
                     <div className="font-semibold text-emerald-700 dark:text-emerald-400">
-                      Executed Remediation Actions ({actionLog.length})
+                      {terms.privateNoteLabel} — Executed Remediation ({actionLog.length})
                     </div>
                     <ul className="list-disc list-inside text-slate-700 dark:text-slate-300 space-y-0.5">
                       {actionLog.map((entry, idx) => (
@@ -1039,7 +1254,7 @@ export function ServiceDeskSimulatorView({
                     onClick={handleSubmitResolution}
                     className="px-5 py-2.5 text-sm font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed dark:bg-sky-500 dark:text-slate-950 dark:hover:bg-sky-400 whitespace-nowrap shrink-0 transition-colors"
                   >
-                    Submit Ticket Resolution
+                    Submit {terms.recordNoun} Resolution
                   </button>
                 </div>
 

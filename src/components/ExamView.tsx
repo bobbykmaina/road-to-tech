@@ -32,10 +32,15 @@ import {
   LearningTrackId,
   LocalProgressState,
 } from '../types/ccna';
+import { ActiveStudyTrackId } from '../types/curriculum';
 
 interface ExamViewProps {
   progress: LocalProgressState;
-  preferredTrack?: { track: LearningTrackId; nonce: number } | null;
+  preferredTrack?: {
+    track: LearningTrackId;
+    studyTrack?: ActiveStudyTrackId;
+    nonce: number;
+  } | null;
   onBack: () => void;
   onRecordAttempt: (
     summary: {
@@ -47,7 +52,7 @@ interface ExamViewProps {
     },
     questionOutcomes: Record<string, boolean>,
   ) => void;
-  onAskZeroExam: (question: ExamQuestion, selectedIndices: number[]) => void;
+  onAskPingExam: (question: ExamQuestion, selectedIndices: number[]) => void;
 }
 
 type ExamStage = 'setup' | 'active' | 'review';
@@ -195,21 +200,34 @@ export function ExamView({
   preferredTrack,
   onBack,
   onRecordAttempt,
-  onAskZeroExam,
+  onAskPingExam,
 }: ExamViewProps) {
-  const [selectedTrack, setSelectedTrack] = useState<LearningTrackId>(() =>
-    preferredTrack?.track ?? (progress.activeTrack === 'it-support' ? 'it-support' : 'ccna'),
+  const [selectedStudyTrack, setSelectedStudyTrack] = useState<ActiveStudyTrackId>(
+    () =>
+      preferredTrack?.studyTrack ??
+      (preferredTrack?.track === 'it-support'
+        ? 'it-support'
+        : progress.activeStudyTrack ?? (progress.ccnaVersion === 'v1.1' ? 'ccna-v1.1' : 'ccna-v2.0')),
   );
+  const selectedTrack: LearningTrackId =
+    selectedStudyTrack === 'it-support' ? 'it-support' : 'ccna';
   const [stage, setStage] = useState<ExamStage>('setup');
 
   useEffect(() => {
     if (preferredTrack) {
-      setSelectedTrack(preferredTrack.track);
+      setSelectedStudyTrack(
+        preferredTrack.studyTrack ??
+          (preferredTrack.track === 'it-support'
+            ? 'it-support'
+            : progress.ccnaVersion === 'v1.1'
+              ? 'ccna-v1.1'
+              : 'ccna-v2.0'),
+      );
       setDomainFilter('all');
       setDifficultyFilter('all');
       setStage('setup');
     }
-  }, [preferredTrack]);
+  }, [preferredTrack, progress.ccnaVersion]);
   const [domainFilter, setDomainFilter] = useState<ExamDomainId | 'all'>('all');
   const [difficultyFilter, setDifficultyFilter] = useState<DifficultyFilter>('all');
   const [orderMode, setOrderMode] = useState<OrderMode>('progressive');
@@ -218,6 +236,8 @@ export function ExamView({
 
   const [sessionQuestions, setSessionQuestions] = useState<ExamQuestion[]>([]);
   const [activeExamTrack, setActiveExamTrack] = useState<LearningTrackId>('ccna');
+  const [activeExamStudyTrack, setActiveExamStudyTrack] =
+    useState<ActiveStudyTrackId>('ccna-v2.0');
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number[]>>({});
   const [dragAnswers, setDragAnswers] = useState<Record<string, Record<string, string>>>({});
@@ -296,8 +316,8 @@ export function ExamView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, timedMode, secondsLeft]);
 
-  const handleSelectExamTrack = (track: LearningTrackId) => {
-    setSelectedTrack(track);
+  const handleSelectExamStudyTrack = (studyTrack: ActiveStudyTrackId) => {
+    setSelectedStudyTrack(studyTrack);
     setDomainFilter('all');
     setDifficultyFilter('all');
   };
@@ -307,6 +327,7 @@ export function ExamView({
     const chosen = buildSessionQuestions(availablePool, questionCount, orderMode);
     setSessionQuestions(chosen);
     setActiveExamTrack(selectedTrack);
+    setActiveExamStudyTrack(selectedStudyTrack);
     setCurrentIdx(0);
     setAnswers({});
     setDragAnswers({});
@@ -338,7 +359,13 @@ export function ExamView({
       outcomes[q.id] = ok;
       if (ok) correctCount++;
     }
-    const modeLabel = `${timedMode ? 'Timed' : 'Study'} · ${
+    const trackTag =
+      activeExamStudyTrack === 'ccna-v1.1'
+        ? 'v1.1'
+        : activeExamStudyTrack === 'ccna-v2.0'
+          ? 'v2.0'
+          : 'IT Support';
+    const modeLabel = `${trackTag} · ${timedMode ? 'Timed' : 'Study'} · ${
       orderMode === 'progressive' ? 'Easy→Hard' : 'Random'
     }`;
     onRecordAttempt(
@@ -419,9 +446,11 @@ export function ExamView({
   };
 
   const activeExamLabel =
-    activeExamTrack === 'it-support'
+    activeExamStudyTrack === 'it-support'
       ? 'IT Help Desk & Systems Support'
-      : 'Cisco CCNA 200-301';
+      : activeExamStudyTrack === 'ccna-v1.1'
+        ? 'Cisco CCNA 200-301 (v1.1)'
+        : 'Cisco CCNA 200-301 (v2.0)';
 
   const activeDomainList: ExamDomainMeta[] =
     activeExamTrack === 'it-support' ? IT_SUPPORT_DOMAINS : CCNA_DOMAINS;
@@ -454,78 +483,118 @@ export function ExamView({
             Mock Exam Simulators
           </h1>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            Two full-length 120+ question mock exams (Cisco CCNA 200-301 and IT Help Desk &amp;
-            Systems Support) progressing from Easy to Hard, with real-world scenarios, multi-tab
-            simlets, progressive hints, and guided How &amp; Why walkthroughs whenever you get stuck.
+            Dedicated mock exam setups for CCNA v2.0 (from Feb 3, 2027), CCNA v1.1 (through Feb 2,
+            2027), and IT Help Desk &amp; Systems Support—each with 120+–170+ questions from Easy to Hard,
+            multi-tab simlets, progressive hints, and guided How &amp; Why walkthroughs.
           </p>
         </div>
 
-        {/* Two Mock Exams Selector */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Three Separate Track Mock Exam Selectors */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
             type="button"
-            onClick={() => handleSelectExamTrack('ccna')}
-            className={`text-left p-5 rounded-xl border transition-colors flex items-start gap-4 ${
-              selectedTrack === 'ccna'
-                ? 'border-sky-500 bg-sky-500/10 dark:bg-sky-500/10'
+            onClick={() => handleSelectExamStudyTrack('ccna-v2.0')}
+            className={`text-left p-5 rounded-xl border transition-colors flex items-start gap-3.5 ${
+              selectedStudyTrack === 'ccna-v2.0'
+                ? 'border-sky-500 bg-sky-500/10'
                 : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#101622] hover:border-slate-300 dark:hover:border-slate-700'
             }`}
           >
             <div
-              className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                selectedTrack === 'ccna'
+              className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                selectedStudyTrack === 'ccna-v2.0'
                   ? 'bg-sky-500 text-slate-950'
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
               }`}
             >
-              <Network className="w-5 h-5" />
+              <Network className="w-4 h-4" />
             </div>
-            <div className="space-y-1.5 min-w-0 flex-1">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="font-display text-lg font-bold text-slate-950 dark:text-white">
-                  Cisco CCNA 200-301 Mock Exam
+            <div className="space-y-1 min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="font-display text-base font-bold text-slate-950 dark:text-white">
+                  CCNA v2.0 Mock Exam
                 </h2>
                 <span className="font-mono text-xs font-semibold text-sky-600 dark:text-sky-400">
                   {ccnaStats.total} Qs
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                Easy → Hard progression covering VLSM subnetting, STP/VLANs, OSPF, NAT/PAT, ACLs,
-                security, automation, {ccnaStats.scenarios}+ scenarios, and IOS CLI simlets.
+              <div className="text-[11px] font-medium text-sky-600 dark:text-sky-400">
+                Exam from Feb 3, 2027 (5 Domains)
+              </div>
+              <p className="text-xs text-slate-600 dark:text-slate-400">
+                VLSM, OSPFv2/v3, HSRP/VRRP, ACLs, L2 security, CLI simlets &amp; {ccnaStats.scenarios}+ scenarios.
               </p>
             </div>
           </button>
 
           <button
             type="button"
-            onClick={() => handleSelectExamTrack('it-support')}
-            className={`text-left p-5 rounded-xl border transition-colors flex items-start gap-4 ${
-              selectedTrack === 'it-support'
-                ? 'border-sky-500 bg-sky-500/10 dark:bg-sky-500/10'
+            onClick={() => handleSelectExamStudyTrack('ccna-v1.1')}
+            className={`text-left p-5 rounded-xl border transition-colors flex items-start gap-3.5 ${
+              selectedStudyTrack === 'ccna-v1.1'
+                ? 'border-amber-500 bg-amber-500/10'
                 : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#101622] hover:border-slate-300 dark:hover:border-slate-700'
             }`}
           >
             <div
-              className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                selectedTrack === 'it-support'
-                  ? 'bg-sky-500 text-slate-950'
+              className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                selectedStudyTrack === 'ccna-v1.1'
+                  ? 'bg-amber-500 text-slate-950'
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
               }`}
             >
-              <Headphones className="w-5 h-5" />
+              <Network className="w-4 h-4" />
             </div>
-            <div className="space-y-1.5 min-w-0 flex-1">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="font-display text-lg font-bold text-slate-950 dark:text-white">
-                  IT Help Desk &amp; Systems Support Mock Exam
+            <div className="space-y-1 min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="font-display text-base font-bold text-slate-950 dark:text-white">
+                  CCNA v1.1 Mock Exam
                 </h2>
-                <span className="font-mono text-xs font-semibold text-sky-600 dark:text-sky-400">
+                <span className="font-mono text-xs font-semibold text-amber-600 dark:text-amber-400">
+                  {ccnaStats.total} Qs
+                </span>
+              </div>
+              <div className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                Exam through Feb 2, 2027 (6 Domains)
+              </div>
+              <p className="text-xs text-slate-600 dark:text-slate-400">
+                6-domain blueprint coverage, WLC/AP, OSPF, NAT, ACLs, REST/JSON &amp; CLI simlets.
+              </p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSelectExamStudyTrack('it-support')}
+            className={`text-left p-5 rounded-xl border transition-colors flex items-start gap-3.5 ${
+              selectedStudyTrack === 'it-support'
+                ? 'border-emerald-500 bg-emerald-500/10'
+                : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#101622] hover:border-slate-300 dark:hover:border-slate-700'
+            }`}
+          >
+            <div
+              className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                selectedStudyTrack === 'it-support'
+                  ? 'bg-emerald-500 text-slate-950'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+              }`}
+            >
+              <Headphones className="w-4 h-4" />
+            </div>
+            <div className="space-y-1 min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="font-display text-base font-bold text-slate-950 dark:text-white">
+                  IT Support Mock Exam
+                </h2>
+                <span className="font-mono text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                   {itStats.total} Qs
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                Easy → Hard progression covering hardware/OS triage, ITSM SLAs, Active Directory &amp;
-                GPOs, VPN/DNS, M365 MFA containment, {itStats.scenarios}+ scenarios, and PowerShell simlets.
+              <div className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                Tier 1 &amp; Tier 2 Service Desk
+              </div>
+              <p className="text-xs text-slate-600 dark:text-slate-400">
+                Hardware/OS triage, ITSM SLAs, Active Directory, VPN/DNS, M365 &amp; {itStats.scenarios}+ scenarios.
               </p>
             </div>
           </button>
@@ -535,7 +604,13 @@ export function ExamView({
           <div className="lg:col-span-7 p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#101622] space-y-6">
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400">
-                1. Focus Domain ({selectedTrack === 'it-support' ? 'IT Help Desk' : 'CCNA 200-301'})
+                1. Focus Domain (
+                {selectedStudyTrack === 'it-support'
+                  ? 'IT Help Desk'
+                  : selectedStudyTrack === 'ccna-v1.1'
+                    ? 'CCNA 200-301 v1.1'
+                    : 'CCNA 200-301 v2.0'}
+                )
               </label>
               <div className="flex flex-wrap gap-1.5">
                 <button
@@ -731,8 +806,13 @@ export function ExamView({
               >
                 <Play className="w-4 h-4" />
                 <span>
-                  Start {selectedTrack === 'it-support' ? 'IT Help Desk' : 'CCNA'} Mock Exam (
-                  {effectiveCount} Questions)
+                  Start{' '}
+                  {selectedStudyTrack === 'it-support'
+                    ? 'IT Help Desk'
+                    : selectedStudyTrack === 'ccna-v1.1'
+                      ? 'CCNA v1.1'
+                      : 'CCNA v2.0'}{' '}
+                  Mock Exam ({effectiveCount} Questions)
                 </span>
               </button>
             </div>
@@ -1115,11 +1195,13 @@ export function ExamView({
 
                 <button
                   type="button"
-                  onClick={() => onAskZeroExam(q, selected)}
+                  onClick={() => onAskPingExam(q, selected)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:underline"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />
-                  <span>Ask Coach Zero</span>
+                  <span>
+                    Ask Coach {activeExamTrack === 'it-support' ? 'Patch' : 'Ping'}
+                  </span>
                 </button>
               </div>
             </div>
@@ -1436,11 +1518,13 @@ export function ExamView({
 
                 <button
                   type="button"
-                  onClick={() => onAskZeroExam(q, sel)}
+                  onClick={() => onAskPingExam(q, sel)}
                   className="inline-flex items-center gap-1.5 text-xs font-medium text-sky-600 dark:text-sky-400 hover:underline"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />
-                  <span>Discuss with Zero</span>
+                  <span>
+                    Discuss with {activeExamTrack === 'it-support' ? 'Patch' : 'Ping'}
+                  </span>
                 </button>
               </div>
 

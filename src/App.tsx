@@ -13,7 +13,7 @@ import { OverviewView } from './components/OverviewView';
 import { ServiceDeskSimulatorView } from './components/ServiceDeskSimulatorView';
 import { SubnettingView } from './components/SubnettingView';
 import { TopBar } from './components/TopBar';
-import { ZeroCoachDrawer } from './components/ZeroCoachDrawer';
+import { PingCoachDrawer } from './components/PingCoachDrawer';
 import { ServiceDeskScenario } from './data/serviceDeskScenarios';
 import { useLocalProgress } from './store/useLocalProgress';
 import {
@@ -24,6 +24,7 @@ import {
   SkillLevelId,
   WorkspaceTab,
 } from './types/ccna';
+import { ActiveStudyTrackId } from './types/curriculum';
 
 interface NavHistoryState {
   tab: WorkspaceTab;
@@ -60,10 +61,17 @@ export default function App() {
   const {
     progress,
     toggleTheme,
+    setStudyTrack,
     selectTrackAndLevel,
     selectTrack,
-    saveSubtopicCheck,
-    saveTopicExam,
+    setLastLessonForTrack,
+    setLessonStatus,
+    markAddendumRead,
+    completeRevisionForTrack,
+    saveRevisionCheck,
+    toggleBookmarkLesson,
+    toggleComfortableReadingMode,
+    saveDeepLessonCheck,
     saveLessonNote,
     markLabCompleted,
     recordSubnetResult,
@@ -84,15 +92,17 @@ export default function App() {
   } | null>(null);
   const [preferredExamTrack, setPreferredExamTrack] = useState<{
     track: LearningTrackId;
+    studyTrack?: ActiveStudyTrackId;
     nonce: number;
   } | null>(null);
 
   const [coachOpen, setCoachOpen] = useState(false);
-  const [coachContextLabel, setCoachContextLabel] = useState('Road to TECH · Study Coach');
+  const [coachContextLabel, setCoachContextLabel] = useState('Road to TECH · Ping & Patch Coaching');
   const [coachContextPayload, setCoachContextPayload] = useState(
     'Learner is on the Road to TECH launch page.',
   );
   const [queuedPrompt, setQueuedPrompt] = useState<string | null>(null);
+  const [coachPersonaOverride, setCoachPersonaOverride] = useState<'ping' | 'patch' | null>(null);
 
   const navRef = useRef<NavHistoryState>(initialNav);
   navRef.current = { tab: activeTab, launchTrack };
@@ -145,24 +155,57 @@ export default function App() {
     }
   }, []);
 
-  const openCoachWithContext = (label: string, payload: string, prompt?: string) => {
+  const openCoachWithContext = (
+    label: string,
+    payload: string,
+    prompt?: string,
+    persona?: 'ping' | 'patch',
+  ) => {
     setCoachContextLabel(label);
     setCoachContextPayload(payload);
+    setCoachPersonaOverride(persona ?? null);
     if (prompt) setQueuedPrompt(prompt);
     setCoachOpen(true);
   };
 
   const goToLaunchTracks = () => {
+    setJumpTarget(null);
     navigateTo({ tab: 'launch', launchTrack: null });
   };
 
   const handleSelectLaunchTrack = (track: LearningTrackId | null) => {
+    setJumpTarget(null);
     navigateTo({ tab: 'launch', launchTrack: track });
   };
 
-  const handleStartTrack = (track: LearningTrackId, level: SkillLevelId) => {
-    selectTrackAndLevel(track, level);
-    setJumpTarget(null);
+  const handleStartTrack = (
+    track: LearningTrackId,
+    level: SkillLevelId,
+    studyTrack: ActiveStudyTrackId,
+    startEntryId: string,
+  ) => {
+    selectTrackAndLevel(track, level, studyTrack);
+    setLastLessonForTrack(studyTrack, startEntryId);
+    setJumpTarget({
+      topicId: startEntryId,
+      subtopicId: startEntryId,
+      nonce: Date.now(),
+    });
+    navigateTo({ tab: 'curriculum', launchTrack: null });
+  };
+
+  const handleJumpToEntry = (
+    _track: LearningTrackId,
+    studyTrack: ActiveStudyTrackId,
+    entryId: string,
+  ) => {
+    setStudyTrack(studyTrack);
+    setLastLessonForTrack(studyTrack, entryId);
+    setJumpTarget({
+      topicId: entryId,
+      subtopicId: entryId,
+      nonce: Date.now(),
+    });
     navigateTo({ tab: 'curriculum', launchTrack: null });
   };
 
@@ -180,11 +223,17 @@ export default function App() {
 
   const handleOpenTrackExam = (track: LearningTrackId) => {
     selectTrack(track);
-    setPreferredExamTrack({ track, nonce: Date.now() });
+    const derivedStudyTrack: ActiveStudyTrackId =
+      track === 'it-support'
+        ? 'it-support'
+        : progress.ccnaVersion === 'v1.1'
+          ? 'ccna-v1.1'
+          : 'ccna-v2.0';
+    setPreferredExamTrack({ track, studyTrack: derivedStudyTrack, nonce: Date.now() });
     navigateTo({ tab: 'exam', launchTrack: null });
   };
 
-  const handleAskZeroLab = (
+  const handleAskPingLab = (
     lab: CcnaLab,
     devices: Record<string, SimDevice>,
     activeDeviceId: string,
@@ -204,19 +253,19 @@ export default function App() {
     openCoachWithContext(
       `${lab.number} · ${dev?.hostname ?? activeDeviceId}`,
       `Lab: ${lab.title}\nBrief: ${lab.brief}\nCurrent Objective Status:\n${objectiveSummary}\nActive Device (${dev?.hostname}) Interfaces:\n${ifSummary}`,
-      `Look at my current ${lab.number} progress on ${dev?.hostname ?? activeDeviceId}. Give me a Tier 1 Socratic nudge on what to check next.`,
+      `Look at my current ${lab.number} progress on ${dev?.hostname ?? activeDeviceId}. Use Step 1 (Predict): ask me what I expect to see before giving me a command.`,
     );
   };
 
-  const handleAskZeroSubnet = (contextText: string) => {
+  const handleAskPingSubnet = (contextText: string) => {
     openCoachWithContext(
       'Subnetting & VLSM Drill',
       contextText,
-      'Give me a Tier 1 Socratic nudge on this subnetting problem.',
+      'Give me a Step 1 (Predict) nudge on this subnetting problem without revealing the answer.',
     );
   };
 
-  const handleAskZeroExam = (q: ExamQuestion, selectedIndices: number[]) => {
+  const handleAskPingExam = (q: ExamQuestion, selectedIndices: number[]) => {
     const chosenText =
       q.questionType === 'drag-drop'
         ? 'Drag-and-drop matching review'
@@ -225,18 +274,21 @@ export default function App() {
           : 'No option selected';
     const trackLabel =
       q.trackId === 'it-support' ? 'IT Help Desk & Systems Support' : 'Cisco CCNA 200-301';
+    const persona = q.trackId === 'it-support' ? 'patch' : 'ping';
     openCoachWithContext(
       `${trackLabel} Exam Review · ${q.topic}`,
       `Track: ${trackLabel}\nQuestion: ${q.prompt}\n${q.exhibit ? `Exhibit:\n${q.exhibit}\n` : ''}Learner selected: ${chosenText}\nCorrect answer rationale: ${q.explanation}`,
-      'Give me a nudge on why the right answer works and why any wrong choice fails.',
+      'Walk me through why the right answer works and why each wrong option fails.',
+      persona,
     );
   };
 
-  const handleAskZeroSimTicket = (scenario: ServiceDeskScenario, notes: string) => {
+  const handleAskPingSimTicket = (scenario: ServiceDeskScenario, notes: string) => {
     openCoachWithContext(
       `${scenario.ticketNumber} · ${scenario.category}`,
       `Ticket: ${scenario.ticketNumber} (${scenario.priority}, ${scenario.skillLevel}, ${scenario.deskTier})\nSubject: ${scenario.subject}\nRequester: ${scenario.requesterName} (${scenario.requesterRole})\nHost: ${scenario.deviceHostname}\nInitial User Message: ${scenario.initialMessage}\nCurrent Investigation Notes: ${notes}`,
-      `Give me a practical Tier 1 Socratic nudge on what to verify or check next for ${scenario.ticketNumber} without giving away the final answer right away.`,
+      `Use your Predict → Verify → Explain loop on ${scenario.ticketNumber}: help me decide what to verify next without spoiling the resolution.`,
+      'patch',
     );
   };
 
@@ -260,10 +312,12 @@ export default function App() {
           if (tab === 'launch') {
             goToLaunchTracks();
           } else {
+            if (tab === 'curriculum') setJumpTarget(null);
             navigateTo({ tab, launchTrack: null });
           }
         }}
         onOpenCoach={() => {
+          setCoachPersonaOverride(null);
           if (!coachOpen) {
             setCoachContextLabel(`Workspace · ${activeTab.toUpperCase()}`);
           }
@@ -278,7 +332,12 @@ export default function App() {
             chosenTrack={launchTrack}
             onSelectTrack={handleSelectLaunchTrack}
             onStartTrack={handleStartTrack}
-            onResumePrevious={() => navigateTo({ tab: 'curriculum', launchTrack: null })}
+            onJumpToLesson={handleJumpToEntry}
+            onResumePrevious={(studyTrack) => {
+              setStudyTrack(studyTrack);
+              setJumpTarget(null);
+              navigateTo({ tab: 'curriculum', launchTrack: null });
+            }}
           />
         )}
 
@@ -290,6 +349,7 @@ export default function App() {
               if (tab === 'launch') {
                 goToLaunchTracks();
               } else {
+                if (tab === 'curriculum') setJumpTarget(null);
                 navigateTo({ tab, launchTrack: null });
               }
             }}
@@ -299,8 +359,9 @@ export default function App() {
             onOpenCoach={(prompt) =>
               openCoachWithContext(
                 'Study Strategy · CCNA & IT Support',
-                `Track: ${progress.activeTrack ?? 'unselected'}, Level: ${progress.selectedLevel ?? 'unselected'}, Subtopics checked: ${Object.keys(progress.subtopicChecks).length}, Completed labs: ${progress.completedLabs.length}`,
+                `Track: ${progress.activeTrack ?? 'unselected'}, Version: ${progress.ccnaVersion}, Level: ${progress.selectedLevel ?? 'unselected'}, Mastered lessons: ${progress.completedLessons.length}, Completed labs: ${progress.completedLabs.length}`,
                 prompt,
+                prompt?.includes('IT Help Desk') ? 'patch' : 'ping',
               )
             }
             onToggleTheme={toggleTheme}
@@ -315,12 +376,38 @@ export default function App() {
             progress={progress}
             jumpTarget={jumpTarget}
             onBack={handleBack}
-            onSelectTrack={(track) => selectTrack(track)}
-            onSaveSubtopicCheck={saveSubtopicCheck}
-            onSaveTopicExam={saveTopicExam}
+            onSetStudyTrack={(t) => {
+              setJumpTarget(null);
+              setStudyTrack(t);
+            }}
+            onSetLastLesson={setLastLessonForTrack}
+            onSetLessonStatus={setLessonStatus}
+            onMarkAddendumRead={markAddendumRead}
+            onCompleteRevision={completeRevisionForTrack}
+            onSaveRevisionCheck={saveRevisionCheck}
+            onToggleBookmark={toggleBookmarkLesson}
+            onToggleReadingMode={toggleComfortableReadingMode}
+            onSaveDeepCheck={saveDeepLessonCheck}
             onSaveNote={saveLessonNote}
+            onNavigateTab={(tab) => navigateTo({ tab, launchTrack: null })}
+            onOpenTrackExam={(studyTrack) => {
+              setStudyTrack(studyTrack);
+              setPreferredExamTrack({
+                track: studyTrack === 'it-support' ? 'it-support' : 'ccna',
+                studyTrack,
+                nonce: Date.now(),
+              });
+              navigateTo({ tab: 'exam', launchTrack: null });
+            }}
             onSwitchTrackOrLevel={goToLaunchTracks}
-            onAskZero={(label, payload, prompt) => openCoachWithContext(label, payload, prompt)}
+            onAskPing={(label, payload, prompt) =>
+              openCoachWithContext(
+                label,
+                payload,
+                prompt,
+                activeNavTrack === 'it-support' ? 'patch' : 'ping',
+              )
+            }
           />
         )}
 
@@ -329,7 +416,7 @@ export default function App() {
             progress={progress}
             onBack={handleBack}
             onMarkLabCompleted={markLabCompleted}
-            onAskZeroLab={handleAskZeroLab}
+            onAskPingLab={handleAskPingLab}
           />
         )}
 
@@ -338,7 +425,7 @@ export default function App() {
             progress={progress}
             onBack={handleBack}
             onRecordResult={recordSubnetResult}
-            onAskZeroSubnet={handleAskZeroSubnet}
+            onAskPingSubnet={handleAskPingSubnet}
           />
         )}
 
@@ -347,7 +434,7 @@ export default function App() {
             progress={progress}
             onBack={handleBack}
             onRecordTicket={recordSimTicketResult}
-            onAskZeroTicket={handleAskZeroSimTicket}
+            onAskPingTicket={handleAskPingSimTicket}
           />
         )}
 
@@ -357,21 +444,25 @@ export default function App() {
             preferredTrack={preferredExamTrack}
             onBack={handleBack}
             onRecordAttempt={recordExamResult}
-            onAskZeroExam={handleAskZeroExam}
+            onAskPingExam={handleAskPingExam}
           />
         )}
       </main>
 
       <footer className="border-t border-slate-200 dark:border-slate-800/80 py-6 mt-12">
         <div className="max-w-[1360px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
-          <span>Local-First CCNA 200-301 &amp; IT Support Workbench</span>
-          <span>Progress stored locally in your browser · Export JSON anytime</span>
+          <span>
+            Road to TECH · Local-First CCNA 200-301 &amp; IT Support Workbench · Independent study
+            tool. Not affiliated with or endorsed by Cisco.
+          </span>
+          <span>Progress saved locally in IndexedDB · Export JSON anytime</span>
         </div>
       </footer>
 
-      <ZeroCoachDrawer
+      <PingCoachDrawer
         isOpen={coachOpen}
         onClose={() => setCoachOpen(false)}
+        coachPersona={coachPersonaOverride ?? (activeNavTrack === 'it-support' ? 'patch' : 'ping')}
         contextLabel={coachContextLabel}
         contextPayload={coachContextPayload}
         queuedPrompt={queuedPrompt}

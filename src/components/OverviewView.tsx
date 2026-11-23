@@ -226,7 +226,7 @@ export function OverviewView({
 
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
             Study topic-by-topic across both Cisco CCNA 200-301 and IT Help Desk operations—each
-            with guided knowledge checks, end-of-topic exams, 120+ Easy-to-Hard mock exam banks,
+            with guided knowledge checks, end-of-topic exams, 120+–170+ Easy-to-Hard mock exam banks,
             plus interactive Cisco IOS CLI labs and VLSM/IPv6 subnetting when studying CCNA.
           </p>
 
@@ -544,7 +544,7 @@ export function OverviewView({
             }
             className="text-sm font-medium text-sky-600 dark:text-sky-400 hover:underline whitespace-nowrap shrink-0"
           >
-            Ask Zero for an IT Support plan
+            Ask Patch for an IT Support plan
           </button>
         </div>
 
@@ -611,7 +611,7 @@ export function OverviewView({
             }
             className="text-sm font-medium text-sky-600 dark:text-sky-400 hover:underline whitespace-nowrap shrink-0"
           >
-            Ask Zero for a CCNA plan
+            Ask Ping for a CCNA plan
           </button>
         </div>
 

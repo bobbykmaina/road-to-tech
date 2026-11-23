@@ -87,7 +87,7 @@ export function TopBar({ activeTab, activeNavTrack, onSelectTab, onOpenCoach }: 
             onClick={onOpenCoach}
             className="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 dark:bg-sky-500 dark:text-slate-950 dark:hover:bg-sky-400 transition-colors duration-150 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
           >
-            Coach Zero
+            {activeNavTrack === 'it-support' ? 'Coach Patch' : 'Coach Ping'}
           </button>
 
           <button
